@@ -1,8 +1,9 @@
 ﻿using System;
+using eduProjectWebAPI.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace eduProjectWebAPI.Data
+namespace eduProjectWebAPI
 {
     public partial class EduProjectDbContext : DbContext
     {
@@ -125,13 +126,13 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.Account)
                     .HasForeignKey(x => x.UserAccountTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Account_FK_UserAccountTypeID");
+                    .HasConstraintName("fk_account_user_account_type1");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.Account)
                     .HasForeignKey<Account>(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Account_FK_UserID");
+                    .HasConstraintName("fk_account_user1");
             });
 
             modelBuilder.Entity<CollaboratorProfile>(entity =>
@@ -166,13 +167,13 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.CollaboratorProfile)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("CollaboratorProfile_FK_ProjectID");
+                    .HasConstraintName("fk_collaborator_profile_project1");
 
                 entity.HasOne(d => d.UserAccountType)
                     .WithMany(p => p.CollaboratorProfile)
                     .HasForeignKey(x => x.UserAccountTypeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("CollaboratorProfile_FK_UserAccountTypeID");
+                    .HasConstraintName("fk_collaborator_profile_user_account_type1");
             });
 
             modelBuilder.Entity<Faculty>(entity =>
@@ -236,25 +237,25 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.FacultyMember)
                     .HasForeignKey(x => x.AcademicRankId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FacultyMember_FK_AcademicRankID");
+                    .HasConstraintName("fk_faculty_member_academic_rank1");
 
                 entity.HasOne(d => d.Faculty)
                     .WithMany(p => p.FacultyMember)
                     .HasForeignKey(x => x.FacultyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FacultyMember_FK_FacultyID");
+                    .HasConstraintName("fk_faculty_member_faculty1");
 
                 entity.HasOne(d => d.StudyField)
                     .WithMany(p => p.FacultyMember)
                     .HasForeignKey(x => x.StudyFieldId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FacultyMember_FK_FieldOfStudyID");
+                    .HasConstraintName("fk_faculty_member_study_field1");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.FacultyMember)
                     .HasForeignKey<FacultyMember>(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FacultyMember_FK_UserID");
+                    .HasConstraintName("fk_faculty_member_user1");
             });
 
             modelBuilder.Entity<FacultyMemberProfile>(entity =>
@@ -286,17 +287,17 @@ namespace eduProjectWebAPI.Data
                     .WithOne(p => p.FacultyMemberProfile)
                     .HasForeignKey<FacultyMemberProfile>(x => x.CollaboratorProfileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FacultyMemberProfile_FK_CollaboratorProfileID");
+                    .HasConstraintName("fk_faculty_member_profile_profile_collaborator_profile1");
 
                 entity.HasOne(d => d.Faculty)
                     .WithMany(p => p.FacultyMemberProfile)
                     .HasForeignKey(x => x.FacultyId)
-                    .HasConstraintName("FacultyMemberProfile_FK_FacultyID");
+                    .HasConstraintName("fk_faculty_member_profile_faculty1");
 
                 entity.HasOne(d => d.StudyField)
                     .WithMany(p => p.FacultyMemberProfile)
                     .HasForeignKey(x => x.StudyFieldId)
-                    .HasConstraintName("FacultyMemberProfile_FK_FieldOfStudyID");
+                    .HasConstraintName("fk_faculty_member_profile_study_field1");
             });
 
             modelBuilder.Entity<Project>(entity =>
@@ -354,18 +355,18 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.Project)
                     .HasForeignKey(x => x.ProjectStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Project_FK_ProjectStatusID");
+                    .HasConstraintName("fk_project_project_status1");
 
                 entity.HasOne(d => d.StudyField)
                     .WithMany(p => p.Project)
                     .HasForeignKey(x => x.StudyFieldId)
-                    .HasConstraintName("Project_FK_FieldOfStudyID");
+                    .HasConstraintName("fk_project_study_field1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Project)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Project_FK_AuthorUserID");
+                    .HasConstraintName("fk_project_user1");
             });
 
             modelBuilder.Entity<ProjectApplication>(entity =>
@@ -413,19 +414,19 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.ProjectApplication)
                     .HasForeignKey(x => x.CollaboratorProfileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectApplication_FK_CollaboratorProfileID");
+                    .HasConstraintName("fk_project_application_collaborator_profile1");
 
                 entity.HasOne(d => d.ProjectApplicationStatus)
                     .WithMany(p => p.ProjectApplication)
                     .HasForeignKey(x => x.ProjectApplicationStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectApplication_FK_ProjectApplicationStatusID");
+                    .HasConstraintName("fk_project_application_project_application_status1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ProjectApplication)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectApplication_FK_UserID");
+                    .HasConstraintName("fk_project_application_user1");
             });
 
             modelBuilder.Entity<ProjectApplicationStatus>(entity =>
@@ -473,13 +474,13 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.ProjectCollaborator)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectCollaborator_FK_ProjectID");
+                    .HasConstraintName("fk_project_collaborator_project1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.ProjectCollaborator)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectCollaborator_FK_UserID");
+                    .HasConstraintName("fk_project_collaborator_user1");
             });
 
             modelBuilder.Entity<ProjectStatus>(entity =>
@@ -527,13 +528,13 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.ProjectTag)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectTag_FK_ProjectID");
+                    .HasConstraintName("fk_project_tag_project1");
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.ProjectTag)
                     .HasForeignKey(x => x.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ProjectTag_FK_TagID");
+                    .HasConstraintName("fk_project_tag_tag1");
             });
 
             modelBuilder.Entity<Student>(entity =>
@@ -569,18 +570,18 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.Student)
                     .HasForeignKey(x => x.StudyProgramId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Student_FK_StudyProgramID");
+                    .HasConstraintName("fk_student_study_program1");
 
                 entity.HasOne(d => d.StudyProgramSpecialization)
                     .WithMany(p => p.Student)
                     .HasForeignKey(x => x.StudyProgramSpecializationId)
-                    .HasConstraintName("Student_FK_StudyProgramSpecializationID");
+                    .HasConstraintName("fk_student_study_program_specialization1");
 
                 entity.HasOne(d => d.User)
                     .WithOne(p => p.Student)
                     .HasForeignKey<Student>(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Student_FK_UserID");
+                    .HasConstraintName("fk_student_user1");
             });
 
             modelBuilder.Entity<StudentProfile>(entity =>
@@ -627,22 +628,22 @@ namespace eduProjectWebAPI.Data
                     .WithOne(p => p.StudentProfile)
                     .HasForeignKey<StudentProfile>(x => x.CollaboratorProfileId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("StudentProfile_FK_CollaboratorProfileID");
+                    .HasConstraintName("fk_student_profile_collaborator_profile1");
 
                 entity.HasOne(d => d.Faculty)
                     .WithMany(p => p.StudentProfile)
                     .HasForeignKey(x => x.FacultyId)
-                    .HasConstraintName("StudentProfile_FK_FacultyID");
+                    .HasConstraintName("fk_student_profile_faculty1");
 
                 entity.HasOne(d => d.StudyProgram)
                     .WithMany(p => p.StudentProfile)
                     .HasForeignKey(x => x.StudyProgramId)
-                    .HasConstraintName("StudentProfile_FK_StudyProgramID");
+                    .HasConstraintName("fk_student_profile_study_program1");
 
                 entity.HasOne(d => d.StudyProgramSpecialization)
                     .WithMany(p => p.StudentProfile)
                     .HasForeignKey(x => x.StudyProgramSpecializationId)
-                    .HasConstraintName("StudentProfile_FK_StudyProgramSpecializationID");
+                    .HasConstraintName("fk_student_profile_study_program_specialization1");
             });
 
             modelBuilder.Entity<StudyField>(entity =>
@@ -708,7 +709,7 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.StudyProgram)
                     .HasForeignKey(x => x.FacultyId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("StudyProgram_FK_FacultyID");
+                    .HasConstraintName("fk_study_program_faculty1");
             });
 
             modelBuilder.Entity<StudyProgramSpecialization>(entity =>
@@ -740,7 +741,7 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.StudyProgramSpecialization)
                     .HasForeignKey(x => x.StudyProgramId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("StudyProgramSpecialization_FK_StudyProgramID");
+                    .HasConstraintName("fk_study_program_specialization_study_program1");
             });
 
             modelBuilder.Entity<Tag>(entity =>
@@ -890,7 +891,7 @@ namespace eduProjectWebAPI.Data
                     .WithOne(p => p.UserSettings)
                     .HasForeignKey<UserSettings>(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserSettings_FK_UserID");
+                    .HasConstraintName("fk_user_settings_user1");
             });
 
             modelBuilder.Entity<UserTag>(entity =>
@@ -918,13 +919,13 @@ namespace eduProjectWebAPI.Data
                     .WithMany(p => p.UserTag)
                     .HasForeignKey(x => x.TagId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserTag_FK_TagID");
+                    .HasConstraintName("fk_user_tag_tag1");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserTag)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("UserTag_FK_UserID");
+                    .HasConstraintName("fk_user_tag_user1");
             });
 
             OnModelCreatingPartial(modelBuilder);

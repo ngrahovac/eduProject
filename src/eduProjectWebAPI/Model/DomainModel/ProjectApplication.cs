@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace eduProjectWebAPI.Data
+namespace eduProjectWebAPI.Model
 {
     public partial class ProjectApplication
     {
