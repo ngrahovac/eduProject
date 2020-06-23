@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29924.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebAPI", "src\eduProjectWebAPI\eduProjectWebAPI.csproj", "{26E390E9-07EC-445E-AEE0-4202CC107EA8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eduProjectWebGUI", "src\eduProjectWebGUI\eduProjectWebGUI.csproj", "{DD54E987-3BF0-409A-A901-B4A2D3568EEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebGUI", "src\eduProjectWebGUI\eduProjectWebGUI.csproj", "{DD54E987-3BF0-409A-A901-B4A2D3568EEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

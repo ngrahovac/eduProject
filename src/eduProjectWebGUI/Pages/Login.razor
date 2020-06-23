@@ -1,0 +1,23 @@
+﻿@page "/login"
+
+    <div class="login-box">
+
+        <img src="../img/logo.JPG" class="logo-img" />
+
+        <div class="container form-group">
+
+            <label>Korisničko ime: </label>
+            <input type="text" class="text-center" placeholder="Korisničko ime" />
+
+        </div>
+
+        <div class="container form-group">
+
+            <label>Lozinka: </label>
+            <input type="password" class="text-center" placeholder="Lozinka" />
+
+        </div>
+
+        <input type="button" class="btn btn-success" value="Prijavi se" @onclick="LoginToSystem" />
+
+    </div>
