@@ -7,9 +7,9 @@ namespace eduProjectWebAPI.Model
     {
         public Project()
         {
-            CollaboratorProfile = new HashSet<CollaboratorProfile>();
-            ProjectCollaborator = new HashSet<ProjectCollaborator>();
-            ProjectTag = new HashSet<ProjectTag>();
+            CollaboratorProfiles = new HashSet<CollaboratorProfile>();
+            ProjectCollaborators = new HashSet<ProjectCollaborator>();
+            ProjectTags = new HashSet<ProjectTag>();
         }
 
         public int ProjectId { get; set; }
@@ -24,8 +24,8 @@ namespace eduProjectWebAPI.Model
         public virtual ProjectStatus ProjectStatus { get; set; }
         public virtual StudyField StudyField { get; set; }
         public virtual User User { get; set; }
-        public virtual ICollection<CollaboratorProfile> CollaboratorProfile { get; set; }
-        public virtual ICollection<ProjectCollaborator> ProjectCollaborator { get; set; }
-        public virtual ICollection<ProjectTag> ProjectTag { get; set; }
+        public virtual ICollection<CollaboratorProfile> CollaboratorProfiles { get; set; }
+        public virtual ICollection<ProjectCollaborator> ProjectCollaborators { get; set; }
+        public virtual ICollection<ProjectTag> ProjectTags { get; set; }
     }
 }

@@ -7,9 +7,11 @@ namespace eduProjectWebAPI
 {
     public partial class EduProjectDbContext : DbContext
     {
+        /*
         public EduProjectDbContext()
         {
         }
+        */
 
         public EduProjectDbContext(DbContextOptions<EduProjectDbContext> options)
             : base(options)
@@ -22,7 +24,7 @@ namespace eduProjectWebAPI
         public virtual DbSet<Faculty> Faculty { get; set; }
         public virtual DbSet<FacultyMember> FacultyMember { get; set; }
         public virtual DbSet<FacultyMemberProfile> FacultyMemberProfile { get; set; }
-        public virtual DbSet<Project> Project { get; set; }
+        public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<ProjectApplication> ProjectApplication { get; set; }
         public virtual DbSet<ProjectApplicationStatus> ProjectApplicationStatus { get; set; }
         public virtual DbSet<ProjectCollaborator> ProjectCollaborator { get; set; }
@@ -164,7 +166,7 @@ namespace eduProjectWebAPI
                     .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Project)
-                    .WithMany(p => p.CollaboratorProfile)
+                    .WithMany(p => p.CollaboratorProfiles)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_collaborator_profile_project1");
@@ -471,7 +473,7 @@ namespace eduProjectWebAPI
                     .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Project)
-                    .WithMany(p => p.ProjectCollaborator)
+                    .WithMany(p => p.ProjectCollaborators)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_project_collaborator_project1");
@@ -525,7 +527,7 @@ namespace eduProjectWebAPI
                     .HasColumnType("int(11)");
 
                 entity.HasOne(d => d.Project)
-                    .WithMany(p => p.ProjectTag)
+                    .WithMany(p => p.ProjectTags)
                     .HasForeignKey(x => x.ProjectId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("fk_project_tag_project1");

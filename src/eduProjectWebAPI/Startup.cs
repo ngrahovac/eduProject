@@ -1,4 +1,5 @@
 using System;
+using eduProjectWebAPI.Data.DAO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,9 @@ namespace eduProjectWebAPI
                 .UseMySql(Configuration["ConnectionStrings:eduProjectDb"], mySqlOptions => mySqlOptions
                     .ServerVersion(new Version(5, 6, 40), ServerType.MySql)
             ));
+
+            // register DAO interfaces for injecting into controller ctors
+            services.AddScoped<IProjectDAO, ProjectDAOMySQL>();
 
         }
 
