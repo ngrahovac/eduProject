@@ -1,0 +1,53 @@
+﻿body {
+    font-family: Cambria;
+}
+
+.user-profile {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.avatar {
+    border-radius: 50%;
+}
+
+.lock-btn {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    align-content: center;
+    margin-top: auto;
+}
+
+.biography-area {
+    border: 1px solid black;
+}
+
+.biography-btn {
+    background-color: lightsteelblue;
+    width: 150px;
+}
+
+.tag-btn {
+    width: 70px;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding: 2px;
+    height: 30px;
+    align-content: center;
+}
+
+.tag {
+    margin: 10px;
+}
+
+.final-btn {
+    margin: 10px;
+    width: 150px;
+    align-content: center;
+}
+
+.final-btns {
+    float: right;
+}
