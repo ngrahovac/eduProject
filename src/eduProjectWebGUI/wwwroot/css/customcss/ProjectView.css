@@ -1,0 +1,19 @@
+﻿.project-view {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+}
+
+.tag {
+    margin: 5px;
+}
+
+.final-btn {
+    margin: 10px;
+    width: 150px;
+    align-content: center;
+}
+
+.final-btns {
+    float: right;
+}
