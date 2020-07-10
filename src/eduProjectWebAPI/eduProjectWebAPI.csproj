@@ -6,15 +6,10 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.0-preview5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.0.1" />
+    <PackageReference Include="MySqlConnector" Version="1.0.0-beta.4" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\InputModel\" />
+    <Folder Include="Model\Input\" />
     <Folder Include="Model\Validation\" />
   </ItemGroup>
 </Project>

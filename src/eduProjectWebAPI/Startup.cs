@@ -1,12 +1,10 @@
-using System;
-using eduProjectWebAPI.Data.DAO;
+using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using MySqlConnector;
 
 namespace eduProjectWebAPI
 {
@@ -23,15 +21,14 @@ namespace eduProjectWebAPI
         {
             services.AddControllers();
 
-            // from https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
-            services.AddDbContextPool<EduProjectDbContext>(options => options
-                .UseMySql(Configuration["ConnectionStrings:eduProjectDb"], mySqlOptions => mySqlOptions
-                    .ServerVersion(new Version(5, 6, 40), ServerType.MySql)
-            ));
+            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:eduProjectDb"]));
 
-            // register DAO interfaces for injecting into controller ctors
-            services.AddScoped<IProjectDAO, ProjectDAOMySQL>();
+            ConfigureDataLayerServices(services);
+        }
 
+        private void ConfigureDataLayerServices(IServiceCollection services)
+        {
+            services.AddTransient<IProjectsRepository, ProjectsRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,9 +1,8 @@
-﻿using eduProjectWebAPI.Data.DAO;
-using eduProjectWebAPI.Model.DisplayModel;
+﻿using eduProjectWebAPI.Data;
+using eduProjectWebAPI.Model;
+using eduProjectWebAPI.Model.Display;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Controllers
@@ -12,23 +11,18 @@ namespace eduProjectWebAPI.Controllers
     [Route("/projects")]
     public class ProjectsController : Controller
     {
-        private IProjectDAO projectDAO;
-        public ProjectsController(IProjectDAO projectDAO)
+        private IProjectsRepository projects;
+        public ProjectsController(IProjectsRepository projects)
         {
-            this.projectDAO = projectDAO;
+            this.projects = projects;
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDisplayModel>> GetById(int id)
         {
-            var project = await projectDAO.Read(id);
-
-            if (project == null)
-            {
-                return NotFound();
-            }
-
-            return ProjectDisplayModel.FromProject(project);
+            Project project = await projects.GetAsync(id);
+            var model = ProjectDisplayModel.FromProject(project, null);
+            return model;
         }
     }
 }
