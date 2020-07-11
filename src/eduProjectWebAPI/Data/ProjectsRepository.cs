@@ -1,10 +1,7 @@
-﻿using eduProjectWebAPI.Model;
+﻿using eduProjectModel.Domain;
 using MySqlConnector;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
@@ -102,9 +99,6 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Clear();
             command.Parameters.Add(new MySqlParameter { DbType = DbType.Int32, ParameterName = "@id", Value = id });
 
-
-            int studyFieldId = -1;
-
             using (var reader = command.ExecuteReader())
             {
                 if (reader.HasRows)
@@ -133,7 +127,6 @@ namespace eduProjectWebAPI.Data
                         }
 
                         project.Description = reader.GetString(4);
-                        studyFieldId = reader.GetInt32(5);
                         project.ProjectStatus = (ProjectStatus)Enum.ToObject(typeof(ProjectStatus), reader.GetInt32(6));
                         project.AuthorId = reader.GetInt32(7);
                         project.StudyField = new StudyField(reader.GetString(8), "");

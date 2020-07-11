@@ -1,4 +1,4 @@
-﻿namespace eduProjectWebAPI.Model
+﻿namespace eduProjectModel.Domain
 {
     public class Account : IAggregateRoot
     {

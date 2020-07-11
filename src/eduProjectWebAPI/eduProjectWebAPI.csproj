@@ -12,4 +12,7 @@
     <Folder Include="Model\Input\" />
     <Folder Include="Model\Validation\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\eduProjectModelLib\eduProjectModel.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace eduProjectWebAPI.Model
+namespace eduProjectModel.Domain
 {
     public class User : IAggregateRoot
     {

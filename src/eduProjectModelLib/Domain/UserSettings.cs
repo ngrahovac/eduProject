@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace eduProjectWebAPI.Model
+namespace eduProjectModel.Domain
 {
     public class UserSettings : IValueObject // jer nam je bitna samo vrijednost podesavanja a ne lifetime, nema identitet
     {

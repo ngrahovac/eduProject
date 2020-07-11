@@ -1,4 +1,4 @@
-﻿namespace eduProjectWebAPI.Model
+﻿namespace eduProjectModel.Domain
 {
     public enum CollaboratorProfileType // isti kao user account type, zbog semantike
     {

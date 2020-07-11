@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace eduProjectWebAPI.Model
+namespace eduProjectModel.Domain
 {
     public class Project : IAggregateRoot
     {

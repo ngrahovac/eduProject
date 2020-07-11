@@ -1,4 +1,4 @@
-﻿namespace eduProjectWebAPI.Model
+﻿namespace eduProjectModel.Domain
 {
     interface IAggregateRoot : IEntity
     {

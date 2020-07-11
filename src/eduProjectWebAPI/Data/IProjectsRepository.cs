@@ -1,4 +1,4 @@
-﻿using eduProjectWebAPI.Model;
+﻿using eduProjectModel.Domain;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data

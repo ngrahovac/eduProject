@@ -1,9 +1,10 @@
-﻿using System;
+﻿using eduProjectModel.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace eduProjectWebAPI.Model.Display
+namespace eduProjectModel.Display
 {
     public class StudentProfileDisplayModel : CollaboratorProfileDisplayModel
     {

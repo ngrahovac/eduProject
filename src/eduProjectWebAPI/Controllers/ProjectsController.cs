@@ -1,8 +1,7 @@
-﻿using eduProjectWebAPI.Data;
-using eduProjectWebAPI.Model;
-using eduProjectWebAPI.Model.Display;
+﻿using eduProjectModel.Display;
+using eduProjectModel.Domain;
+using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Controllers
