@@ -19,6 +19,14 @@ namespace eduProjectWebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(policy =>
+            {
+                policy.AddPolicy("CorsPolicy", opt => opt
+                .AllowAnyOrigin()
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+            });
+
             services.AddControllers();
 
             services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:eduProjectDb"]));
@@ -43,6 +51,12 @@ namespace eduProjectWebAPI
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(
+                builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader());
 
             app.UseEndpoints(endpoints =>
             {

@@ -5,6 +5,10 @@
         public string Name { get; private set; }
         public string Description { get; private set; }
 
+        public StudyField()
+        {
+
+        }
         public StudyField(string name, string description)
         {
             Name = name;

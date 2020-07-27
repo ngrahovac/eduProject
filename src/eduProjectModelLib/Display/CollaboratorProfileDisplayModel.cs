@@ -7,6 +7,6 @@ namespace eduProjectModel.Display
 {
     public class CollaboratorProfileDisplayModel
     {
-        public string Description { get; protected set; }
+        public string Description { get; set; }
     }
 }

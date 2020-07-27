@@ -1,105 +1,114 @@
-﻿@page "/projectview"
+﻿@page "/projects/{ProjectId}"
 @inject IModalService Modal
 
 <div class="container project-view">
 
-    <div class="col-md-4">
-        <h4>Osnovne informacije o projektu</h4>
-    </div>
-    <div class="col-md-4">
-        @*Naziv projekta vucem iz baze*@
-        <br /><h2>Naziv Projekta</h2><br />
-    </div>
-
-    <div class="row">
+    @if (ProjectDisplayModel == null)
+    {
+        <div>
+            <h1> Loading... </h1>
+        </div>
+    }
+    else
+    {
         <div class="col-md-4">
-            <h5>Opis projekta:</h5>
+            <h4>Osnovne informacije o projektu</h4>
         </div>
-        @*Ovaj paragraf vucem iz baze*@
-        <div class="col-xl-12">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <div class="col-md-4">
+            <br />
+            <h2>Naziv projekta: </h2>
+            <h2>@ProjectDisplayModel.Title</h2><br />
         </div>
 
-        <div class="col-9">
-            @*Ime i prezime vucem iz baze*@
-            <br /><br /><h5>Projekat kreirao: <b>Ime i prezime</b></h5><br /><br />
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="container-fluid">
-            @*Kada budem vadio iz baze, da vadim kroz petlju da tipa 1, 3, 5 itd ispisuje sa bijelom pozadinom,
-                a 2, 4, 6 itd ispisuje sa svjetlo plavom pozadinom ili obrnuto*@
+        <div class="row">
             <div class="col-md-4">
-                <h5>Potrebni saradnici:</h5>
+                <h5>Opis projekta:</h5>
+            </div>
+            @*Ovaj paragraf vucem iz baze*@
+            <div class="col-xl-12">
+                @ProjectDisplayModel.Description
             </div>
 
-            @*Ove redove vadim iz baze i vadicu ih preko petlje*@
-            <hr style="border-top: 1px solid lightblue" />
-            <div class="row">
+            <div class="col-9">
+                @*Ime i prezime vucem iz baze*@
+                <br /><br /><h5>Projekat kreirao: <b>@ProjectDisplayModel.AuthorFullName</b></h5><br /><br />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="container-fluid">
+                @*Kada budem vadio iz baze, da vadim kroz petlju da tipa 1, 3, 5 itd ispisuje sa bijelom pozadinom,
+                    a 2, 4, 6 itd ispisuje sa svjetlo plavom pozadinom ili obrnuto*@
                 <div class="col-md-4">
-                    Student, Elektrotehnički fakultet, Softversko inzenjerstvo, II godina
+                    <h5>Potrebni saradnici:</h5>
                 </div>
-                <div class="col-md-4 ml-auto">
-                    Opis posla
+
+                @*Ove redove vadim iz baze i vadicu ih preko petlje*@
+                <hr style="border-top: 1px solid lightblue" />
+                <div class="row">
+                    <div class="col-md-4">
+                        Student, Elektrotehnički fakultet, Softversko inzenjerstvo, II godina
+                    </div>
+                    <div class="col-md-4 ml-auto">
+                        Opis posla
+                    </div>
                 </div>
+                <hr style="border-top: 1px solid lightblue" />
+                <div class="row">
+                    <div class="col-md-4">
+                        Ovdje je neko objasnjenje odredjenog saradnika i onda ne znam ni ja vise sta.
+                    </div>
+                    <div class="col-md-4 ml-auto">
+                        Opis posla
+                    </div>
+                </div>
+                <hr style="border-top: 1px solid lightblue" />
+                <div class="row">
+                    <div class="col-md-4">
+                        Profesor, Elektrotehnički fakultet
+                    </div>
+                    <div class="col-md-4 ml-auto">
+                        <p>Opis posla</p>
+                    </div>
+                </div>
+                <hr style="border-top: 1px solid lightblue" />
             </div>
-            <hr style="border-top: 1px solid lightblue" />
-            <div class="row">
-                <div class="col-md-4">
-                    Ovdje je neko objasnjenje odredjenog saradnika i onda ne znam ni ja vise sta.
-                </div>
-                <div class="col-md-4 ml-auto">
-                    Opis posla
-                </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <br /><br /><h5>Tagovi:</h5><br />
             </div>
-            <hr style="border-top: 1px solid lightblue" />
-            <div class="row">
-                <div class="col-md-4">
-                    Profesor, Elektrotehnički fakultet
-                </div>
-                <div class="col-md-4 ml-auto">
-                    <p>Opis posla</p>
-                </div>
+            @*U buducnosti ce se i oni iz baze vuci*@
+            <div class="form-group mx-sm-3 mb-2 row">
+                <h5><span class="badge badge-primary tag">#tagNeki</span></h5>
+                <h5><span class="badge badge-secondary tag">#csharp</span></h5>
+                <h5><span class="badge badge-primary tag">#java</span></h5>
+                <h5><span class="badge badge-secondary tag">#js</span></h5>
+                <h5><span class="badge badge-primary tag">#blazor</span></h5>
+                <h5><span class="badge badge-secondary tag">#htmlcss</span></h5>
+                <h5><span class="badge badge-primary tag">#html</span></h5>
+                <h5><span class="badge badge-secondary tag">#css</span></h5>
+                <h5><span class="badge badge-primary tag">#machinelearning</span></h5>
+                <h5><span class="badge badge-secondary tag">#tagNeki</span></h5>
+                <h5><span class="badge badge-primary tag">#csharp</span></h5>
+                <h5><span class="badge badge-secondary tag">#java</span></h5>
+                <h5><span class="badge badge-primary tag">#js</span></h5>
+                <h5><span class="badge badge-secondary tag">#blazor</span></h5>
+                <h5><span class="badge badge-primary tag">#htmlcss</span></h5>
+                <h5><span class="badge badge-secondary tag">#html</span></h5>
+                <h5><span class="badge badge-primary tag">#css</span></h5>
+                <h5><span class="badge badge-secondary tag">#machinelearning</span></h5>
             </div>
-            <hr style="border-top: 1px solid lightblue" />
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-md-4">
-            <br /><br /><h5>Tagovi:</h5><br />
+        <br /><br /><br />
+
+        <div class="row final-btns">
+            <div class="col-lg">
+                <button type="submit" class="btn btn-success final-btn" @onclick="ShowModal">Prijavi se</button>
+                <button type="submit" class="btn btn-danger final-btn" disabled>Poništi prijavu</button>
+            </div>
         </div>
-        @*U buducnosti ce se i oni iz baze vuci*@
-        <div class="form-group mx-sm-3 mb-2 row">
-            <h5><span class="badge badge-primary tag">#tagNeki</span></h5>
-            <h5><span class="badge badge-secondary tag">#csharp</span></h5>
-            <h5><span class="badge badge-primary tag">#java</span></h5>
-            <h5><span class="badge badge-secondary tag">#js</span></h5>
-            <h5><span class="badge badge-primary tag">#blazor</span></h5>
-            <h5><span class="badge badge-secondary tag">#htmlcss</span></h5>
-            <h5><span class="badge badge-primary tag">#html</span></h5>
-            <h5><span class="badge badge-secondary tag">#css</span></h5>
-            <h5><span class="badge badge-primary tag">#machinelearning</span></h5>
-            <h5><span class="badge badge-secondary tag">#tagNeki</span></h5>
-            <h5><span class="badge badge-primary tag">#csharp</span></h5>
-            <h5><span class="badge badge-secondary tag">#java</span></h5>
-            <h5><span class="badge badge-primary tag">#js</span></h5>
-            <h5><span class="badge badge-secondary tag">#blazor</span></h5>
-            <h5><span class="badge badge-primary tag">#htmlcss</span></h5>
-            <h5><span class="badge badge-secondary tag">#html</span></h5>
-            <h5><span class="badge badge-primary tag">#css</span></h5>
-            <h5><span class="badge badge-secondary tag">#machinelearning</span></h5>
-        </div>
-    </div>
-
-    <br /><br /><br />
-
-    <div class="row final-btns">
-        <div class="col-lg">
-            <button type="submit" class="btn btn-success final-btn" @onclick="ShowModal">Prijavi se</button>
-            <button type="submit" class="btn btn-danger final-btn" disabled>Poništi prijavu</button>
-        </div>
-    </div>
-
+    }
 </div>

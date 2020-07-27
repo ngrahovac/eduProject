@@ -8,11 +8,11 @@ namespace eduProjectModel.Display
 {
     public class StudentProfileDisplayModel : CollaboratorProfileDisplayModel
     {
-        public string FacultyName { get; private set; }
-        public string StudyProgramName { get; private set; }
-        public string StudyProgramSpecializationName { get; private set; }
-        public int? StudyCycle { get; private set; }
-        public int? StudyYear { get; private set; }
+        public string FacultyName { get; set; }
+        public string StudyProgramName { get; set; }
+        public string StudyProgramSpecializationName { get; set; }
+        public int? StudyCycle { get; set; }
+        public int? StudyYear { get; set; }
 
         public StudentProfileDisplayModel()
         {

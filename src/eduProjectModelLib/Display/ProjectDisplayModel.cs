@@ -8,17 +8,17 @@ namespace eduProjectModel.Display
 {
     public class ProjectDisplayModel
     {
-        public int ProjectId { get; private set; }
-        public string ProjectStatus { get; private set; }
-        public string Title { get; private set; }
-        public string AuthorFullName { get; private set; }
-        public StudyField StudyField { get; private set; }
-        public string Description { get; private set; }
-        public DateTime? StartDate { get; private set; }
-        public DateTime? EndDate { get; private set; }
-        public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; private set; } = new HashSet<FacultyMemberProfileDisplayModel>();// ZORANE bolji naziv?
-        public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; private set; } = new HashSet<StudentProfileDisplayModel>();
-        public ICollection<Tag> Tags { get; private set; } = new HashSet<Tag>();
+        public int ProjectId { get; set; }
+        public string ProjectStatus { get; set; }
+        public string Title { get; set; }
+        public string AuthorFullName { get; set; }
+        public StudyField StudyField { get; set; }
+        public string Description { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+        public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; } = new HashSet<FacultyMemberProfileDisplayModel>();// ZORANE bolji naziv?
+        public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; } = new HashSet<StudentProfileDisplayModel>();
+        public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
         public static ProjectDisplayModel FromProject(Project project, User author)
         {
@@ -51,20 +51,5 @@ namespace eduProjectModel.Display
 
             return model;
         }
-
-        private void AddCollaboratorProfileDisplayModel(CollaboratorProfileDisplayModel model)
-        {
-            if (model is StudentProfileDisplayModel)
-            {
-                StudentProfileDisplayModels.Add((StudentProfileDisplayModel)model);
-            }
-            else
-            {
-                FacultyMemberProfileDisplayModels.Add((FacultyMemberProfileDisplayModel)model);
-            }
-        }
-
-
-
     }
 }

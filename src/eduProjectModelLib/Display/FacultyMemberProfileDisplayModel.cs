@@ -9,21 +9,13 @@ namespace eduProjectModel.Display
 {
     public class FacultyMemberProfileDisplayModel : CollaboratorProfileDisplayModel
     {
-        public string FacultyName { get; private set; }
-        public string StudyFieldName { get; private set; }
+        public string FacultyName { get; set; }
+        public string StudyFieldName { get; set; }
 
         public FacultyMemberProfileDisplayModel()
         {
 
         }
-        public FacultyMemberProfileDisplayModel(string academicRank, string facultyName, string studyFieldName, string description)
-        {
-            Description = description;
-            FacultyName = facultyName;
-            StudyFieldName = studyFieldName;
-        }
-
-
         public static FacultyMemberProfileDisplayModel FromFacultyMemberProfile(FacultyMemberProfile profile)
         {
             FacultyMemberProfileDisplayModel model = new FacultyMemberProfileDisplayModel();
