@@ -19,12 +19,15 @@ namespace eduProjectWebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(policy =>
+            services.AddCors(options =>
             {
-                policy.AddPolicy("CorsPolicy", opt => opt
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod());
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                    });
             });
 
             services.AddControllers();
@@ -46,22 +49,22 @@ namespace eduProjectWebAPI
                 app.UseDeveloperExceptionPage();
             }
 
+
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseCors();
 
-            app.UseCors(
-                builder => builder
-                    .AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+
         }
     }
 }
