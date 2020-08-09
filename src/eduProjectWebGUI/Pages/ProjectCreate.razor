@@ -1,0 +1,92 @@
+﻿@page "/create"
+
+    <div class="container project-create">
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="inputProjectName">Naziv projekta</label>
+            </div>
+            <div class="col-7">
+                <input type="text" class="form-control" id="inputProjectName" placeholder="Naziv projekta">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="inputArea">Oblast</label>
+            </div>
+            <div class="col-7">
+                <input type="text" class="form-control" id="inputArea" placeholder="Oblast">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="inputRealizationPeriod">Period realizacije</label>
+            </div>
+            <div class="col-7">
+                <input type="text" class="form-control" id="inputRealizationPeriod" placeholder="Period realizacije">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="inputDescription">Opis</label>
+            </div>
+            <div class="col-7">
+                <textarea id="text-area" name="description" rows="4" cols="50" class="description-area" />
+            </div>
+        </div>
+
+        <br /><br /><br /><br />
+        <br /><br /><br /><br />
+
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="requiredAssociates">Potrebni saradnici</label>
+            </div>
+            <div class="col-7">
+                @*Size cemo napraviti da se vuce iz baze,
+                tj. size ce biti onaj broj koliko ima saradnika u listi saradnika, znaci size=listaSaradnika.length*@
+                <select multiple class="form-control select-associate" id="requiredAssociatesList" size="5">
+                    <option>Jedan</option>
+                    <option>Dva</option>
+                    <option>Tri</option>
+                    <option>Cetiri</option>
+                    <option>Pet</option>
+                </select>
+                <button type="submit" class="btn btn-success associate-btn">Dodaj saradnika</button>
+                <button type="submit" class="btn btn-info associate-btn">Izmijeni saradnika</button>
+                <button type="submit" class="btn btn-danger associate-btn">Izbriši saradnika</button>
+            </div>
+        </div>
+
+        <br /><br /><br /><br />
+
+        @*Napraviti sistem unosa taga u input pa da se ispise dole, ili predloziti listu tagova pa da korisnik sam bira tagove*@
+        <div class="row">
+            <div class="col-6 col-sm-3" style="margin-bottom: 10px;">
+                <label for="tags">Tagovi</label>
+            </div>
+            <div class="col-7">
+                @*Tagove vucem iz baze takodje*@
+                <div class="form-group mx-sm-3 mb-2 row">
+                    <h5><span class="badge badge-primary tag">#tagNeki</span></h5>
+                    <h5><span class="badge badge-primary tag">#csharp</span></h5>
+                    <h5><span class="badge badge-primary tag">#java</span></h5>
+                    <h5><span class="badge badge-primary tag">#js</span></h5>
+                    <h5><span class="badge badge-primary tag">#blazor</span></h5>
+                    <h5><span class="badge badge-primary tag">#htmlcss</span></h5>
+                    <h5><span class="badge badge-primary tag">#html</span></h5>
+                    <h5><span class="badge badge-primary tag">#css</span></h5>
+                    <h5><span class="badge badge-primary tag">#machinelearning</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <br /><br /><br /><br />
+        <br /><br /><br /><br />
+
+        <div class="row final-btns">
+            <div class="col-lg">
+                <button type="submit" class="btn btn-success final-btn">Objavi</button>
+                <button type="submit" class="btn btn-danger final-btn">Odustani</button>
+            </div>
+        </div>
+    </div>
