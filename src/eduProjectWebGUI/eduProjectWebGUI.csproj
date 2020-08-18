@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\css\customcss\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
