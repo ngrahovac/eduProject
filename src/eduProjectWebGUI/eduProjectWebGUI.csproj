@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
     <OutputType>Exe</OutputType>
+    <UserSecretsId>ecdbb360-ec48-4caf-852d-30c435024455</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

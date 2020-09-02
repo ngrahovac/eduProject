@@ -1,9 +1,11 @@
 ﻿using eduProjectModel.Display;
+using eduProjectModel.Domain;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -30,5 +32,6 @@ namespace eduProjectWebGUI.Pages
         {
             ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
         }
+
     }
 }
