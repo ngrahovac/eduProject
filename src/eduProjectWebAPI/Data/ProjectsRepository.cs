@@ -8,19 +8,21 @@ namespace eduProjectWebAPI.Data
 {
     public class ProjectsRepository : IProjectsRepository
     {
-        private MySqlConnection dbConnection; // FIX: make generic?
+        //treba da ima sve CRUD metode, za sad u Z06 imamo samo citanje sto je potrebno za taj zahtjev
+
+        private MySqlConnection dbConnection;
+
         public ProjectsRepository(MySqlConnection dbConnection)
         {
             this.dbConnection = dbConnection;
         }
-        public async Task<Project> GetAsync(int id) // FIX: make id long
+
+        public async Task<Project> GetAsync(int id) // FIX: make id long, dohvata projekat iz baze
         {
             Project project = new Project(); // TEST
-
             using (dbConnection)
             {
                 await dbConnection.OpenAsync();
-
                 MySqlCommand command = new MySqlCommand();
                 command.Connection = dbConnection;
 
@@ -38,10 +40,8 @@ namespace eduProjectWebAPI.Data
 
                 await dbConnection.CloseAsync();
             }
-
             return project;
         }
-
         private void ReadCollaboratorIds(MySqlCommand command, int id, Project project)
         {
             string readCollaboratorsCommandText = @"SELECT user_id
@@ -64,7 +64,6 @@ namespace eduProjectWebAPI.Data
             }
 
         }
-
         private void ReadTagsInfo(MySqlCommand command, int id, Project project)
         {
             string readTagsCommandText = @"SELECT name, description
@@ -86,7 +85,6 @@ namespace eduProjectWebAPI.Data
                 }
             }
         }
-
         private void ReadBasicProjectInfo(MySqlCommand command, int id, Project project)
         {
             string readProjectCommandText = @"SELECT project_id, title,  start_date, end_date, project.description, project.study_field_id, project_status_id, user_id,
@@ -129,13 +127,12 @@ namespace eduProjectWebAPI.Data
                         project.Description = reader.GetString(4);
                         project.ProjectStatus = (ProjectStatus)Enum.ToObject(typeof(ProjectStatus), reader.GetInt32(6));
                         project.AuthorId = reader.GetInt32(7);
-                        project.StudyField = new StudyField(reader.GetString(8), "");
+                        project.StudyField = new StudyField() { Name = reader.GetString(8), Description = "" };
                     }
                 }
             }
 
         }
-
         private void ReadCollaboratorProfilesInfo(MySqlCommand command, int id, Project project)
         {
             string readCollaboratorProfilesCommandText = @"SELECT collaborator_profile_id, collaborator_profile.description, user_account_type_id, 
@@ -188,7 +185,7 @@ namespace eduProjectWebAPI.Data
                             profile.CollaboratorProfileId = reader.GetInt32(0);
                             profile.Faculty = new Faculty { Name = reader.GetString(5) };
                             profile.Description = reader.GetString(1);
-                            profile.StudyField = new StudyField(reader.GetString(8), "");
+                            profile.StudyField = new StudyField() { Name = reader.GetString(8), Description = "" };
 
                             project.CollaboratorProfiles.Add(profile);
                         }

@@ -21,7 +21,7 @@ namespace eduProjectWebGUI.Pages
         [Inject]
         ApiService ApiService { get; set; }
 
-        ProjectDisplayModel ProjectDisplayModel { get; set; }
+        VisitorActiveProjectDisplayModel ProjectDisplayModel { get; set; }
 
         void ShowModal()
         {
@@ -30,7 +30,7 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            ProjectDisplayModel = await ApiService.GetAsync<VisitorActiveProjectDisplayModel>($"projects/{ProjectId}");
         }
 
     }

@@ -40,6 +40,7 @@ namespace eduProjectWebAPI
         private void ConfigureDataLayerServices(IServiceCollection services)
         {
             services.AddTransient<IProjectsRepository, ProjectsRepository>();
+            services.AddTransient<UsersRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
