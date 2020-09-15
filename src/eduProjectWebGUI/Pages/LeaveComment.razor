@@ -1,5 +1,5 @@
 ﻿<div class="simple-form">
-
+    
     <div class="form-group">
         <text for="message">Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete</text>
         <textarea @bind="Message" type="text" class="form-control comment-field" id="message" placeholder="Komentar ..." style="resize: none; height: 200px" />
@@ -14,11 +14,13 @@
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    string Message { get; set; } // Comment that user wrote in textarea while leaving a comment.
+    [Parameter]
+    public string Message { get; set; } // Comment that user wrote in textarea while leaving a comment.
 
     protected override void OnInitialized() => BlazoredModal.SetTitle("Unesite komentar");
 
     void SubmitForm() => BlazoredModal.Close();
+
     void Cancel() => BlazoredModal.Cancel();
 
 }

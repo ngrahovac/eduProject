@@ -12,6 +12,11 @@ namespace eduProjectModel.Display
         public StudyField StudyField { get; set; }
         public string Description { get; set; }
 
+        public ProjectDisplayModel()
+        {
+
+        }
+
         public ProjectDisplayModel(Project project, User author)
         {
             ProjectStatus = project.ProjectStatus.ToString();

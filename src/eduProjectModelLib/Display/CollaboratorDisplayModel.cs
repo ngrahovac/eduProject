@@ -7,6 +7,10 @@ namespace eduProjectModel.Display
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        public CollaboratorDisplayModel()
+        {
+
+        }
         public CollaboratorDisplayModel(User collaborator)
         {
             FirstName = collaborator.FirstName;

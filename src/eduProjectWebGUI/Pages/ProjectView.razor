@@ -1,129 +1,87 @@
 ﻿@page "/projects/{ProjectId}"
 @inject IModalService Modal
 
-
 @if (ProjectDisplayModel == null)
 {
     <span>Loading...</span>
 }
 else
 {
-    <div class="container project-view">
+<div class="container project-view">
 
-        @*Ja bih izbrisao ovaj naslov*@
-        <div class="col-md-4">
-            <h4>Osnovne informacije o projektu</h4>
-        </div>
+    @*Ja bih izbrisao ovaj naslov*@
+    <div class="col-md-4">
+        <h4>Osnovne informacije o projektu</h4>
+    </div>
 
-        <br /><br />
+    <br /><br />
 
-        <div class="row">
+    <div class="row">
 
-            <h3>
-                <b>Naziv projekta: </b>
-                <small class="text-muted">@ProjectDisplayModel.Title</small>
-            </h3>
-
-        </div>
-
-        <br /><br />
-
-        <div class="row">
-
-            <div class="col-md-4">
-                <h5>Opis projekta:</h5>
-            </div>
-
-            <div class="col-xl-12">
-                @ProjectDisplayModel.Description
-            </div>
-
-            <div class="col-9">
-                <br /><br /><h5>Projekat kreirao: <b>@ProjectDisplayModel.AuthorFullName</b></h5><br /><br />
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="container-fluid">
-                @*Kada budem vadio iz baze, da vadim kroz petlju da tipa 1, 3, 5 itd ispisuje sa bijelom pozadinom,
-            a 2, 4, 6 itd ispisuje sa svjetlo plavom pozadinom ili obrnuto*@
-                <div class="col-md-4">
-                    <h5>Potrebni saradnici:</h5>
-                </div>
-                @foreach (eduProjectModel.Display.FacultyMemberProfileDisplayModel facultyMember in ProjectDisplayModel.FacultyMemberProfileDisplayModels)
-                {
-                    <hr style="border-top: 1px solid lightblue" />
-                    <div class="row">
-                        <div class="col-md-4">
-                            @facultyMember.FacultyName, @facultyMember.StudyFieldName
-                        </div>
-                        <div class="col-md-4 ml-auto">
-                            @facultyMember.Description
-                        </div>
-                    </div>
-                }
-            
-                @foreach (eduProjectModel.Display.StudentProfileDisplayModel students in ProjectDisplayModel.StudentProfileDisplayModels)
-                {
-                    <hr style="border-top: 1px solid lightblue" />
-                    <div class="row">
-                        <div class="col-md-4">
-                            @students.FacultyName, @students.StudyProgramName
-                        </div>
-                        <div class="col-md-4 ml-auto">
-                            @students.Description
-                        </div>
-                    </div>
-                }
-                <hr style="border-top: 1px solid lightblue" />
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <br /><br /><h5>Tagovi:</h5><br />
-            </div>
-            @*U buducnosti ce se i oni iz baze vuci*@
-        <div class="form-group mx-sm-3 mb-2 row">
-            <h5><span class="badge badge-primary tag">#tagNeki</span></h5>
-            <h5><span class="badge badge-secondary tag">#csharp</span></h5>
-            <h5><span class="badge badge-primary tag">#java</span></h5>
-            <h5><span class="badge badge-secondary tag">#js</span></h5>
-            <h5><span class="badge badge-primary tag">#blazor</span></h5>
-            <h5><span class="badge badge-secondary tag">#htmlcss</span></h5>
-            <h5><span class="badge badge-primary tag">#html</span></h5>
-            <h5><span class="badge badge-secondary tag">#css</span></h5>
-            <h5><span class="badge badge-primary tag">#machinelearning</span></h5>
-            <h5><span class="badge badge-secondary tag">#tagNeki</span></h5>
-            <h5><span class="badge badge-primary tag">#csharp</span></h5>
-            <h5><span class="badge badge-secondary tag">#java</span></h5>
-            <h5><span class="badge badge-primary tag">#js</span></h5>
-            <h5><span class="badge badge-secondary tag">#blazor</span></h5>
-            <h5><span class="badge badge-primary tag">#htmlcss</span></h5>
-            <h5><span class="badge badge-secondary tag">#html</span></h5>
-            <h5><span class="badge badge-primary tag">#css</span></h5>
-            <h5><span class="badge badge-secondary tag">#machinelearning</span></h5>
-
-            @foreach (eduProjectModel.Domain.Tag tag in ProjectDisplayModel.Tags)
-            {
-                <h5>@tag.Name</h5>
-                <h5>@tag.Description</h5>
-            }
-        </div>
-        </div>
-
-        <br /><br /><br />
-
-        <div class="row">
-            <div class="col-md-4">
-                <h5>Status projekta: <b style="color: lawngreen;">@ProjectDisplayModel.ProjectStatus</b></h5>
-            </div>
-            <div class="col-md-4 ml-auto final-btns">
-                <button type="submit" class="btn btn-success final-btn sign-btn" @onclick="ShowModal">Prijavi se</button>
-                <button type="submit" class="btn btn-danger final-btn cancel-btn" disabled>Poništi prijavu</button>
-            </div>
-        </div>
+        <h3>
+            <b>Naziv projekta: </b>
+            <small class="text-muted">@ProjectDisplayModel.Title</small>
+        </h3>
 
     </div>
+
+    <br /><br />
+
+          <div class="row">
+
+              <div class="col-md-4">
+                  <h5>Opis projekta:</h5>
+              </div>
+
+              <div class="col-xl-12">
+                  @ProjectDisplayModel.Description
+              </div>
+
+
+
+              @if (ProjectDisplayModel.ProjectStatus == "Active")
+              {
+                  <br /><br /><br />
+                  <div class="col-xl-12">
+                  <div class="d-flex justify-content-center">
+                      <div class="col-4">
+                          <label>Start date:</label>
+                          <input type="date" id="start" @bind-value="@VisitorActiveProjectDisplayModel.StartDate" style="border: none; color: green;" readonly="readonly">
+                      </div>
+                      <div class="col-4">
+                          <label>End date:</label>
+                          <input type="date" id="end" @bind-value="@VisitorActiveProjectDisplayModel.EndDate" style="border: none; color: red;" readonly="readonly">
+                      </div>
+                  </div>
+              </div>
+              }
+              <div class="col-9">
+                  <br /><br /><h5>Projekat kreirao: <b>@ProjectDisplayModel.AuthorFullName</b></h5><br /><br />
+              </div>
+
+          </div>
+
+    @if (ProjectDisplayModel.ProjectStatus == "Active")
+    {
+        <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@VisitorActiveProjectDisplayModel" />
+    }
+    @if(ProjectDisplayModel.ProjectStatus == "Closed")
+    {
+        <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@VisitorClosedProjectDisplayModel" />
+    }
+
+    <div class="row">
+        <div class="col-md-4">
+            <h5>Status projekta: <b style="color: lawngreen;">@ProjectDisplayModel.ProjectStatus</b></h5>
+        </div>
+        @if (ProjectDisplayModel.ProjectStatus == "Active")
+        {
+            <div class="col-md-4 ml-auto projectview-final-btns">
+                <button type="submit" class="btn btn-success projectview-final-btn" disabled="@SignUpButton" @onclick="ShowModal">Prijavi se</button>
+                <button type="submit" class="btn btn-danger projectview-final-btn" disabled="@SignUpCancel" @onclick="ShowCancelWarning">Poništi prijavu</button>
+            </div>
+        }
+    </div>
+     
+</div>
 }

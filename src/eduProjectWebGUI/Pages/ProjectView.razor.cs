@@ -1,4 +1,5 @@
-﻿using eduProjectModel.Display;
+﻿using Blazored.Modal;
+using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
@@ -17,20 +18,45 @@ namespace eduProjectWebGUI.Pages
     {
         [Parameter]
         public string ProjectId { get; set; }
-
         [Inject]
         ApiService ApiService { get; set; }
 
-        VisitorActiveProjectDisplayModel ProjectDisplayModel { get; set; }
+        private bool SignUpCancel = true;
+        private bool SignUpButton = false;
 
-        void ShowModal()
+        ProjectDisplayModel ProjectDisplayModel { get; set; }
+        VisitorActiveProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
+        VisitorClosedProjectDisplayModel VisitorClosedProjectDisplayModel { get; set; }
+        
+        async Task ShowModal()
         {
-            Modal.Show<LeaveComment>();
+            var messageForm = Modal.Show<LeaveComment>();
+            var result = await messageForm.Result;
+
+            if(!result.Cancelled)
+            {
+                SignUpCancel = false;
+                SignUpButton = true;
+            }
+        }
+
+        async Task ShowCancelWarning()
+        {
+            var messageForm = Modal.Show<ProjectSignUpCancelConfirmation>();
+            var result = await messageForm.Result;
+
+            if (!result.Cancelled)
+            {
+                SignUpCancel = true;
+                SignUpButton = false;
+            }
         }
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectDisplayModel = await ApiService.GetAsync<VisitorActiveProjectDisplayModel>($"projects/{ProjectId}");
+            ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            VisitorActiveProjectDisplayModel = await ApiService.GetAsync<VisitorActiveProjectDisplayModel>($"projects/{ProjectId}");
+            VisitorClosedProjectDisplayModel = await ApiService.GetAsync<VisitorClosedProjectDisplayModel>($"projects/{ProjectId}");
         }
 
     }

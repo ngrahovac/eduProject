@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebAPI", "src\edu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebGUI", "src\eduProjectWebGUI\eduProjectWebGUI.csproj", "{DD54E987-3BF0-409A-A901-B4A2D3568EEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eduProjectModel", "src\eduProjectModelLib\eduProjectModel.csproj", "{C9105D01-18E4-489E-A758-EC86235047F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectModel", "src\eduProjectModelLib\eduProjectModel.csproj", "{C9105D01-18E4-489E-A758-EC86235047F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

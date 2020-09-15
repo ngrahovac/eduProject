@@ -6,11 +6,16 @@ namespace eduProjectModel.Display
 {
     public sealed class VisitorClosedProjectDisplayModel : ProjectDisplayModel
     {
-        public ICollection<CollaboratorDisplayModel> AppliedUsers { get; set; }
+        public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; }
 
-        public VisitorClosedProjectDisplayModel(Project project, User author, ICollection<CollaboratorDisplayModel> appliedUsers) : base(project, author)
+        public VisitorClosedProjectDisplayModel()
         {
-            AppliedUsers = appliedUsers;
+
+        }
+
+        public VisitorClosedProjectDisplayModel(Project project, User author, ICollection<CollaboratorDisplayModel> models) : base(project, author)
+        {
+            CollaboratorDisplayModels = models;
         }
     }
 }

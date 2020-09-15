@@ -6,16 +6,16 @@
     margin-top: 20px;
 }
 
-.tag {
+.projectview-tag {
     margin: 5px;
 }
 
-.final-btn {
+.projectview-final-btn {
     margin: 10px;
     width: 150px;
     align-content: center;
 }
 
-.final-btns {
+.projectview-final-btns {
     float: right;
 }

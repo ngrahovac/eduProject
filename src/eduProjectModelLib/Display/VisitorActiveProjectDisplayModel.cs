@@ -12,6 +12,11 @@ namespace eduProjectModel.Display
         public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; } = new HashSet<StudentProfileDisplayModel>();
         public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; } = new HashSet<FacultyMemberProfileDisplayModel>();
 
+        public VisitorActiveProjectDisplayModel()
+        {
+
+        }
+
         public VisitorActiveProjectDisplayModel(Project project, User author) : base(project, author)
         {
             StartDate = project.StartDate;

@@ -1,0 +1,22 @@
+﻿<div class="simple-form">
+
+    <div class="form-group">
+        <text>Da li ste sigurni da želite da poništite prijavu sa ovog projekta?</text>
+    </div>
+
+    <button @onclick="CancelConfirm" class="btn btn-primary">Prihvati</button>
+    <button @onclick="CancelDeny" class="btn btn-secondary">Odustani</button>
+
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    protected override void OnInitialized() => BlazoredModal.SetTitle("Potvrda o poništavanju prijave");
+
+    void CancelConfirm() => BlazoredModal.Close();
+
+    void CancelDeny() => BlazoredModal.Cancel();
+
+}
