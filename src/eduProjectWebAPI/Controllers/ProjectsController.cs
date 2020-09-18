@@ -24,6 +24,10 @@ namespace eduProjectWebAPI.Controllers
         public async Task<ActionResult<ProjectDisplayModel>> GetById(int id)
         {
             Project project = await projects.GetAsync(id);
+
+            if (project == null)
+                return NotFound();
+
             User author = await users.GetAsync(project.AuthorId);
             return await ChooseDisplayModelAsync(project, author, false);
         }

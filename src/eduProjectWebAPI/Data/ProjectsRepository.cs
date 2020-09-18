@@ -27,16 +27,19 @@ namespace eduProjectWebAPI.Data
                 command.Connection = dbConnection;
 
                 // read project attributes from table `project`
-                ReadBasicProjectInfo(command, id, project);
+                ReadBasicProjectInfo(command, id, ref project);
 
-                // read collaborator profiles from  table `collaborator_profiles`
-                ReadCollaboratorProfilesInfo(command, id, project);
+                if (project != null)
+                {
+                    // read collaborator profiles from  table `collaborator_profiles`
+                    ReadCollaboratorProfilesInfo(command, id, project);
 
-                // read tag ids from table `project_tag`
-                ReadTagsInfo(command, id, project);
+                    // read tag ids from table `project_tag`
+                    ReadTagsInfo(command, id, project);
 
-                // read collaborator ids from table `project_collaborator`
-                ReadCollaboratorIds(command, id, project);
+                    // read collaborator ids from table `project_collaborator`
+                    ReadCollaboratorIds(command, id, project);
+                }
 
                 await dbConnection.CloseAsync();
             }
@@ -85,7 +88,7 @@ namespace eduProjectWebAPI.Data
                 }
             }
         }
-        private void ReadBasicProjectInfo(MySqlCommand command, int id, Project project)
+        private void ReadBasicProjectInfo(MySqlCommand command, int id, ref Project project)
         {
             string readProjectCommandText = @"SELECT project_id, title,  start_date, end_date, project.description, project.study_field_id, project_status_id, user_id,
                                                      study_field.name, study_field.description
@@ -130,6 +133,8 @@ namespace eduProjectWebAPI.Data
                         project.StudyField = new StudyField() { Name = reader.GetString(8), Description = "" };
                     }
                 }
+                else
+                    project = null;
             }
 
         }
