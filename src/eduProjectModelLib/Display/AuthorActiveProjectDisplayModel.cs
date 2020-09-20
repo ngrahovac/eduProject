@@ -17,7 +17,7 @@ namespace eduProjectModel.Display
             StartDate = project.StartDate;
             EndDate = project.EndDate;
 
-            foreach (var tag in Tags)
+            foreach (var tag in project.Tags)
                 Tags.Add(tag);
 
             foreach (var profile in project.CollaboratorProfiles)
