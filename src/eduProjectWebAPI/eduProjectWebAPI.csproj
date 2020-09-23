@@ -5,12 +5,15 @@
     <UserSecretsId>b847f9d1-e258-4a87-93e6-a195091c8707</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.0-preview5" />
-    <PackageReference Include="MySqlConnector" Version="1.0.0-beta.4" />
+    <Compile Remove="Model\**" />
+    <Content Remove="Model\**" />
+    <EmbeddedResource Remove="Model\**" />
+    <None Remove="Model\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\Input\" />
-    <Folder Include="Model\Validation\" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.0-preview5" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="3.1.8" />
+    <PackageReference Include="MySqlConnector" Version="1.0.0-beta.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\eduProjectModelLib\eduProjectModel.csproj" />

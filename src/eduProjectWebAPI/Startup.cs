@@ -10,15 +10,16 @@ namespace eduProjectWebAPI
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // TEST ONLY
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(
@@ -32,7 +33,7 @@ namespace eduProjectWebAPI
 
             services.AddControllers();
 
-            services.AddTransient<MySqlConnection>(_ => new MySqlConnection(Configuration["ConnectionStrings:eduProjectDb"]));
+            services.AddMemoryCache();
 
             ConfigureDataLayerServices(services);
         }
@@ -40,7 +41,8 @@ namespace eduProjectWebAPI
         private void ConfigureDataLayerServices(IServiceCollection services)
         {
             services.AddTransient<IProjectsRepository, ProjectsRepository>();
-            services.AddTransient<UsersRepository>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<DbConnectionStringBase, DevelopmentDbConnectionString>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,8 +51,6 @@ namespace eduProjectWebAPI
             {
                 app.UseDeveloperExceptionPage();
             }
-
-
 
             app.UseHttpsRedirection();
 

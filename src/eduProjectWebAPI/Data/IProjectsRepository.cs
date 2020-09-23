@@ -5,6 +5,6 @@ namespace eduProjectWebAPI.Data
 {
     public interface IProjectsRepository
     {
-        public Task<Project> GetAsync(int id); // FIX: make long
+        public Task<Project> GetAsync(int id);
     }
 }

@@ -22,10 +22,9 @@ namespace eduProjectModel.Domain
             StudyProgramSpecializations = new HashSet<StudyProgramSpecialization>();
         }
 
-        public void AddProgramSpecialization(StudyProgramSpecialization specialization)
+        public void AddSpecialization(StudyProgramSpecialization specialization)
         {
             StudyProgramSpecializations.Add(specialization);
         }
-        // ograniciti smjerove?
     }
 }

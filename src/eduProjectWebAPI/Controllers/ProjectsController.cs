@@ -9,12 +9,13 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("/projects")]
-    public class ProjectsController : Controller
+
+    public class ProjectsController : ControllerBase
     {
         private IProjectsRepository projects;
-        private UsersRepository users;
+        private IUsersRepository users;
 
-        public ProjectsController(IProjectsRepository projects, UsersRepository users)
+        public ProjectsController(IProjectsRepository projects, IUsersRepository users)
         {
             this.projects = projects;
             this.users = users;
