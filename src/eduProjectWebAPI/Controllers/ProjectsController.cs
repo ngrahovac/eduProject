@@ -30,43 +30,27 @@ namespace eduProjectWebAPI.Controllers
                 return NotFound();
 
             User author = await users.GetAsync(project.AuthorId);
-            return await ChooseDisplayModelAsync(project, author, false);
-        }
 
-        private async Task<ProjectDisplayModel> ChooseDisplayModelAsync(Project project, User user, bool visitor)
-        {
             if (project.ProjectStatus == ProjectStatus.Active)
-            {
-                if (visitor)
-                    return new VisitorActiveProjectDisplayModel(project, user);
-                else
-                    return new AuthorActiveProjectDisplayModel(project, user);
-            }
+                return new ProjectDisplayModel(project, author, false, true);
             else
             {
-                if (visitor)
-                {
-                    var models = await GetCollaboratorDisplayModels(project);
-                    return new VisitorClosedProjectDisplayModel(project, user, models);
-                }
-                else
-                {
-                    var models = await GetCollaboratorDisplayModels(project);
-                    return new AuthorClosedProjectDisplayModel(project, user, models);
-                }
+                var models = await GetCollaboratorDisplayModels(project);
+                return new ProjectDisplayModel(project, author, false, false, models);
             }
         }
 
         private async Task<ICollection<CollaboratorDisplayModel>> GetCollaboratorDisplayModels(Project project)
         {
             var collaboratorIds = project.CollaboratorIds;
-            HashSet<User> collaborators = new HashSet<User>();
+            List<User> collaborators = new List<User>();
             foreach (int collabId in collaboratorIds)
                 collaborators.Add(await users.GetAsync(collabId));
 
-            ICollection<CollaboratorDisplayModel> models = new HashSet<CollaboratorDisplayModel>();
+            ICollection<CollaboratorDisplayModel> models = new List<CollaboratorDisplayModel>();
             foreach (User applicant in collaborators)
                 models.Add(new CollaboratorDisplayModel(applicant));
+
             return models;
         }
     }
