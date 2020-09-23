@@ -31,6 +31,7 @@ namespace eduProjectWebAPI.Data
 	                                       study_year, study_program_id, study_program_specialization_id
 	                                       faculty_id, study_field_id, academic_rank_id
                                     FROM user
+                                    INNER JOIN account USING (user_id)
                                     LEFT OUTER JOIN student using(user_id)
                                     LEFT OUTER JOIN faculty_member using (user_id)
                                     WHERE user.user_id = @id;"
