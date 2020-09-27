@@ -2,17 +2,15 @@
 {
     public class FacultyMemberProfile : CollaboratorProfile
     {
-        public Faculty Faculty { get; set; }
         public StudyField StudyField { get; set; }
 
         public FacultyMemberProfile()
         {
 
         }
-        public FacultyMemberProfile(Project project, string description, Faculty faculty, StudyField studyField)
-                                    : base(description)
+        public FacultyMemberProfile(Project project, string description, int? facultyId, StudyField studyField)
+                                    : base(description, facultyId)
         {
-            Faculty = faculty;
             StudyField = studyField;
         }
     }

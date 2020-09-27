@@ -2,8 +2,9 @@
 
 namespace eduProjectModel.Domain
 {
-    public class StudyProgram : IValueObject
+    public class StudyProgram : IEntity
     {
+        public int ProgramId { get; set; }
         public string Name { get; set; }
         public byte Cycle { get; set; }
         public byte DurationYears { get; set; }

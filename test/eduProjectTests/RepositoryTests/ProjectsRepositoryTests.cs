@@ -25,10 +25,19 @@ namespace eduProjectTests.RepositoryTests
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
             projects = new ProjectsRepository(new TestDbConnectionString(), memoryCache);
+
+            StudyField.fields.Clear();
+            Tag.tags.Clear();
+
+            for (int i = 1; i < 11; i++)
+            {
+                StudyField.fields.Add(i, new StudyField { Name = "test field" });
+                Tag.tags.Add(i, new Tag { Name = "test tag" });
+            }
         }
 
         [Fact]
-        public async Task GetById_IdIsNonExisting_ReturnNotFound()
+        public async Task GetById_IdIsNonExisting_ReturnNull()
         {
             var result = await projects.GetAsync(0);
             Assert.Null(result);

@@ -2,9 +2,8 @@
 {
     public class StudentProfile : CollaboratorProfile
     {
-        public Faculty Faculty { get; set; }
-        public StudyProgram StudyProgram { get; set; }
-        public StudyProgramSpecialization StudyProgramSpecialization { get; set; }
+        public int? StudyProgramId { get; set; }
+        public int? StudyProgramSpecializationId { get; set; }
         public int? StudyCycle { get; set; }
         public int? StudyYear { get; set; }
 
@@ -14,14 +13,12 @@
         }
 
         public StudentProfile(Project project, string description,
-                              Faculty faculty, StudyProgram studyProgram, StudyProgramSpecialization studyProgramSpecialization,
-                              int cycle, int studyYear)
-                              : base(description)
+                              int? facultyId, int? studyProgramId, int? studyProgramSpecializationId,
+                              int? cycle, int? studyYear)
+                              : base(description, facultyId)
         {
-            Faculty = faculty;
-            StudyProgram = studyProgram;
-            StudyProgramSpecialization = studyProgramSpecialization;
-
+            StudyProgramId = studyProgramId;
+            StudyProgramSpecializationId = studyProgramSpecializationId;
             StudyCycle = cycle;
             StudyYear = studyYear;
         }

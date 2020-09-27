@@ -14,29 +14,57 @@ namespace eduProjectModel.Display
         public int? StudyCycle { get; set; }
         public int? StudyYear { get; set; }
 
-        public StudentProfileDisplayModel()
-        {
+        public StudentProfileDisplayModel() { }
 
-        }
-        public StudentProfileDisplayModel(string facultyName, string studyProgramName, string studyProgramSpecializationName,
-                                          int? studyCycle, int? studyYear, string description)
+        public StudentProfileDisplayModel(StudentProfile profile, Faculty faculty)
         {
-            Description = description;
-            FacultyName = facultyName;
-            StudyProgramName = studyProgramName;
-            StudyProgramSpecializationName = studyProgramSpecializationName;
-            StudyCycle = studyCycle;
-            StudyYear = studyYear;
+            StudyCycle = profile.StudyCycle;
+            StudyYear = profile.StudyYear;
+
+            if (profile.FacultyId != null)
+            {
+                FacultyName = faculty.Name;
+
+                if (profile.StudyProgramId != null)
+                {
+                    StudyProgram program = faculty.StudyPrograms.Where(p => p.ProgramId == profile.StudyProgramId).First();
+                    StudyProgramName = program.Name;
+
+                    if (profile.StudyProgramSpecializationId != null)
+                    {
+                        StudyProgramSpecializationName = program.StudyProgramSpecializations
+                                                                      .Where(s => s.SpecializationId == profile.StudyProgramSpecializationId)
+                                                                      .First().Name;
+                    }
+                }
+            }
         }
 
-        public static StudentProfileDisplayModel FromStudentProfile(StudentProfile profile)
+        public static StudentProfileDisplayModel FromStudentProfile(StudentProfile profile, Faculty faculty)
         {
-            StudentProfileDisplayModel model = new StudentProfileDisplayModel();
-            model.FacultyName = profile.Faculty.Name;
-            model.StudyProgramName = profile.StudyProgram.Name;
-            model.StudyProgramSpecializationName = profile.StudyProgramSpecialization.Name;
-            model.StudyCycle = profile.StudyCycle;
-            model.StudyYear = profile.StudyYear;
+            StudentProfileDisplayModel model = new StudentProfileDisplayModel
+            {
+                StudyCycle = profile.StudyCycle,
+                StudyYear = profile.StudyYear
+            };
+
+            if (profile.FacultyId != null)
+            {
+                model.FacultyName = faculty.Name;
+
+                if (profile.StudyProgramId != null)
+                {
+                    StudyProgram program = faculty.StudyPrograms.Where(p => p.ProgramId == profile.StudyProgramId).First();
+                    model.StudyProgramName = program.Name;
+
+                    if (profile.StudyProgramSpecializationId != null)
+                    {
+                        model.StudyProgramSpecializationName = program.StudyProgramSpecializations
+                                                                      .Where(s => s.SpecializationId == profile.StudyProgramSpecializationId)
+                                                                      .First().Name;
+                    }
+                }
+            }
 
             return model;
         }

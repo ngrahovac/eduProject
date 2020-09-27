@@ -2,8 +2,9 @@
 
 namespace eduProjectModel.Domain
 {
-    public class Faculty : IValueObject
+    public class Faculty : IEntity
     {
+        public int FacultyId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
         public ICollection<StudyProgram> StudyPrograms { get; set; }

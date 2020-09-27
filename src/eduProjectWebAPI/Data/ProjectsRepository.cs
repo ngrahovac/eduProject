@@ -84,18 +84,8 @@ namespace eduProjectWebAPI.Data
                         project.EndDate = !reader.IsDBNull(3) ? (DateTime?)reader.GetDateTime(3) : null;
                         project.Description = reader.GetString(4);
 
-                        // try fetching StudyField from cache
                         int studyFieldId = reader.GetInt32(5);
-                        StudyField studyField;
-
-                        if (cache.TryGetValue($"{CacheKeyTemplate.Field}{studyFieldId}", out studyField))
-                        {
-                            project.StudyField = studyField;
-                        }
-                        else
-                        {
-                            project.StudyField = await CacheUtils.CacheStudyField(studyFieldId, dbConnectionString, cache);
-                        }
+                        project.StudyField = StudyField.fields[studyFieldId];
 
                         project.ProjectStatus = (ProjectStatus)Enum.ToObject(typeof(ProjectStatus), reader.GetInt32(6));
                         project.AuthorId = reader.GetInt32(7);
@@ -141,47 +131,11 @@ namespace eduProjectWebAPI.Data
                                 CollaboratorProfileId = reader.GetInt32(0),
                                 Description = reader.GetString(1),
                                 StudyCycle = reader.GetInt32(3),
-                                StudyYear = reader.GetInt32(4)
+                                StudyYear = reader.GetInt32(4),
+                                FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
+                                StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
+                                StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null
                             };
-
-                            int? facultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null;
-                            int? studyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null;
-                            int? studyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null;
-
-                            Faculty faculty;
-
-                            // try fetching faculty, program and specialization from cache
-                            if (facultyId != null && cache.TryGetValue($"{CacheKeyTemplate.Faculty}{facultyId}", out faculty))
-                            {
-                                // assumes study programs and specializations are cached when Faculty is cached
-                                profile.Faculty = faculty;
-
-                                if (studyProgramId != null)
-                                {
-                                    profile.StudyProgram = (StudyProgram)cache.Get($"{CacheKeyTemplate.Program}{studyProgramId}");
-
-                                    if (studyProgramSpecializationId != null)
-                                    {
-                                        profile.StudyProgramSpecialization = (StudyProgramSpecialization)cache.Get(
-                                            $"{CacheKeyTemplate.Specialization}{studyProgramSpecializationId}");
-                                    }
-                                }
-                            }
-                            else if (facultyId != null)
-                            {
-                                profile.Faculty = await CacheUtils.CacheFaculty((int)facultyId, dbConnectionString, cache);
-
-                                if (studyProgramId != null)
-                                {
-                                    profile.StudyProgram = (StudyProgram)cache.Get($"{CacheKeyTemplate.Program}{studyProgramId}");
-
-                                    if (studyProgramSpecializationId != null)
-                                    {
-                                        profile.StudyProgramSpecialization = (StudyProgramSpecialization)cache.Get(
-                                            $"{CacheKeyTemplate.Specialization}{studyProgramSpecializationId}");
-                                    }
-                                }
-                            }
 
                             project.CollaboratorProfiles.Add(profile);
                         }
@@ -191,32 +145,10 @@ namespace eduProjectWebAPI.Data
                             FacultyMemberProfile profile = new FacultyMemberProfile
                             {
                                 CollaboratorProfileId = reader.GetInt32(0),
-                                Description = reader.GetString(1)
+                                Description = reader.GetString(1),
+                                FacultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null,
+                                StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null
                             };
-
-                            int? facultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null;
-                            int? studyFieldId = !reader.IsDBNull(9) ? (int?)reader.GetInt32(9) : null;
-
-                            Faculty faculty;
-                            StudyField studyField;
-
-                            if (facultyId != null && cache.TryGetValue($"{CacheKeyTemplate.Faculty}{facultyId}", out faculty))
-                            {
-                                profile.Faculty = faculty;
-                            }
-                            else if (facultyId != null)
-                            {
-                                profile.Faculty = await CacheUtils.CacheFaculty((int)facultyId, dbConnectionString, cache);
-                            }
-
-                            if (studyFieldId != null && cache.TryGetValue($"{CacheKeyTemplate.Field}{studyFieldId}", out studyField))
-                            {
-                                profile.StudyField = studyField;
-                            }
-                            else if (studyFieldId != null)
-                            {
-                                profile.StudyField = await CacheUtils.CacheStudyField((int)studyFieldId, dbConnectionString, cache);
-                            }
 
                             project.CollaboratorProfiles.Add(profile);
                         }
@@ -246,16 +178,7 @@ namespace eduProjectWebAPI.Data
                     while (await reader.ReadAsync())
                     {
                         int tagId = reader.GetInt32(0);
-                        Tag tag;
-
-                        if (cache.TryGetValue($"{CacheKeyTemplate.Tag}{tagId}", out tag))
-                        {
-                            project.Tags.Add(tag);
-                        }
-                        else
-                        {
-                            project.Tags.Add(await CacheUtils.CacheTags(tagId, dbConnectionString, cache));
-                        }
+                        project.Tags.Add(Tag.tags[tagId]);
                     }
                 }
             }

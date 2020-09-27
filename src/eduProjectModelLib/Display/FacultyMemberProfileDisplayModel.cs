@@ -12,18 +12,12 @@ namespace eduProjectModel.Display
         public string FacultyName { get; set; }
         public string StudyFieldName { get; set; }
 
-        public FacultyMemberProfileDisplayModel()
+        public FacultyMemberProfileDisplayModel() { }
+
+        public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile, Faculty faculty)
         {
-
-        }
-        public static FacultyMemberProfileDisplayModel FromFacultyMemberProfile(FacultyMemberProfile profile)
-        {
-            FacultyMemberProfileDisplayModel model = new FacultyMemberProfileDisplayModel();
-
-            model.FacultyName = profile.Faculty.Name;
-            model.StudyFieldName = profile.StudyField.Name;
-
-            return model;
+            FacultyName = profile.FacultyId != null ? faculty.Name : null;
+            StudyFieldName = profile.StudyField.Name;
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using eduProjectModel.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace eduProjectModel.Display
 {
@@ -24,7 +25,8 @@ namespace eduProjectModel.Display
 
         public ProjectDisplayModel() { }
 
-        public ProjectDisplayModel(Project project, User author, bool isDisplayForAuthor, bool isProjectActive, ICollection<CollaboratorDisplayModel> models = null)
+        public ProjectDisplayModel(Project project, User author, bool isDisplayForAuthor, bool isProjectActive,
+                                   ICollection<User> collaborators = null, ICollection<Faculty> faculties = null)
         {
             IsDisplayForAuthor = isDisplayForAuthor;
             IsProjectActive = isProjectActive;
@@ -44,15 +46,20 @@ namespace eduProjectModel.Display
             {
                 foreach (var profile in project.CollaboratorProfiles)
                 {
+                    Faculty faculty = profile.FacultyId == null ? null : faculties.Where(f => f.FacultyId == profile.FacultyId).First();
                     if (profile is StudentProfile)
-                        StudentProfileDisplayModels.Add(StudentProfileDisplayModel.FromStudentProfile((StudentProfile)profile));
+                    {
+                        StudentProfileDisplayModels.Add(new StudentProfileDisplayModel((StudentProfile)profile, faculty));
+                    }
                     else if (profile is FacultyMemberProfile)
-                        FacultyMemberProfileDisplayModels.Add(FacultyMemberProfileDisplayModel.FromFacultyMemberProfile((FacultyMemberProfile)profile));
+                    {
+                        FacultyMemberProfileDisplayModels.Add(new FacultyMemberProfileDisplayModel((FacultyMemberProfile)profile, faculty));
+                    }
                 }
             }
             else
             {
-                CollaboratorDisplayModels = models;
+                CollaboratorDisplayModels = collaborators.Select(u => new CollaboratorDisplayModel(u)).ToList();
                 StudentProfileDisplayModels = null;
                 FacultyMemberProfileDisplayModels = null;
             }

@@ -1,3 +1,4 @@
+using eduProjectModel.Domain;
 using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MySqlConnector;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace eduProjectWebAPI
 {
@@ -42,10 +45,11 @@ namespace eduProjectWebAPI
         {
             services.AddTransient<IProjectsRepository, ProjectsRepository>();
             services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IFacultiesRepository, FacultiesRepository>();
             services.AddTransient<DbConnectionStringBase, DevelopmentDbConnectionString>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionStringBase dbConnection)
         {
             if (env.IsDevelopment())
             {
@@ -64,8 +68,6 @@ namespace eduProjectWebAPI
             {
                 endpoints.MapControllers();
             });
-
-
         }
     }
 }
