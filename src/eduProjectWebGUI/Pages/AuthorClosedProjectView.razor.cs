@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
-    public partial class VisitorClosedProjectView
+    public partial class AuthorClosedProjectView
     {
         [Parameter]
-        public ProjectDisplayModel VisitorClosedProjectDisplayModel { get; set; }
+        public ProjectDisplayModel AuthorClosedProjectDisplayModel { get; set; }
     }
 }

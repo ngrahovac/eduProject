@@ -24,11 +24,10 @@ namespace eduProjectWebGUI.Pages
         private bool SignUpCancel = true;
         private bool SignUpButton = false;
 
-        ProjectDisplayModel ProjectDisplayModel { get; set; }
-        VisitorActiveProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
-        VisitorClosedProjectDisplayModel VisitorClosedProjectDisplayModel { get; set; }
+        [Parameter]
+        public ProjectDisplayModel ProjectDisplayModel { get; set; }
         
-        async Task ShowModal()
+        async Task ShowModalVisitorActive()
         {
             var messageForm = Modal.Show<LeaveComment>();
             var result = await messageForm.Result;
@@ -40,9 +39,54 @@ namespace eduProjectWebGUI.Pages
             }
         }
 
-        async Task ShowCancelWarning()
+        async Task ShowCancelWarningVisitorActive()
         {
-            var messageForm = Modal.Show<ProjectSignUpCancelConfirmation>();
+            var parameters = new ModalParameters();
+            string Title = "Potvrda o poništavanju prijave";
+            parameters.Add(nameof(Title), Title);
+            var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
+            var result = await messageForm.Result;
+
+            if (!result.Cancelled)
+            {
+                SignUpCancel = true;
+                SignUpButton = false;
+            }
+        }
+
+        async Task ShowModalAuthorActive() // Sta treba da se mijenja, kakav pop-up trebam da izbacujem?
+        {
+            var messageForm = Modal.Show<LeaveComment>();
+            var result = await messageForm.Result;
+
+            if (!result.Cancelled)
+            {
+                SignUpCancel = false;
+                SignUpButton = true;
+            }
+        }
+
+        async Task ShowCancelWarningAuthorActive()
+        {
+            var parameters = new ModalParameters();
+            string Title = "Potvrda o brisanju projekta";
+            parameters.Add(nameof(Title), Title);
+            var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
+            var result = await messageForm.Result;
+
+            if (!result.Cancelled)
+            {
+                SignUpCancel = true;
+                SignUpButton = false;
+            }
+        }
+
+        async Task ShowCancelWarningAuthorClosed()
+        {
+            var parameters = new ModalParameters();
+            string Title = "Potvrda o brisanju projekta";
+            parameters.Add(nameof(Title), Title);
+            var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
             var result = await messageForm.Result;
 
             if (!result.Cancelled)
@@ -55,8 +99,6 @@ namespace eduProjectWebGUI.Pages
         protected override async Task OnInitializedAsync()
         {
             ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
-            VisitorActiveProjectDisplayModel = await ApiService.GetAsync<VisitorActiveProjectDisplayModel>($"projects/{ProjectId}");
-            VisitorClosedProjectDisplayModel = await ApiService.GetAsync<VisitorClosedProjectDisplayModel>($"projects/{ProjectId}");
         }
 
     }

@@ -17,7 +17,7 @@ namespace eduProjectWebGUI.Pages
     public partial class VisitorActiveProjectView
     {
         [Parameter]
-        public VisitorActiveProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
+        public ProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
 
     }
 }

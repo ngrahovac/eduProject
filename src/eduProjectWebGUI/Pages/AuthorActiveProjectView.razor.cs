@@ -1,4 +1,5 @@
 ﻿using eduProjectModel.Display;
+using eduProjectWebGUI.Services;
 using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
-    public partial class VisitorClosedProjectView
+    public partial class AuthorActiveProjectView
     {
         [Parameter]
-        public ProjectDisplayModel VisitorClosedProjectDisplayModel { get; set; }
+        public ProjectDisplayModel AuthorActiveProjectDisplayModel { get; set; }
     }
 }

@@ -27,61 +27,82 @@ else
 
     <br /><br />
 
-          <div class="row">
+    <div class="row">
 
-              <div class="col-md-4">
-                  <h5>Opis projekta:</h5>
-              </div>
+        <div class="col-md-4">
+            <h5>Opis projekta:</h5>
+        </div>
 
-              <div class="col-xl-12">
-                  @ProjectDisplayModel.Description
-              </div>
+        <div class="col-xl-12">
+            @ProjectDisplayModel.Description
+        </div>
 
 
 
-              @if (ProjectDisplayModel.ProjectStatus == "Active")
-              {
-                  <br /><br /><br />
-                  <div class="col-xl-12">
-                  <div class="d-flex justify-content-center">
-                      <div class="col-4">
-                          <label>Start date:</label>
-                          <input type="date" id="start" @bind-value="@VisitorActiveProjectDisplayModel.StartDate" style="border: none; color: green;" readonly="readonly">
-                      </div>
-                      <div class="col-4">
-                          <label>End date:</label>
-                          <input type="date" id="end" @bind-value="@VisitorActiveProjectDisplayModel.EndDate" style="border: none; color: red;" readonly="readonly">
-                      </div>
-                  </div>
-              </div>
-              }
-              <div class="col-9">
-                  <br /><br /><h5>Projekat kreirao: <b>@ProjectDisplayModel.AuthorFullName</b></h5><br /><br />
-              </div>
+        @if (ProjectDisplayModel.IsProjectActive)
+        {
+            <br /><br /><br />
+            <div class="col-xl-12">
+                <div class="d-flex justify-content-center">
+                    <div class="col-4">
+                        <label>Start date:</label>
+                        <input type="date" id="start" @bind-value="@ProjectDisplayModel.StartDate" style="border: none; color: green;" readonly="readonly">
+                    </div>
+                    <div class="col-4">
+                        <label>End date:</label>
+                        <input type="date" id="end" @bind-value="@ProjectDisplayModel.EndDate" style="border: none; color: red;" readonly="readonly">
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-9">
+            <br /><br /><h5>Projekat kreirao: <b>@ProjectDisplayModel.AuthorFullName</b></h5><br /><br />
+        </div>
 
-          </div>
+    </div>
 
-    @if (ProjectDisplayModel.ProjectStatus == "Active")
+    @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
     {
-        <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@VisitorActiveProjectDisplayModel" />
+        <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@ProjectDisplayModel" />
     }
-    @if(ProjectDisplayModel.ProjectStatus == "Closed")
+    else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
     {
-        <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@VisitorClosedProjectDisplayModel" />
+        <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@ProjectDisplayModel" />
+    }
+    else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <AuthorActiveProjectView AuthorActiveProjectDisplayModel="@ProjectDisplayModel" />
+    }
+    else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <AuthorClosedProjectView AuthorClosedProjectDisplayModel="@ProjectDisplayModel" />
     }
 
     <div class="row">
         <div class="col-md-4">
             <h5>Status projekta: <b style="color: lawngreen;">@ProjectDisplayModel.ProjectStatus</b></h5>
         </div>
-        @if (ProjectDisplayModel.ProjectStatus == "Active")
+        @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="col-md-4 ml-auto projectview-final-btns">
-                <button type="submit" class="btn btn-success projectview-final-btn" disabled="@SignUpButton" @onclick="ShowModal">Prijavi se</button>
-                <button type="submit" class="btn btn-danger projectview-final-btn" disabled="@SignUpCancel" @onclick="ShowCancelWarning">Poništi prijavu</button>
+                <button type="submit" class="btn btn-success projectview-final-btn" disabled="@SignUpButton" @onclick="ShowModalVisitorActive">Prijavi se</button>
+                <button type="submit" class="btn btn-danger projectview-final-btn" disabled="@SignUpCancel" @onclick="ShowCancelWarningVisitorActive">Poništi prijavu</button>
+            </div>
+        }
+        else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+        {
+            <div class="col-md-4 ml-auto projectview-final-btns">
+                <button type="submit" class="btn btn-success projectview-final-btn" @onclick="ShowModalAuthorActive">Izmijeni</button>
+                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthorActive">Izbriši</button>
+            </div>
+        }
+        else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+        {
+            <div class="col-md-4 ml-auto projectview-final-btns">
+                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthorClosed">Izbriši</button>
             </div>
         }
     </div>
-     
+
 </div>
 }
