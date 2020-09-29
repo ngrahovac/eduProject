@@ -1,0 +1,25 @@
+﻿<div class="simple-form">
+
+    <div class="form-group">
+        <text>Da li ste sigurni?</text>
+    </div>
+
+    <button @onclick="CancelConfirm" class="btn btn-primary">Prihvati</button>
+    <button @onclick="CancelDeny" class="btn btn-secondary">Odustani</button>
+
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    protected override void OnInitialized() => BlazoredModal.SetTitle(Title);
+
+    void CancelConfirm() => BlazoredModal.Close();
+
+    void CancelDeny() => BlazoredModal.Cancel();
+
+}

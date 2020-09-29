@@ -1,36 +1,55 @@
-using System;
+using eduProjectModel.Domain;
+using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using MySqlConnector;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace eduProjectWebAPI
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration configuration;
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            // TEST ONLY
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                    });
+            });
+
             services.AddControllers();
 
-            // from https://github.com/PomeloFoundation/Pomelo.EntityFrameworkCore.MySql
-            services.AddDbContextPool<EduProjectDbContext>(options => options
-                .UseMySql(Configuration["ConnectionStrings:eduProjectDb"], mySqlOptions => mySqlOptions
-                    .ServerVersion(new Version(5, 6, 40), ServerType.MySql)
-            ));
+            services.AddMemoryCache();
 
+            ConfigureDataLayerServices(services);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private void ConfigureDataLayerServices(IServiceCollection services)
+        {
+            services.AddTransient<IProjectsRepository, ProjectsRepository>();
+            services.AddTransient<IUsersRepository, UsersRepository>();
+            services.AddTransient<IFacultiesRepository, FacultiesRepository>();
+            services.AddTransient<DbConnectionStringBase, DevelopmentDbConnectionString>();
+        }
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionStringBase dbConnection)
         {
             if (env.IsDevelopment())
             {
@@ -40,6 +59,8 @@ namespace eduProjectWebAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors();
 
             app.UseAuthorization();
 
