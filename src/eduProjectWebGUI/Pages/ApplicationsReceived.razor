@@ -1,0 +1,24 @@
+﻿@page "/applicationsreceived"
+
+<div class="container applications-received">
+    <div class="row justify-content-md-center">
+        <div class="col-12 col-md8">
+            <h3 style="font-display: auto">Pristigle prijave </h3>
+            <br />
+            <br />
+            <br />
+            <h4>@ApplicationsReceivedDisplayModel.Title</h4>
+            <br />
+            <div class="row">
+                <div class="col-sm-4">Pozicija</div>
+                <div class="col-sm-6">Prijavljeni kandidati</div>
+                <div class="col-sm-2">Prihvati</div>
+                <br />
+            </div>
+            <br />
+            <div>
+                <button type="button" class="btn btn-info" @onclick="Close">Izaberi saradnike i zatvori projekat</button>
+            </div>
+        </div>
+    </div>
+</div>
