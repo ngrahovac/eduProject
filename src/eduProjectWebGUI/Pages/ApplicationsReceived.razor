@@ -15,9 +15,19 @@
                 <div class="col-sm-2">Prihvati</div>
                 <br />
             </div>
+            @foreach (eduProjectModel.Display.ApplicantProfileDisplayModel applicant in ApplicationsReceivedDisplayModel.ApplicantProfileDisplayModel)
+            {
+                <hr style="border-top: 1px solid lightblue" />
+                <div class="col-sm-4">@applicant.Position</div>
+                <div class="col-sm-6">@applicant.FirstName @applicant.LastName</div>
+                <div class="col-sm-2">
+                    <input type="checkbox" @onchange="@(()=>applicant.CheckedForCollaboration=!applicant.CheckedForCollaboration)" />
+                </div>
+            }
             <br />
             <div>
-                <button type="button" class="btn btn-info" @onclick="Close">Izaberi saradnike i zatvori projekat</button>
+                <hr style="border-top: 1px solid lightblue" />
+                <button type="button" class="btn btn-info" @onclick="ChoseAndClose">Izaberi saradnike i zatvori projekat</button>
             </div>
         </div>
     </div>

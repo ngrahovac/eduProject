@@ -13,7 +13,7 @@ namespace eduProjectWebGUI.Pages
         public ApplicationsReceivedDisplayModel ApplicationsReceivedDisplayModel { get; set; }
 
 
-        public void Close()
+        public void ChoseAndClose()
         {
 
         }
