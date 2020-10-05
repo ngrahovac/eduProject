@@ -37,5 +37,12 @@ namespace eduProjectTests.RepositoryTests
             var result = await faculties.GetAsync(1);
             Assert.IsType<Faculty>(result);
         }
+
+        [Fact]
+        public async Task GetAll_TableNotEmpty_ReturnFaculties()
+        {
+            var result = await faculties.GetAllAsync();
+            Assert.NotEmpty(result);
+        }
     }
 }
