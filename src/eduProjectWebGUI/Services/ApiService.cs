@@ -26,5 +26,12 @@ namespace eduProjectWebGUI.Services
         {
             return await httpClient.GetFromJsonAsync<T>(url);
         }
+
+        public async Task PostAsync<T>(string url, T model)
+        {
+            await httpClient.PostAsJsonAsync(url, model);
+        }
+
+
     }
 }

@@ -10,7 +10,8 @@ using eduProjectWebGUI.Shared;
 using System.Diagnostics.Tracing;
 using System.Net.Http;
 using System.Net.Http.Json;
-
+using Microsoft.JSInterop;
+using System.Numerics;
 
 namespace eduProjectWebGUI.Pages
 {
@@ -18,6 +19,11 @@ namespace eduProjectWebGUI.Pages
     {
         [Parameter]
         public ProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
+
+        public async Task CollaboratorProfileSelected(string profileType, int i)
+        {
+            await js.InvokeVoidAsync("selectCollaboratorProfile", profileType, i);
+        }
 
     }
 }
