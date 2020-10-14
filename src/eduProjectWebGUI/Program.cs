@@ -26,6 +26,8 @@ namespace eduProjectWebGUI
 
             builder.Services.AddBlazoredModal();
 
+            builder.Services.AddSingleton<ProjectApplicationInputModel>();
+
             await builder.Build().RunAsync();
         }
     }

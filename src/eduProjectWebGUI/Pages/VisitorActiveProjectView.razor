@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.JSInterop.IJSRuntime js
+@inject eduProjectWebGUI.ProjectApplicationInputModel model
 
 <EditForm Model="@VisitorActiveProjectDisplayModel">
 
@@ -12,7 +13,6 @@
         {
             int index = i;
             FacultyMemberProfileDisplayModel profile = VisitorActiveProjectDisplayModel.FacultyMemberProfileDisplayModels.ElementAt(index);
-
             <tr @onclick="@(() => CollaboratorProfileSelected("faculty member profile", index))">
                 <td>@profile.FacultyName</td>
                 <td>@profile.StudyFieldName</td>

@@ -1,5 +1,6 @@
 ﻿@page "/projects/{ProjectId}"
 @inject IModalService Modal
+@inject eduProjectWebGUI.ProjectApplicationInputModel model
 
 @if (ProjectDisplayModel == null)
 {
@@ -77,7 +78,7 @@ else
     {
         <AuthorClosedProjectView AuthorClosedProjectDisplayModel="@ProjectDisplayModel" />
     }
-
+    
     <div class="row">
         <div class="col-md-4">
             <h5>Status projekta: <b style="color: lawngreen;">@ProjectDisplayModel.ProjectStatus</b></h5>

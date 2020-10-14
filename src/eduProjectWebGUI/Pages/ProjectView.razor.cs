@@ -36,30 +36,13 @@ namespace eduProjectWebGUI.Pages
             {
                 SignUpCancel = false;
                 SignUpButton = true;
-                // SLANJE PRIJAVE
-                // ako korisnik potvrdi da salje prijavu, mi treba da popunimo ProjectInputModel sa podacima i to posaljemo kontroleru za prijave
-                // API poziv izgleda ovako: 
-                // await ApiService.PostAsync("applications", model);
-                // gdje je model ProjectApplicationInputModel - popunjen podacima od klijenta pri slanju prijave
-                // pogledaj u klasi eduProjectModel, van svih foldera se nalazi
-                // ApplicantComment treba da se popuni komentarom prijavljenog koji se nalazi u onom modal prozoru
-                // ProjectId se puni odozgo sa vrha, ovaj isti fajl
-                // CollaboratorProfileType se puni na osnovu stringa - vidi u VisitorActive razor fajlu, u zavisnosti od kliknute tabele se zna koji je tip
-                // CollaboratorProfileIndex vidi u istom fajlu
-                // dakle problem je sto nam se podaci koje trebamo imati ovdje nalaze u 3 4 fajla... kad bi sve bilo jedna ogromna forma (ProjectView.razor)
-                // onda bi nam sve bilo na jednom mjestu, pa da znas da mozes sve u jednu formu staviti na kraju krajeva da se ne zezas sa komunikacijom izmedju formi
-                // ali i to ima na tutorijalu
-
-                // e da, ima jos jedna stvar
-                // kod tebe kad se korisnik prijavi, automatski se ukljuci cancel dugme a prijavi se dugme je ugaseno
-                // sto sprjecava osobu da izvrsi nekoliko prijava na nekoliko razlicitih profila
-                // moj prijedlog je da se ta polja ne aktiviraju / deaktiviraju uopste
-                // nego da se lijepo sa API strane vrati odgovarajuca poruka, recimo 404, ako je prijava vec napravljena na taj profil
-                // ili ako se pokusalo odustati od prijave na profil na koji se osoba nije ni prijavila
-                // tako da se API brine o tome, a ne ti da podesavas dugmice
-                // jer da bi podesavao dugmice, moras na blazor strani voditi racuna o tome na sta se sve korisnik isprijavljivao sto mi se cini komplikovano
-
             }
+
+            var comment = model.ApplicantComment;
+            var numberOfIndex = model.CollaboratorProfileIndex;
+            var typeOfProfile = model.CollaboratorProfileType;
+            var id = model.ProjectId = Int32.Parse(ProjectId);
+
         }
 
         async Task ShowCancelWarningVisitorActive()
