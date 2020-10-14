@@ -1,10 +1,14 @@
 ﻿using eduProjectModel.Display;
 using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
+using eduProjectWebAPI.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+//using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation.Results;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -53,5 +57,44 @@ namespace eduProjectWebAPI.Controllers
                 return new ProjectDisplayModel(project, author, false, false, collaborators);
             }
         }
+
+        [HttpPost("/create")]
+        public async Task<IActionResult> Create(ProjectInputModel model)
+        {
+            ProjectInputValidator validator = new ProjectInputValidator();
+            ValidationResult result = validator.Validate(model);
+
+            if (result.IsValid)
+            {
+                Project project = new Project();
+
+                ICollection<Faculty> facultiesList = new List<Faculty>();
+                ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
+
+                foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
+                {
+                    var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
+                    facultiesList.Add(faculty);
+                }
+
+                model.MapTo(project, facultiesList);
+
+                //Initialize AuthorId from Project class - see authentication/authorization
+
+                //Write created project to database
+
+                return Ok();
+            }
+
+            /*Possibility of retrieving errors caused by incorrect user input:
+            else
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.ErrorMessage);
+            }*/
+
+            return BadRequest();
+        }
     }
 }
+

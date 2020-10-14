@@ -21,9 +21,31 @@ namespace eduProjectModel.Input
 
         }
 
-        public void MapTo()
+        public void MapTo(StudentProfile profile, Faculty faculty)
         {
-            //da li je ovdje potrebno neko mapiranje?
+            profile.Description = ActivityDescription;
+            profile.StudyCycle = Cycle;
+            profile.StudyYear = StudyYear;
+
+            foreach (var program in faculty.StudyPrograms)
+            {
+                if (program.Name.Equals(StudyProgramName))
+                {
+                    profile.StudyProgramId = program.ProgramId;
+
+                    foreach (var specialization in program.StudyProgramSpecializations)
+                    {
+                        if (specialization.Name.Equals(StudyProgramSpecializationName))
+                            profile.StudyProgramSpecializationId = specialization.SpecializationId;
+                    }
+                }
+            }
+        }
+
+        public void MapTo(FacultyMemberProfile profile)
+        {
+            profile.Description = ActivityDescription;
+            profile.StudyField.Name = StudyFieldName;
         }
     }
 }
