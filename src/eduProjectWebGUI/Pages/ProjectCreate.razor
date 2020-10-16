@@ -3,7 +3,7 @@
 
 <div style="display:flex">
     <div style="margin-right:100px">
-        <EditForm Model="@projectInputModel">
+        <EditForm Model="@projectInputModel" OnValidSubmit="CreateProject">
             <h5>Osnovne informacije</h5>
             <div class="form-group">
                 <label>Naziv projekta</label>
@@ -53,6 +53,9 @@
                     <InputTextArea class="form-control" @bind-Value="@projectInputModel.Description"></InputTextArea>
                 </div>
             </div>
+
+            <button class="btn-success" type="submit">Oglasi projekat</button>
+
         </EditForm>
 
         <h5>Tagovi</h5>
@@ -105,6 +108,13 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label>Opis aktivnosti</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@collaboratorProfileInputModel.ActivityDescription">
+                    </InputText>
+                </div>
+            </div>
 
             <div class="form-group">
                 <label>Fakultet</label>
@@ -450,6 +460,12 @@
     private async void RemoveCollaboratorProfile(CollaboratorProfileInputModel profile)
     {
         projectInputModel.CollaboratorProfileInputModels.Remove(profile);
+    }
+
+    private async void CreateProject()
+    {
+        Console.WriteLine("Creating project");
+        await ApiService.PostAsync("/new", projectInputModel);
     }
 }
 

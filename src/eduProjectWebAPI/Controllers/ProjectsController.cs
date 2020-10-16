@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation.Results;
+using System;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -58,33 +59,40 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
-        [HttpPost("/create")]
+        [HttpPost("/new")]
         public async Task<IActionResult> Create(ProjectInputModel model)
         {
-            ProjectInputValidator validator = new ProjectInputValidator();
-            ValidationResult result = validator.Validate(model);
+            //ProjectInputValidator validator = new ProjectInputValidator();
+            //ValidationResult result = validator.Validate(model);
 
-            if (result.IsValid)
+            //if (result.IsValid)
+            //{
+            Project project = new Project();
+
+            ICollection<Faculty> facultiesList = new List<Faculty>();
+            ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
+
+            foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
             {
-                Project project = new Project();
+                var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
+                facultiesList.Add(faculty);
+            }
 
-                ICollection<Faculty> facultiesList = new List<Faculty>();
-                ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
+            model.MapTo(project, facultiesList);
 
-                foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
-                {
-                    var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
-                    facultiesList.Add(faculty);
-                }
+            //Initialize AuthorId from Project class - see authentication/authorization
 
-                model.MapTo(project, facultiesList);
-
-                //Initialize AuthorId from Project class - see authentication/authorization
-
-                //Write created project to database
-
+            //Write created project to database
+            try
+            {
+                await projects.AddAsync(project);
                 return Ok();
             }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+            //}
 
             /*Possibility of retrieving errors caused by incorrect user input:
             else

@@ -26,12 +26,15 @@ namespace eduProjectModel.Input
             project.Title = Title;
             project.StartDate = StartDate;
             project.EndDate = EndDate;
-            project.StudyField.Name = StudyFieldName;
+            project.StudyField = StudyField.fields.Values.ToList().Where(sf => sf.Name == StudyFieldName).First();
             project.Description = Description;
             project.ProjectStatus = ProjectStatus.Active;
+            project.AuthorId = 1; // FIX
+
+
 
             foreach (string tagName in TagNames)
-                project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).FirstOrDefault());
+                project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).First());
 
             foreach (var model in CollaboratorProfileInputModels)
             {
