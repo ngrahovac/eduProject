@@ -46,6 +46,7 @@ namespace eduProjectWebAPI
             services.AddTransient<IProjectsRepository, ProjectsRepository>();
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IFacultiesRepository, FacultiesRepository>();
+            services.AddTransient<IProjectApplicationsRepository, ProjectApplicationsRepository>();
             services.AddTransient<DbConnectionStringBase, DevelopmentDbConnectionString>();
         }
 

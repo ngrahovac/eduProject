@@ -29,13 +29,28 @@ namespace eduProjectWebAPI.Controllers
             model.MapTo(application);
 
             Project project = await projects.GetAsync(model.ProjectId);
-            CollaboratorProfile profile = project.CollaboratorProfiles.ElementAt(model.CollaboratorProfileIndex);
-            application.CollaboratorProfileId = profile.CollaboratorProfileId;
+            if (model.CollaboratorProfileType == CollaboratorProfileType.Student)
+            {
+                CollaboratorProfile profile = project.CollaboratorProfiles.Where(p => p is StudentProfile).ElementAt(model.CollaboratorProfileIndex);
+                application.CollaboratorProfileId = profile.CollaboratorProfileId;
+            }
+            else if (model.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+            {
+                CollaboratorProfile profile = project.CollaboratorProfiles.Where(p => p is FacultyMemberProfile).ElementAt(model.CollaboratorProfileIndex);
+                application.CollaboratorProfileId = profile.CollaboratorProfileId;
+            }
+
             application.ApplicantId = 1; // FIX
 
-            await applications.AddAsync(application);
-
-            return Ok();
+            try
+            {
+                await applications.AddAsync(application);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿function selectCollaboratorProfile(profileType, i) {
-    console.log("Docekali", profileType, i);
     var tableId = profileType == "faculty member profile" ? "faculty-member-profiles" : "student-profiles";
     var otherTableId = profileType != "faculty member profile" ? "faculty-member-profiles" : "student-profiles";
 
