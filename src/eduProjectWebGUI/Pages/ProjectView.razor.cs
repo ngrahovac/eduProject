@@ -21,21 +21,23 @@ namespace eduProjectWebGUI.Pages
         [Inject]
         ApiService ApiService { get; set; }
 
-        private bool SignUpCancel = true;
-        private bool SignUpButton = false;
+        // private bool SignUpCancel = true;
+        // private bool SignUpButton = false;
 
         [Parameter]
         public ProjectDisplayModel ProjectDisplayModel { get; set; }
-        
+
         async Task ShowModalVisitorActive()
         {
             var messageForm = Modal.Show<LeaveComment>();
             var result = await messageForm.Result;
 
-            if(!result.Cancelled)
+            if (!result.Cancelled)
             {
-                SignUpCancel = false;
-                SignUpButton = true;
+                // TODO: remove button enabling/disabling
+
+                var projectId = model.ProjectId = Int32.Parse(ProjectId);
+                await ApiService.PostAsync("/applications", model);
             }
         }
 
@@ -49,20 +51,19 @@ namespace eduProjectWebGUI.Pages
 
             if (!result.Cancelled)
             {
-                SignUpCancel = true;
-                SignUpButton = false;
+                // revoke application
+
             }
         }
 
-        async Task ShowModalAuthorActive() // Sta treba da se mijenja, kakav pop-up trebam da izbacujem?
+        async Task ShowModalAuthorActive()
         {
             var messageForm = Modal.Show<LeaveComment>();
             var result = await messageForm.Result;
 
             if (!result.Cancelled)
             {
-                SignUpCancel = false;
-                SignUpButton = true;
+
             }
         }
 
@@ -76,8 +77,8 @@ namespace eduProjectWebGUI.Pages
 
             if (!result.Cancelled)
             {
-                SignUpCancel = true;
-                SignUpButton = false;
+                // SignUpCancel = true;
+                // SignUpButton = false;
             }
         }
 
@@ -91,8 +92,8 @@ namespace eduProjectWebGUI.Pages
 
             if (!result.Cancelled)
             {
-                SignUpCancel = true;
-                SignUpButton = false;
+                // SignUpCancel = true;
+                // SignUpButton = false;
             }
         }
 
