@@ -5,6 +5,7 @@ using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -137,5 +138,45 @@ namespace eduProjectWebAPI.Data
 
             return faculty;
         }
+
+        // TODO: refactor
+        public async Task<ICollection<Faculty>> GetAllAsync()
+        {
+            List<Faculty> faculties = new List<Faculty>();
+            List<int> facultyIds = new List<int>();
+
+            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection,
+                    CommandText = @"SELECT faculty_id
+                                    FROM faculty"
+                };
+
+                command.Parameters.Clear();
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            facultyIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                await connection.CloseAsync();
+            }
+
+            foreach (int id in facultyIds)
+                faculties.Add(await GetAsync(id));
+
+            return faculties;
+        }
+
     }
 }

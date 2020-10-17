@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace eduProjectModel.Domain
 {
-    public class Tag : IValueObject
+    public class Tag
     {
         public static Dictionary<int, Tag> tags = new Dictionary<int, Tag>();
 

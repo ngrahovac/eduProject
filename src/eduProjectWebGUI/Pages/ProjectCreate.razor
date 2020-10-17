@@ -1,0 +1,472 @@
+﻿@page "/create"
+@inject ApiService ApiService
+
+<div style="display:flex">
+    <div style="margin-right:100px">
+        <EditForm Model="@projectInputModel" OnValidSubmit="CreateProject">
+            <h5>Osnovne informacije</h5>
+            <div class="form-group">
+                <label>Naziv projekta</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@projectInputModel.Title"></InputText>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Oblast projekta</label>
+                <div>
+                    <InputSelect TValue="string"
+                                 @bind-Value="@projectInputModel.StudyFieldName">
+                        <option value=null></option>
+                        @foreach (var sf in studyFields)
+                        {
+                            if (sf.Name == projectInputModel.StudyFieldName)
+                            {
+                                <option selected value="@sf.Name">@sf.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@sf.Name">@sf.Name</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Početak realizacije</label>
+                <div>
+                    <InputDate class="form-control" @bind-Value="@projectInputModel.StartDate"></InputDate>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Kraj realizacije</label>
+                <div>
+                    <InputDate class="form-control" @bind-Value="@projectInputModel.EndDate"></InputDate>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Opis projekta</label>
+                <div>
+                    <InputTextArea class="form-control" @bind-Value="@projectInputModel.Description"></InputTextArea>
+                </div>
+            </div>
+
+            <button class="btn-success" type="submit">Oglasi projekat</button>
+
+        </EditForm>
+
+        <h5>Tagovi</h5>
+        <BlazoredTypeahead SearchMethod="FilterTags"
+                           @bind-Value="AddedTag"
+                           EnableDropDown="true">
+            <SelectedTemplate>
+                @context.Name
+            </SelectedTemplate>
+            <ResultTemplate>
+                @context.Name
+            </ResultTemplate>
+            <NotFoundTemplate>
+                Nema rezultata.
+            </NotFoundTemplate>
+        </BlazoredTypeahead>
+
+        <div style="display:flex;">
+            @foreach (var tagName in projectInputModel.TagNames)
+            {
+                <div style="width:40px; height:40px; background-color:blue; margin:10px;" class="form-control" @onclick="@(e => projectInputModel.TagNames.Remove(tagName))">
+                    @tagName
+                </div>
+            }
+        </div>
+    </div>
+
+    <div style="margin-right:100px">
+        <EditForm Model="@collaboratorProfileInputModel" OnValidSubmit="@AddCollaboratorProfile">
+            <h5>Profili traženih saradnika</h5>
+            <div class="form-group">
+                <label>Tip saradnika</label>
+                <div>
+                    <InputSelect TValue="CollaboratorProfileType"
+                                 ValueChanged="@((CollaboratorProfileType t) => CollaboratorProfileTypeChanged(t))"
+                                 ValueExpression="@(() => collaboratorProfileInputModel.CollaboratorProfileType)"
+                                 Value="@collaboratorProfileInputModel.CollaboratorProfileType">
+                        @foreach (var value in Enum.GetValues(typeof(CollaboratorProfileType)))
+                        {
+                            if ((CollaboratorProfileType)value == collaboratorProfileInputModel.CollaboratorProfileType)
+                            {
+                                <option selected value="@value">@value</option>
+                            }
+                            else
+                            {
+                                <option value="@value">@value</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Opis aktivnosti</label>
+                <div>
+                    <InputText class="form-control" @bind-Value="@collaboratorProfileInputModel.ActivityDescription">
+                    </InputText>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Fakultet</label>
+                <div>
+                    <InputSelect TValue="@string"
+                                 ValueChanged="@((string f) => FacultySelected(f))"
+                                 ValueExpression="@(() => collaboratorProfileInputModel.FacultyName)"
+                                 Value="@collaboratorProfileInputModel.FacultyName">
+                        <option></option>
+                        @foreach (var f in faculties)
+                        {
+                            if (f.Name == collaboratorProfileInputModel.FacultyName)
+                            {
+                                <option selected value="@f.Name">@f.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@f.Name">@f.Name</option>
+                            }
+
+                        }
+                    </InputSelect>
+                </div>
+            </div>
+
+            @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.Student)
+            {
+                <div class="form-group">
+                    <label>Ciklus</label>
+                    <div>
+                        <InputSelect TValue="@string"
+                                     ValueChanged="@((string c) => { CycleSelected(c); })"
+                                     ValueExpression="@(() => cycleStr)"
+                                     Value="@cycleStr">
+                            <option></option>
+                            @foreach (string c in cycles)
+                            {
+                                if (c == cycleStr)
+                                {
+                                    <option selected value="@c">@c</option>
+                                }
+                                else
+                                {
+                                    <option value="@c">@c</option>
+                                }
+                            }
+
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Studijski program</label>
+                    <div>
+                        <InputSelect TValue="@string"
+                                     ValueChanged="@((string p) => ProgramSelected(p))"
+                                     ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramName)"
+                                     Value="@collaboratorProfileInputModel.StudyProgramName">
+                            <option></option>
+                            @foreach (var p in programs)
+                            {
+                                if (p.Name == collaboratorProfileInputModel.StudyProgramName)
+                                {
+                                    <option selected value="@p.Name">@p.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@p.Name">@p.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Studijski smjer</label>
+                    <div>
+                        <InputSelect TValue="@string"
+                                     ValueChanged="@((string s) => SpecializationSelected(s))"
+                                     ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramSpecializationName)"
+                                     Value="@collaboratorProfileInputModel.StudyProgramSpecializationName">
+                            <option></option>
+                            @foreach (var s in specializations)
+                            {
+                                if (s.Name == collaboratorProfileInputModel.StudyProgramSpecializationName)
+                                {
+                                    <option selected value="@s.Name">@s.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@s.Name">@s.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Godina</label>
+                    <div>
+                        <InputSelect TValue="@string"
+                                     ValueChanged="@((string y) => { YearSelected(y); })"
+                                     ValueExpression="@(() => yearStr)"
+                                     Value="@yearStr">
+                            <option></option>
+                            @foreach (int y in years)
+                            {
+                                if ($"{y}" == yearStr)
+                                {
+                                    <option selected value="@y">@y</option>
+                                }
+                                else
+                                {
+                                    <option value="@y">@y</option>
+                                }
+                            }
+
+                        </InputSelect>
+                    </div>
+                </div>
+            }
+
+            @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+            {
+                <div class="form-group">
+                    <label>Uža naučna oblast</label>
+                    <div>
+                        <InputSelect TValue="string"
+                                     @bind-Value="@collaboratorProfileInputModel.StudyFieldName">
+                            <option value=null></option>
+                            @foreach (var sf in studyFields)
+                            {
+                                if (sf.Name == collaboratorProfileInputModel.StudyFieldName)
+                                {
+                                    <option selected value="@sf.Name">@sf.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@sf.Name">@sf.Name</option>
+                                }
+                            }
+                        </InputSelect>
+                    </div>
+                </div>
+            }
+
+            <button type="submit">Dodaj saradnika</button>
+        </EditForm>
+    </div>
+
+    <div>
+        <div class="container">
+            <h5>Dodani profili saradnika</h5>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tip</th>
+                        <th>Fakultet</th>
+                        <th>Ciklus</th>
+                        <th>Program</th>
+                        <th>Smjer</th>
+                        <th>Godina</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
+                    {
+                        <tr>
+                            <td>@p.CollaboratorProfileType</td>
+                            <td>@p.FacultyName</td>
+                            <td>@p.Cycle</td>
+                            <td>@p.StudyProgramName</td>
+                            <td>@p.StudyProgramSpecializationName</td>
+                            <td>@p.StudyFieldName</td>
+                            <td><button @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private async Task<IEnumerable<Tag>> FilterTags(string searchText)
+    {
+        Console.WriteLine(tags.Count());
+        Console.WriteLine($"pretrazujemo {searchText}");
+        return tags.Where(t => t.Name.StartsWith(searchText));
+    }
+
+    private ProjectInputModel projectInputModel = new ProjectInputModel();
+    private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();
+
+    private string cycleStr;
+    private string yearStr;
+
+    private Tag addedTag;
+    public Tag AddedTag
+    {
+        get { return addedTag; }
+        set { addedTag = value; Console.WriteLine($"Dodan {addedTag.Name}"); projectInputModel.TagNames.Add(addedTag.Name); }
+    }
+
+    private Faculty faculty;
+    int cycle;
+    private StudyProgram program;
+    private StudyProgramSpecialization specialization;
+
+    private ICollection<StudyField> studyFields = new List<StudyField>();
+    private ICollection<Faculty> faculties = new List<Faculty>();
+    private ICollection<string> cycles = new List<string>();
+    private ICollection<StudyProgram> programs = new List<StudyProgram>();
+    private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
+    private ICollection<int> years = new List<int>();
+    private ICollection<Tag> tags = new List<Tag>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        faculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
+
+        studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Values;
+
+        tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
+    }
+
+    private async void CollaboratorProfileTypeChanged(CollaboratorProfileType type)
+    {
+        collaboratorProfileInputModel = new CollaboratorProfileInputModel();
+        yearStr = string.Empty;
+        cycleStr = string.Empty;
+
+        collaboratorProfileInputModel.CollaboratorProfileType = type;
+        Console.WriteLine($"Odabran tip saradnika {type}");
+    }
+
+    private async void FacultySelected(string facultyName)
+    {
+        Console.WriteLine($"Odabran fakultet {facultyName}");
+        cycles.Clear();
+        programs.Clear();
+        specializations.Clear();
+        years.Clear();
+        cycleStr = string.Empty;
+        yearStr = string.Empty;
+
+        if (facultyName != string.Empty)
+        {
+            collaboratorProfileInputModel.FacultyName = facultyName;
+            faculty = faculties.Where(f => f.Name == facultyName).First();
+            cycles = faculty.StudyPrograms.Select(p => p.Cycle).Distinct().Select(c => $"{c}").ToList();
+        }
+        else
+        {
+            collaboratorProfileInputModel.FacultyName = null;
+        }
+    }
+
+    private async void CycleSelected(string cycleStr)
+    {
+        this.cycleStr = cycleStr;
+        Console.WriteLine($"Odabran ciklus {cycleStr}");
+        programs.Clear();
+        specializations.Clear();
+        years.Clear();
+
+        if (cycleStr != string.Empty)
+        {
+            collaboratorProfileInputModel.Cycle = int.Parse(cycleStr);
+            cycle = int.Parse(cycleStr);
+            programs = faculty.StudyPrograms.Where(sp => sp.Cycle == cycle).ToList();
+        }
+        else
+        {
+            collaboratorProfileInputModel.Cycle = null;
+        }
+    }
+
+    private async void ProgramSelected(string programName)
+    {
+        Console.WriteLine($"Odabran program {programName}");
+        specializations.Clear();
+        years.Clear();
+        yearStr = string.Empty;
+
+        if (programName != string.Empty)
+        {
+            collaboratorProfileInputModel.StudyProgramName = programName;
+            var program = programs.Where(p => p.Cycle == cycle && p.Name == programName).First();
+            specializations = program.StudyProgramSpecializations.ToList();
+            years = Enumerable.Range(1, program.DurationYears).ToList();
+        }
+        else
+        {
+            collaboratorProfileInputModel.StudyProgramName = null;
+        }
+    }
+
+    private async void YearSelected(string yearStr)
+    {
+        this.yearStr = yearStr;
+        Console.WriteLine($"Odabran ciklus {yearStr}");
+
+        if (yearStr != string.Empty)
+        {
+            collaboratorProfileInputModel.StudyYear = int.Parse(yearStr);
+        }
+        else
+        {
+            collaboratorProfileInputModel.StudyYear = null;
+        }
+    }
+
+    private async void SpecializationSelected(string specializationName)
+    {
+        Console.WriteLine($"Odabran smjer {specializationName}");
+
+        if (specializationName != string.Empty)
+        {
+            collaboratorProfileInputModel.StudyProgramSpecializationName = specializationName;
+        }
+        else
+        {
+            collaboratorProfileInputModel.StudyProgramSpecializationName = null;
+        }
+
+    }
+
+    private async void AddCollaboratorProfile()
+    {
+        Console.WriteLine($"Adding {collaboratorProfileInputModel.CollaboratorProfileType}");
+        projectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
+        collaboratorProfileInputModel = new CollaboratorProfileInputModel();
+
+        yearStr = string.Empty;
+        cycleStr = string.Empty;
+    }
+
+    private async void RemoveCollaboratorProfile(CollaboratorProfileInputModel profile)
+    {
+        projectInputModel.CollaboratorProfileInputModels.Remove(profile);
+    }
+
+    private async void CreateProject()
+    {
+        Console.WriteLine("Creating project");
+        await ApiService.PostAsync("/new", projectInputModel);
+    }
+}
+
+
