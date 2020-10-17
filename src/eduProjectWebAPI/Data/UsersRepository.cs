@@ -34,7 +34,7 @@ namespace eduProjectWebAPI.Data
                                     FROM user
                                     INNER JOIN account USING (user_id)
                                     LEFT OUTER JOIN student using(user_id)
-                                    LEFT OUTER JOIN faculty_member using (user_id)
+                                    LEFT OUTER JOIN faculty_member using(user_id)
                                     WHERE user.user_id = @id;"
                 };
 
@@ -65,7 +65,6 @@ namespace eduProjectWebAPI.Data
         private User GetUserFromRow(MySqlDataReader reader)
         {
             UserAccountType accountType = (UserAccountType)Enum.ToObject(typeof(UserAccountType), reader.GetInt32(1));
-
             if (accountType is UserAccountType.Student)
             {
                 Student student = new Student

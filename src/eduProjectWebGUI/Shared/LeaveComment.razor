@@ -1,8 +1,10 @@
-﻿<div class="simple-form">
-    
+﻿@inject eduProjectWebGUI.ProjectApplicationInputModel model
+
+<div class="simple-form">
+
     <div class="form-group">
         <text for="message">Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete</text>
-        <textarea @bind="Message" type="text" class="form-control comment-field" id="message" placeholder="Komentar ..." style="resize: none; height: 200px" />
+        <textarea @bind="@model.ApplicantComment" type="text" class="form-control comment-field" id="message" placeholder="Komentar ..." style="resize: none; height: 200px" />
     </div>
 
     <button @onclick="SubmitForm" class="btn btn-primary">Prihvati</button>
@@ -13,9 +15,6 @@
 @code {
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
-
-    [Parameter]
-    public string Message { get; set; } // Comment that user wrote in textarea while leaving a comment.
 
     protected override void OnInitialized() => BlazoredModal.SetTitle("Unesite komentar");
 
