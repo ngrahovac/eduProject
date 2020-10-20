@@ -22,6 +22,9 @@ namespace eduProjectTests.RepositoryTests
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
             users = new UsersRepository(new TestDbConnectionString(), memoryCache);
+
+            var testDbController = new TestDatabaseController(new TestDbConnectionString());
+            Task.Run(() => testDbController.SeedData()).Wait();
         }
 
         [Fact]

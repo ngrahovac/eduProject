@@ -9,9 +9,9 @@ namespace eduProjectTests.RepositoryTests
 {
     class TestDatabaseController
     {
-        private readonly TestDbConnectionString dbConnectionString;
+        public readonly DbConnectionStringBase dbConnectionString;
 
-        public TestDatabaseController(TestDbConnectionString dbConnectionString)
+        public TestDatabaseController(DbConnectionStringBase dbConnectionString)
         {
             this.dbConnectionString = dbConnectionString;
         }
