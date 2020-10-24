@@ -1,5 +1,6 @@
 ﻿using eduProjectModel.Domain;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,16 @@ namespace eduProjectModel.Input
 {
     public class ProjectInputModel
     {
+        public int AuthorId { get; set; }
         public string Title { get; set; }
-        public string StudyFieldName { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public ProjectStatus ProjectStatus { get; set; }
         public string Description { get; set; }
-        public ICollection<string> TagNames { get; set; } = new List<string>();
+        public string StudyFieldName { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public ICollection<CollaboratorProfileInputModel> CollaboratorProfileInputModels { get; set; } = new List<CollaboratorProfileInputModel>();
+        public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
+        public ICollection<string> TagNames { get; set; } = new HashSet<string>();
 
         public ProjectInputModel()
         {
@@ -23,18 +27,13 @@ namespace eduProjectModel.Input
 
         public void MapTo(Project project, ICollection<Faculty> faculties)
         {
+            project.AuthorId = AuthorId;
             project.Title = Title;
+            project.ProjectStatus = ProjectStatus;
+            project.Description = Description;
             project.StartDate = StartDate;
             project.EndDate = EndDate;
             project.StudyField = StudyField.fields.Values.ToList().Where(sf => sf.Name == StudyFieldName).First();
-            project.Description = Description;
-            project.ProjectStatus = ProjectStatus.Active;
-            project.AuthorId = 1; // FIX
-
-
-
-            foreach (string tagName in TagNames)
-                project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).First());
 
             foreach (var model in CollaboratorProfileInputModels)
             {
@@ -58,6 +57,12 @@ namespace eduProjectModel.Input
                     project.CollaboratorProfiles.Add(facultyMemberProfile);
                 }
             }
+
+            foreach (var tagName in TagNames)
+                project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).First());
+
+            foreach (var id in CollaboratorIds)
+                project.CollaboratorIds.Add(id);
         }
     }
 }

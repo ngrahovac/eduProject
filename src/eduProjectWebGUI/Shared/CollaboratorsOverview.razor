@@ -1,0 +1,33 @@
+﻿<div class="section">
+    <h4 class="title">Profili traženih saradnika</h4>
+
+    @if (CollaboratorDisplayModels == null)@* empty? *@
+    {
+        <h6>Autor ovog projekta nije izabrao ni jednog saradnika.</h6>
+    }
+    else
+    {
+        <table class="collaborator-profiles-table">
+            <thead>
+                <tr>
+                    <th>Ime i prezime</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var model in CollaboratorDisplayModels)
+                {
+                    <tr>
+                        <td>@model.FirstName @model.LastName</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; }
+
+}

@@ -14,10 +14,10 @@
     }
 
     for (var j = 0; j < rows.length; j++) {
-        rows[j].className -= " row-selected";
+        rows[j].className -= " selected-row";
     }
 
     // adding highlight to selected row
     var row = rows.item(i + 1);
-    row.className += " row-selected"
+    row.className += " selected-row"
 }

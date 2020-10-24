@@ -21,13 +21,5 @@ namespace eduProjectWebGUI.Pages
         [Parameter]
         public ProjectDisplayModel VisitorActiveProjectDisplayModel { get; set; }
 
-        public async Task CollaboratorProfileSelected(string profileType, int i)
-        {
-            await js.InvokeVoidAsync("selectCollaboratorProfile", profileType, i);
-            model.CollaboratorProfileIndex = i;
-            if (profileType == "student profile") model.CollaboratorProfileType = CollaboratorProfileType.Student;
-            else model.CollaboratorProfileType = CollaboratorProfileType.FacultyMember;
-        }
-
     }
 }

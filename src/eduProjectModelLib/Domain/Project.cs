@@ -17,33 +17,9 @@ namespace eduProjectModel.Domain
         public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
-        public Project(int projectId, int authorId, string title, string description, StudyField studyField, DateTime? startDate, DateTime? endDate)
-        {
-            ProjectId = projectId;
-            AuthorId = authorId;
-            Title = title;
-            Description = description;
-            StudyField = studyField;
-            StartDate = startDate;
-            EndDate = endDate;
-        }
         public Project()
         {
 
-        }
-        public void AddCollaboratorProfile(CollaboratorProfile profile)
-        {
-            CollaboratorProfiles.Add(profile);
-        }
-
-        public void AddCollaboratorId(int id)
-        {
-            CollaboratorIds.Add(id);
-        }
-
-        public void AddTag(Tag tag)
-        {
-            Tags.Add(tag);
         }
     }
 }

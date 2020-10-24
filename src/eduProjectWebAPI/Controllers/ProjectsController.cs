@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation.Results;
 using System;
+using System.Net.Http.Headers;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -59,7 +60,7 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
-        [HttpPost("/new")]
+        [HttpPost]
         public async Task<IActionResult> Create(ProjectInputModel model)
         {
             //ProjectInputValidator validator = new ProjectInputValidator();
@@ -100,9 +101,30 @@ namespace eduProjectWebAPI.Controllers
                 foreach (var error in result.Errors)
                     ModelState.AddModelError("", error.ErrorMessage);
             }*/
-
-            return BadRequest();
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, ProjectInputModel model)
+        {
+            Project project = new Project();
+
+            ICollection<Faculty> facultiesList = new List<Faculty>();
+            ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
+
+            foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
+            {
+                var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
+                facultiesList.Add(faculty);
+            }
+
+            model.MapTo(project, facultiesList);
+            project.ProjectId = id;
+
+            await projects.UpdateAsync(project);
+
+            return NoContent();
+        }
+
     }
 }
 

@@ -9,5 +9,7 @@ namespace eduProjectWebAPI.Data
         public Task<Project> GetAsync(int id);
 
         public Task AddAsync(Project project);
+
+        public Task UpdateAsync(Project project);
     }
 }

@@ -32,6 +32,11 @@ namespace eduProjectWebGUI.Services
             await httpClient.PostAsJsonAsync(url, obj);
         }
 
+        public async Task PutAsync<T>(string url, T obj)
+        {
+            await httpClient.PutAsJsonAsync(url, obj);
+        }
+
     }
 }
 
