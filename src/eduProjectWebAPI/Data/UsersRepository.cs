@@ -112,8 +112,7 @@ namespace eduProjectWebAPI.Data
                                     INNER JOIN account USING (user_id)
                                     LEFT OUTER JOIN student using(user_id)
                                     LEFT OUTER JOIN faculty_member using(user_id)
-                                    WHERE user.user_id = @id;"
-                };
+                                    WHERE user.user_id = @id;";
 
             command.Parameters.Clear();
 

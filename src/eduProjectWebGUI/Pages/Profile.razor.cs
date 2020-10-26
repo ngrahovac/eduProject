@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components.Web;
+﻿using eduProjectModel.Display;
+using eduProjectWebGUI.Services;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,49 +11,17 @@ namespace eduProjectWebGUI.Pages
 {
     public partial class Profile
     {
-        private string bckgrndColorEmail = "green";
-        private string bckgrndColorNumber = "green";
-        private string bckgrndColorProjects = "green";
-        private bool btnCheckEmail = false;
-        private bool btnCheckNumber = false;
-        private bool btnCheckProjects = false;
+        [Parameter]
+        public int UserId { get; set; }
 
-        public void ChangeEmailVisibility()
-        {
-            bckgrndColorEmail = btnCheckEmail ? "green" : "red";
-            btnCheckEmail = btnCheckEmail ? false : true;
-        }
+        [Inject]
+        ApiService ApiService { get; set; }
 
-        public void ChangeNumberVisibility()
-        {
-            bckgrndColorNumber = btnCheckNumber ? "green" : "red";
-            btnCheckNumber = btnCheckNumber ? false : true;
-        }
+        public ProfileDisplayModel ProfileDisplayModel { get; set; }
 
-        public void ChangeProjectsVisibility()
+        protected override async Task OnInitializedAsync()
         {
-            bckgrndColorProjects = btnCheckProjects ? "green" : "red";
-            btnCheckProjects = btnCheckProjects ? false : true;
-        }
-
-        private void SaveBiography(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddTag(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveProfile(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CancleSavingProfile(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
+            ProfileDisplayModel = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
         }
     }
 }

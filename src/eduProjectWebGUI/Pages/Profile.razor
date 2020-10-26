@@ -1,200 +1,94 @@
-﻿@page "/userprofile"
+﻿@page "/users/{UserId:int}"
 
-<div class="container user-profile">
+<div class="content">
+    @if (ProfileDisplayModel == null)
+    {
+        <h3>Loading...</h3>
+    }
+    else
+    {
+        <h3>@($"{ProfileDisplayModel.FirstName} {ProfileDisplayModel.LastName}")</h3>
+        @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
+        {
+            <h4>@($"Student, {ProfileDisplayModel.FacultyName}")</h4>
+        }
+        else
+        {
+            <h4>@($"{ProfileDisplayModel.AcademicRank}, {ProfileDisplayModel.FacultyName}")</h4>
+        }
 
-    <div class="row  justify-content-md-center">
-        <div class="col-12 col-md-8">
+        <div class="section">
+            <h4 class="title">Osnovne informacije</h4>
 
-            <br><h3>Osnovne Informacije</h3><br>
-
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputName" class="col-sm-3 col-form-label">Ime</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputName" placeholder="Ime">
-                </div>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputLastName" class="col-sm-3 col-form-label">Prezime</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputLastName" placeholder="Prezime">
-                </div>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputEmail" class="col-sm-3 col-form-label">E-mail</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="email" class="form-control" id="inputEmail" placeholder="E-mail">
-                </div>
-                <button type="button" class="btn btn-success mb-2 lock-btn" @onclick="@(()=>ChangeEmailVisibility())" style="background-color:@bckgrndColorEmail">
-                    <img src="../img/lock.svg">
-                </button>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputNumber" class="col-sm-3 col-form-label">Broj telefona</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="tel" class="form-control" id="inputNumber" placeholder="Broj telefona">
-                </div>
-                <button type="submit" class="btn btn-success mb-2 lock-btn" @onclick="@(()=>ChangeNumberVisibility())" style="background-color:@bckgrndColorNumber">
-                    <img src="../img/lock.svg">
-                </button>
-            </div>
+            <h5>Biografija</h5>
+            <p>@ProfileDisplayModel.Bio</p>
         </div>
 
-        <div class="col-6 col-md-4">
-            <div class="text-center">
-                <img src="../img/user-logo.jpg" class="avatar img-circle img-thumbnail" alt="avatar">
-                <input type="file" class="text-center center-block file-upload">
-            </div>
+        <div class="section">
+            @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
+            {
+                <h4 class="title">Institucija studiranja</h4>
+
+                <h5>Fakultet</h5>
+                <p>@ProfileDisplayModel.FacultyName</p>
+
+                <h5>Ciklus</h5>
+                <p>@ProfileDisplayModel.Cycle</p>
+
+                <h5>Studijski program</h5>
+                <p>@ProfileDisplayModel.StudyProgramName</p>
+
+                <h5>Studijski smjer</h5>
+                <p>@ProfileDisplayModel.StudyProgramSpecializationName</p>
+
+                <h5>Godina studija</h5>
+                <p>@ProfileDisplayModel.StudyYear</p>
+            }
+            else
+            {
+                <h4 class="title">Institucija djelovanja</h4>
+
+                <h5>Fakultet</h5>
+                <p>@ProfileDisplayModel.FacultyName</p>
+
+                <h5>Uža naučna oblast</h5>
+                <p>@ProfileDisplayModel.StudyFieldName</p>
+            }
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-12 col-md-8">
+        <div class="section">
+            <h4 class="title">Kontakt</h4>
 
-            <br><h3>Informacije o instituciji</h3><br>
+            <h5>Email</h5>
+            <p>@ProfileDisplayModel.Email</p>
 
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputCollege" class="col-sm-3 col-form-label">Fakultet</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputCollege" placeholder="Fakultet">
-                </div>
-            </div>
+            <h5>Broj telefona</h5>
+            <p>@ProfileDisplayModel.PhoneNumber</p>
 
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputStudyCycle" class="col-sm-3 col-form-label">Ciklus studija</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputStudyCycle" placeholder="Ciklus studija">
-                </div>
-            </div>
+            <h5>Website</h5>
+            <p>@ProfileDisplayModel.Website</p>
 
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputStudyProgram" class="col-sm-3 col-form-label">Studijski program</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputStudyProgram" placeholder="Studijski program">
-                </div>
-            </div>
+            <h5>LinkedIn</h5>
+            <p>@ProfileDisplayModel.LinkedinProfile</p>
 
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputYearOfStudy" class="col-sm-3 col-form-label">Godina studija</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputYearOfStudy" placeholder="Godina studija">
-                </div>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputDepartment" class="col-sm-3 col-form-label">Smjer</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputDepartment" placeholder="Smjer">
-                </div>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputTitle" class="col-sm-3 col-form-label">Zvanje</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputTitle" placeholder="Zvanje" disabled>
-                </div>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputScientificArea" class="col-sm-3 col-form-label">Uža naučna oblast</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <input type="text" class="form-control" id="inputScientificArea" placeholder="Uža naučna oblast" disabled>
-                </div>
-            </div>
+            <h5>ResearchGate</h5>
+            <p>@ProfileDisplayModel.ResearchgateProfile</p>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-12 col-md-8">
+        <div class="section">
+            <h4 class="title">Projekti</h4>
 
-            <br><h3>O meni</h3><br>
+            <h5>Oglašeni projekti</h5>
+            @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
+            {
+                <p>@(p.Title)</p>
+            }
 
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="inputBiography" class="col-sm-3 col-form-label">Biografija</label>
-                <div class="col-sm-7" style="margin-bottom: 5px;">
-                    <textarea id="text-area" name="biography" rows="4" cols="50" class="biography-area" />
-                    <button type="submit" class="btn btn-primary biography-btn" @onclick="SaveBiography">Sačuvaj biografiju</button>
-                </div>
-            </div>
-            <div class="form-group" style="position:absolute;left:150px;">
-                <a href="#" title="Instagram" class="btn btn-social-icon btn-lg btn-instagram">
-                    <i class="fa fa-instagram"></i>
-                </a>
-                <a href="#" title="Facebook" class="btn btn-social-icon btn-lg btn-facebook">
-                    <i class="fa fa-facebook"></i>
-                </a>
-                <a href="#" title="Github" class="btn btn-social-icon btn-lg btn-github">
-                    <i class="fa fa-github"></i>
-                </a>
-                <a href="#" title="Linkedin" class="btn btn-social-icon btn-lg btn-linkedin">
-                    <i class="fa fa-linkedin"></i>
-                </a>
-                <a href="#" title="Google" class="btn btn-social-icon btn-lg btn-google">
-                    <i class="fa fa-google"></i>
-                </a>
-                <a href="#" title="Youtube" class="btn btn-social-icon btn-lg btn-google">
-                    <i class="fa fa-youtube"></i>
-                </a>
-            </div>
+            <h5>Saradnje na projektima</h5>
+            @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
+            {
+                <p>@(p.Title)</p>
+            }
         </div>
-    </div>
-
-    <div class="row" style="padding-top: 60px;">
-        <div class="col-12 col-md-8">
-            <br><h3>CV</h3><br>
-            <div class="col-sm-7">
-                <input type="file" class="text-center center-block file-upload">
-            </div>
-        </div>
-    </div>
-
-    <div class="row" style="padding-top: 60px;">
-        <div class="col-12 col-md-8">
-            <div class="row">
-                <br><h3>Projekti</h3><br>
-                <button type="submit" class="btn btn-success mb-2 lock-btn" @onclick="@(()=>ChangeProjectsVisibility())" style="background-color:@bckgrndColorProjects; margin-left: 50px">
-                    <img src="../img/lock.svg">
-                </button>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <label for="myProjects" class="col-sm-3 col-form-label">Dosadašnji projekti</label>
-                <div class="form-group col-sm-7">
-                    <ul class="list-group list-group-flush col-sm-7">
-                        <li class="list-group-item"><a href="#">Projekat 1</a></li>
-                        <li class="list-group-item"><a href="#">Projekat 2</a></li>
-                        <li class="list-group-item"><a href="#">Projekat 3</a></li>
-                        <li class="list-group-item"><a href="#">Projekat 4</a></li>
-                        <li class="list-group-item"><a href="#">Projekat 5</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row" style="padding-top: 60px;">
-        <div class="col-12 col-md-8">
-            <div class="row">
-                <h3>Tagovi koje pratim</h3>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" id="inputTag" placeholder="Tag">
-                </div>
-                <button type="submit" class="btn btn-primary tag-btn" @onclick="AddTag">Dodaj</button>
-            </div>
-            <div class="form-group mx-sm-3 mb-2 row">
-                <h5><span class="badge badge-primary tag">#tagNeki</span></h5>
-                <h5><span class="badge badge-primary tag">#csharp</span></h5>
-                <h5><span class="badge badge-primary tag">#java</span></h5>
-                <h5><span class="badge badge-primary tag">#js</span></h5>
-                <h5><span class="badge badge-primary tag">#blazor</span></h5>
-                <h5><span class="badge badge-primary tag">#htmlcss</span></h5>
-                <h5><span class="badge badge-primary tag">#html</span></h5>
-                <h5><span class="badge badge-primary tag">#css</span></h5>
-                <h5><span class="badge badge-primary tag">#machinelearning</span></h5>
-            </div>
-        </div>
-    </div>
-
-    <div class="row final-btns">
-        <div class="col-lg">
-            <button type="submit" class="btn btn-success final-btn" @onclick="SaveProfile">Sačuvaj izmjene</button>
-            <button type="submit" class="btn btn-danger final-btn" @onclick="CancleSavingProfile">Otkaži</button>
-        </div>
-    </div>
-
+    }
 </div>

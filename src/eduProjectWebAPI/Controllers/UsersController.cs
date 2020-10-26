@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using eduProjectModel.Display;
@@ -49,7 +50,10 @@ namespace eduProjectWebAPI.Controllers
                     projectCollaborations.Add(await projects.GetAsync(projectId));
             }
 
-            return new ProfileDisplayModel(user, true, authoredProjects, projectCollaborations);
+            var faculty = await faculties.GetAsync(user.FacultyId);
+
+            bool isPersonal = true;
+            return new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations);
         }
     }
 }
