@@ -17,7 +17,8 @@ namespace eduProjectWebGUI.Pages
     public partial class ProjectView
     {
         [Parameter]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
+
         [Inject]
         ApiService ApiService { get; set; }
 
@@ -36,7 +37,6 @@ namespace eduProjectWebGUI.Pages
             {
                 // TODO: remove button enabling/disabling
 
-                var projectId = model.ProjectId = Int32.Parse(ProjectId);
                 await ApiService.PostAsync("/applications", model);
             }
         }
