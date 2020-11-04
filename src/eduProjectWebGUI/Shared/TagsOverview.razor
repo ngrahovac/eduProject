@@ -19,9 +19,9 @@
 
 @code {
     [Parameter]
-    public bool Editing { get; set; }
+    public bool Editing { get; set; } = false;
     [Parameter]
-    public ICollection<string> TagNames { get; set; }
+    public ICollection<string> TagNames { get; set; } = new List<string>();
     [Parameter]
-    public ProjectInputModel ProjectInputModel { get; set; }
+    public ProjectInputModel ProjectInputModel { get; set; } = null;
 }

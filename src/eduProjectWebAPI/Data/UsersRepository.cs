@@ -27,36 +27,109 @@ namespace eduProjectWebAPI.Data
             {
                 MySqlCommand command = new MySqlCommand
                 {
-                    Connection = connection,
-                    CommandText = @"SELECT user_id, user_account_type_id, first_name, last_name, phone_number, phone_format,
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                user = await ReadBasicUserInfo(command, id);
+
+                if (user != null)
+                {
+                    await ReadAuthoredProjectsIds(command, id, user);
+
+                    await ReadProjectCollaborationsIds(command, id, user);
+                }
+
+                await connection.CloseAsync();
+            }
+
+            return user;
+        }
+
+        private async Task ReadProjectCollaborationsIds(MySqlCommand command, int id, User user)
+        {
+            command.CommandText = @"SELECT project_id 
+                                    FROM project_collaborator
+                                    WHERE user_id = @userId";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        user.ProjectCollaborationIds.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+        }
+
+        private async Task ReadAuthoredProjectsIds(MySqlCommand command, int id, User user)
+        {
+            command.CommandText = @"SELECT project_id 
+                                    FROM project
+                                    WHERE user_id = @userId";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        user.AuthoredProjectIds.Add(reader.GetInt32(0));
+                    }
+                }
+            }
+        }
+
+        private async Task<User> ReadBasicUserInfo(MySqlCommand command, int id)
+        {
+            User user = null;
+
+            command.CommandText = @"SELECT user_id, user_account_type_id, first_name, last_name, phone_number, phone_format,
 	                                       student.faculty_id, study_year, study_program_id, study_program_specialization_id,
 	                                       faculty_member.faculty_id, study_field_id, academic_rank_id
                                     FROM user
                                     INNER JOIN account USING (user_id)
                                     LEFT OUTER JOIN student using(user_id)
                                     LEFT OUTER JOIN faculty_member using(user_id)
-                                    WHERE user.user_id = @id;"
-                };
+                                    WHERE user.user_id = @id;";
 
-                command.Parameters.Add(new MySqlParameter
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@id",
+                Value = id
+            });
+
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                if (reader.HasRows)
                 {
-                    DbType = DbType.Int32,
-                    ParameterName = "@id",
-                    Value = id
-                });
-
-                await connection.OpenAsync();
-
-                using (var reader = await command.ExecuteReaderAsync())
-                {
-                    if (reader.HasRows)
-                    {
-                        await reader.ReadAsync();
-                        user = GetUserFromRow(reader);
-                    }
+                    await reader.ReadAsync();
+                    user = GetUserFromRow(reader);
                 }
-
-                await connection.CloseAsync();
             }
 
             return user;
