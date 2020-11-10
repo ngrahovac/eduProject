@@ -17,7 +17,8 @@ namespace eduProjectWebGUI.Pages
 
         private bool editing = false;
 
-        private ProjectInputModel projectInputModel = new ProjectInputModel();
+        // Posto sam napravio Singleton instancu, ova linija koda je nepotrebna
+        // private ProjectInputModel projectInputModel = new ProjectInputModel();
 
         // input model for collaborator profile the user is currently creating
         private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();

@@ -1,10 +1,17 @@
-﻿@inject ProjectApplicationInputModel model
+﻿@*Kada korisnik klikne na PRIJAVI SE i ostavi komentar, to se sacuva u model.ApplicantComment, tako da bi bilo pametno 
+    da, ako korisnik ide na X na vrhu prozora ili klikne na ODUSTANI button da se taj string postavi na null vrijednost 
+    ili na prazan string, kako bazi odgovara. Jer npr ja ako hocu da se prijavim, i napisao sam neki komentar i tu se 
+    sad premisljam nesto i kliknem na ODUSTANI, i prebaci me u glavi da opet hocu da se prijavim, kad kliknem na 
+    PRIJAVI SE ostaje onaj komentar koji sam prethodno napisao, on mi se prikaze, a mislim da je bolje da ga se obrise.*@
 
-<div class="simple-form">
+@inject ProjectApplicationInputModel model
+
+<div class="simple-form" style="width: 500px;">
 
     <div class="form-group">
-        <text for="message">Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete</text>
-        <textarea @bind="@model.ApplicantComment" type="text" class="form-control comment-field" id="message" placeholder="Komentar ..." style="resize: none; height: 200px" />
+        @*Stavio sam kao placeholder ovaj text, cini mi se da je nekako profesionalnije i manje komponenata imamo*@
+        @*<text for="message">Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete</text>*@
+        <textarea @bind="@model.ApplicantComment" type="text" class="form-control comment-field" id="message" placeholder="Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete." style="resize: none; height: 200px; width: 500px;" />
     </div>
 
     <button @onclick="SubmitForm" class="btn btn-primary">Prihvati</button>
@@ -18,8 +25,11 @@
 
     protected override void OnInitialized() => BlazoredModal.SetTitle("Unesite komentar");
 
+    // Metoda koja treba da sadrzi sta ce se raditi kada korisnik klikne na Prihvati button na iskacucem prozorcicu.
+    // Vraca !Cancelled, pa mozes sve i u if-u uraditi.
     void SubmitForm() => BlazoredModal.Close();
 
+    // Metoda koja treba da sadrzi sta ce se raditi kada korisnik klikne na Odustani button na iskacucem prozorcicu. (ako i treba ista da se radi kada se klikne na Odustani)
     void Cancel() => BlazoredModal.Cancel();
 
 }

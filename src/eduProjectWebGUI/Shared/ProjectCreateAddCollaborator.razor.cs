@@ -13,7 +13,8 @@ namespace eduProjectWebGUI.Shared
     {
         private bool editing = false;
 
-        private ProjectInputModel projectInputModel = new ProjectInputModel();
+        // Posto sam napravio Singleton instancu, ova linija koda je nepotrebna
+        // private ProjectInputModel projectInputModel = new ProjectInputModel();
 
         // input model for collaborator profile the user is currently creating
         private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();
@@ -40,10 +41,6 @@ namespace eduProjectWebGUI.Shared
 
         protected override void OnInitialized() => BlazoredModal.SetTitle("Dodavanje saradnika");
 
-        void CancelConfirm() => BlazoredModal.Close();
-
-        void CancelDeny() => BlazoredModal.Cancel();
-
         private async void CollaboratorProfileTypeChanged(CollaboratorProfileType type)
         {
             collaboratorProfileInputModel = new CollaboratorProfileInputModel();
@@ -63,6 +60,8 @@ namespace eduProjectWebGUI.Shared
 
             yearStr = string.Empty;
             cycleStr = string.Empty;
+            
+            _ = BlazoredModal.Close();
         }
 
         private async void FacultySelected(string facultyName)

@@ -1,4 +1,6 @@
-﻿<div class="section" style="height: 500px; overflow-y: auto;">
+﻿@inject ProjectInputModel projectInputModel
+
+<div class="section" style="height: 500px; overflow-y: auto;">
     <EditForm Model="@collaboratorProfileInputModel" OnValidSubmit="@AddCollaboratorProfile">
         <h4 class="title">Profili traženih saradnika</h4>
         <h5>Tip saradnika</h5>
@@ -63,87 +65,87 @@
                     }
                 }
 
-                </InputSelect>
+            </InputSelect>
 
-                <h5>Studijski program</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string p) => ProgramSelected(p))"
-                             ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramName)"
-                             Value="@collaboratorProfileInputModel.StudyProgramName">
-                    <option></option>
-                    @foreach (var p in programs)
-                    {
-                        if (p.Name == collaboratorProfileInputModel.StudyProgramName)
-                        {
-                            <option selected value="@p.Name">@p.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@p.Name">@p.Name</option>
-                        }
-                    }
-                </InputSelect>
-
-                <h5>Studijski smjer</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string s) => SpecializationSelected(s))"
-                             ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramSpecializationName)"
-                             Value="@collaboratorProfileInputModel.StudyProgramSpecializationName">
-                    <option></option>
-                    @foreach (var s in specializations)
-                    {
-                        if (s.Name == collaboratorProfileInputModel.StudyProgramSpecializationName)
-                        {
-                            <option selected value="@s.Name">@s.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@s.Name">@s.Name</option>
-                        }
-                    }
-                </InputSelect>
-
-                <h5>Godina</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string y) => { YearSelected(y); })"
-                             ValueExpression="@(() => yearStr)"
-                             Value="@yearStr">
-                    <option></option>
-                    @foreach (int y in years)
-                    {
-                        if ($"{y}" == yearStr)
-                        {
-                            <option selected value="@y">@y</option>
-                        }
-                        else
-                        {
-                            <option value="@y">@y</option>
-                        }
-                    }
-                </InputSelect>
-                }
-
-                @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+            <h5>Studijski program</h5>
+            <InputSelect TValue="@string"
+                         ValueChanged="@((string p) => ProgramSelected(p))"
+                         ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramName)"
+                         Value="@collaboratorProfileInputModel.StudyProgramName">
+                <option></option>
+                @foreach (var p in programs)
                 {
-                    <h5>Uža naučna oblast</h5>
-                    <InputSelect TValue="string"
-                                 @bind-Value="@collaboratorProfileInputModel.StudyFieldName">
-                        <option value=null></option>
-                        @foreach (var sf in studyFields)
-                        {
-                            if (sf.Name == collaboratorProfileInputModel.StudyFieldName)
-                            {
-                                <option selected value="@sf.Name">@sf.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@sf.Name">@sf.Name</option>
-                            }
-                        }
-                    </InputSelect>
+                    if (p.Name == collaboratorProfileInputModel.StudyProgramName)
+                    {
+                        <option selected value="@p.Name">@p.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@p.Name">@p.Name</option>
+                    }
                 }
-</EditForm>
+            </InputSelect>
+
+            <h5>Studijski smjer</h5>
+            <InputSelect TValue="@string"
+                         ValueChanged="@((string s) => SpecializationSelected(s))"
+                         ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramSpecializationName)"
+                         Value="@collaboratorProfileInputModel.StudyProgramSpecializationName">
+                <option></option>
+                @foreach (var s in specializations)
+                {
+                    if (s.Name == collaboratorProfileInputModel.StudyProgramSpecializationName)
+                    {
+                        <option selected value="@s.Name">@s.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@s.Name">@s.Name</option>
+                    }
+                }
+            </InputSelect>
+
+            <h5>Godina</h5>
+            <InputSelect TValue="@string"
+                         ValueChanged="@((string y) => { YearSelected(y); })"
+                         ValueExpression="@(() => yearStr)"
+                         Value="@yearStr">
+                <option></option>
+                @foreach (int y in years)
+                {
+                    if ($"{y}" == yearStr)
+                    {
+                        <option selected value="@y">@y</option>
+                    }
+                    else
+                    {
+                        <option value="@y">@y</option>
+                    }
+                }
+            </InputSelect>
+        }
+
+        @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+        {
+            <h5>Uža naučna oblast</h5>
+            <InputSelect TValue="string"
+                         @bind-Value="@collaboratorProfileInputModel.StudyFieldName">
+                <option value=null></option>
+                @foreach (var sf in studyFields)
+                {
+                    if (sf.Name == collaboratorProfileInputModel.StudyFieldName)
+                    {
+                        <option selected value="@sf.Name">@sf.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@sf.Name">@sf.Name</option>
+                    }
+                }
+            </InputSelect>
+        }
+    </EditForm>
     <div class="buttons">
-        <button class="button button-primary" type="submit">Potvrdi</button>
+        <button class="button button-primary" type="submit" @onclick="@AddCollaboratorProfile">Potvrdi</button>
     </div>
 </div>

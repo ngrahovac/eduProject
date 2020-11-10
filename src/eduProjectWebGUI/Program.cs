@@ -29,6 +29,8 @@ namespace eduProjectWebGUI
 
             builder.Services.AddSingleton<ProjectApplicationInputModel>();
 
+            builder.Services.AddSingleton<ProjectInputModel>();
+
             await builder.Build().RunAsync();
         }
     }

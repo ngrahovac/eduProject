@@ -63,13 +63,13 @@
         {
             <div class="col-md-4 ml-auto projectview-final-btns">
                 <button type="submit" class="button button-primary" @onclick="ShowModalAuthorActive">Izmijeni</button>
-                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthorActive">Izbriši</button>
+                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
         else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="col-md-4 ml-auto projectview-final-btns">
-                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthorClosed">Izbriši</button>
+                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
     }
