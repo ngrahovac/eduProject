@@ -11,6 +11,9 @@ namespace eduProjectWebGUI.Shared
 {
     public partial class ProjectCreateAddCollaborator
     {
+        [CascadingParameter]
+        ModalParameters ModalParameters { get; set; }
+
         private bool editing = false;
 
         // Posto sam napravio Singleton instancu, ova linija koda je nepotrebna
@@ -24,13 +27,13 @@ namespace eduProjectWebGUI.Shared
         private string yearStr;
 
         // combo boxes backing lists
-        private ICollection<StudyField> studyFields = new List<StudyField>();
-        private ICollection<Faculty> faculties = new List<Faculty>();
+        [Parameter] public ICollection<StudyField> studyFields { get; set; } = new List<StudyField>();
+        [Parameter] public ICollection<Faculty> faculties { get; set; } = new List<Faculty>();
         private ICollection<string> cycles = new List<string>();
         private ICollection<StudyProgram> programs = new List<StudyProgram>();
         private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
         private ICollection<int> years = new List<int>();
-        private ICollection<Tag> tags = new List<Tag>();
+        [Parameter] public ICollection<Tag> tags { get; set; } = new List<Tag>();
 
         private Faculty faculty;
         int cycle;
@@ -38,8 +41,6 @@ namespace eduProjectWebGUI.Shared
         private StudyProgramSpecialization specialization;
 
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
-
-        protected override void OnInitialized() => BlazoredModal.SetTitle("Dodavanje saradnika");
 
         private async void CollaboratorProfileTypeChanged(CollaboratorProfileType type)
         {
@@ -60,8 +61,8 @@ namespace eduProjectWebGUI.Shared
 
             yearStr = string.Empty;
             cycleStr = string.Empty;
-            
-            _ = BlazoredModal.Close();
+
+            await BlazoredModal.Close();
         }
 
         private async void FacultySelected(string facultyName)
@@ -86,7 +87,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private async void CycleSelected(string cycleStr)
+        private void CycleSelected(string cycleStr)
         {
             this.cycleStr = cycleStr;
             Console.WriteLine($"Odabran ciklus {cycleStr}");
@@ -106,7 +107,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private async void ProgramSelected(string programName)
+        private void ProgramSelected(string programName)
         {
             Console.WriteLine($"Odabran program {programName}");
             specializations.Clear();
@@ -126,7 +127,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private async void YearSelected(string yearStr)
+        private void YearSelected(string yearStr)
         {
             this.yearStr = yearStr;
             Console.WriteLine($"Odabran ciklus {yearStr}");
@@ -141,7 +142,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private async void SpecializationSelected(string specializationName)
+        private void SpecializationSelected(string specializationName)
         {
             Console.WriteLine($"Odabran smjer {specializationName}");
 
@@ -153,6 +154,13 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.StudyProgramSpecializationName = null;
             }
+        }
+
+        protected async Task OnInitializedAsync()
+        {
+            faculties = ModalParameters.Get<ICollection<Faculty>>("faculties");
+            studyFields = ModalParameters.Get<ICollection<StudyField>>("studyFields");
+            tags = ModalParameters.Get<ICollection<Tag>>("tags");
         }
     }
 }

@@ -15,229 +15,73 @@
         <h3>Novi projekat</h3>
     }
 
-<EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
-    <div class="section">
-        <h4 class="title">Osnovne informacije</h4>
+    <EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
+        <div class="section">
+            <h4 class="title">Osnovne informacije</h4>
 
-        <h5>Naziv projekta</h5>
-        <InputText @bind-Value="@projectInputModel.Title"></InputText>
+            <h5>Naziv projekta</h5>
+            <InputText @bind-Value="@projectInputModel.Title"></InputText>
 
-        <h5>Oblast projekta</h5>
-        <InputSelect TValue="string"
-                     @bind-Value="@projectInputModel.StudyFieldName">
-            <option value=null></option>
-            @foreach (var sf in studyFields)
-            {
-                if (sf.Name == projectInputModel.StudyFieldName)
+            <h5>Oblast projekta</h5>
+            <InputSelect TValue="string"
+                         @bind-Value="@projectInputModel.StudyFieldName">
+                <option value=null></option>
+                @foreach (var sf in studyFields)
                 {
-                    <option selected value="@sf.Name">@sf.Name</option>
-                }
-                else
-                {
-                    <option value="@sf.Name">@sf.Name</option>
-                }
-            }
-        </InputSelect>
-
-        <h5>Početak realizacije</h5>
-        <InputDate @bind-Value="@projectInputModel.StartDate"></InputDate>
-
-        <h5>Kraj realizacije</h5>
-        <InputDate @bind-Value="@projectInputModel.EndDate"></InputDate>
-
-        <h5>Opis projekta</h5>
-        <InputTextArea @bind-Value="@projectInputModel.Description"></InputTextArea>
-
-        <TagsOverview Editing="editing"
-                      ProjectInputModel="projectInputModel"
-                      TagNames="projectInputModel.TagNames"></TagsOverview>
-        <BlazoredTypeahead SearchMethod="FilterTags"
-                           @bind-Value="AddedTag"
-                           Context="tag">
-            <SelectedTemplate>
-                @tag.Name
-            </SelectedTemplate>
-            <ResultTemplate>
-                @tag.Name
-            </ResultTemplate>
-            <NotFoundTemplate>
-                Nema rezultata.
-            </NotFoundTemplate>
-        </BlazoredTypeahead>
-    </div>
-
-    @if (editing)
-    {
-        <div class="buttons" style="float: left;">
-            <button class="button button-primary" type="submit" @onclick="@AddCollaboratorPopUp">Dodaj saradnika</button>
-        </div>
-        <div class="buttons" style="float: right;">
-            <button class="button button-primary" type="submit">Sačuvaj izmjene</button>
-            <button>Odustani</button>
-        </div>
-    }
-    else
-    {
-        <div class="buttons" style="float: left;">
-            <button class="button button-primary" type="submit" @onclick="@AddCollaboratorPopUp">Dodaj saradnika</button>
-        </div>
-        <div class="buttons" style="float: right;">
-            <button class="button button-primary" type="submit">Oglasi projekat</button>
-        </div>
-    }
-</EditForm>
-
-
-@*    <div class="section">
-        <EditForm Model="@collaboratorProfileInputModel" OnValidSubmit="@AddCollaboratorProfile">
-            <h4 class="title">Profili traženih saradnika</h4>
-            <h5>Tip saradnika</h5>
-            <InputSelect TValue="CollaboratorProfileType"
-                         ValueChanged="@((CollaboratorProfileType t) => CollaboratorProfileTypeChanged(t))"
-                         ValueExpression="@(() => collaboratorProfileInputModel.CollaboratorProfileType)"
-                         Value="@collaboratorProfileInputModel.CollaboratorProfileType">
-                @foreach (var value in Enum.GetValues(typeof(CollaboratorProfileType)))
-                {
-                    if ((CollaboratorProfileType)value == collaboratorProfileInputModel.CollaboratorProfileType)
+                    if (sf.Name == projectInputModel.StudyFieldName)
                     {
-                        <option selected value="@value">@value</option>
+                        <option selected value="@sf.Name">@sf.Name</option>
                     }
                     else
                     {
-                        <option value="@value">@value</option>
+                        <option value="@sf.Name">@sf.Name</option>
                     }
                 }
             </InputSelect>
 
-            <h5>Opis aktivnosti</h5>
-            <InputText @bind-Value="@collaboratorProfileInputModel.ActivityDescription">
-            </InputText>
+            <h5>Početak realizacije</h5>
+            <InputDate @bind-Value="@projectInputModel.StartDate"></InputDate>
 
-            <h5>Fakultet</h5>
-            <InputSelect TValue="@string"
-                         ValueChanged="@((string f) => FacultySelected(f))"
-                         ValueExpression="@(() => collaboratorProfileInputModel.FacultyName)"
-                         Value="@collaboratorProfileInputModel.FacultyName">
-                <option></option>
-                @foreach (var f in faculties)
-                {
-                    if (f.Name == collaboratorProfileInputModel.FacultyName)
-                    {
-                        <option selected value="@f.Name">@f.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@f.Name">@f.Name</option>
-                    }
+            <h5>Kraj realizacije</h5>
+            <InputDate @bind-Value="@projectInputModel.EndDate"></InputDate>
 
-                }
-            </InputSelect>
+            <h5>Opis projekta</h5>
+            <InputTextArea @bind-Value="@projectInputModel.Description"></InputTextArea>
 
-            @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.Student)
-            {
-                <h5>Ciklus</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string c) => { CycleSelected(c); })"
-                             ValueExpression="@(() => cycleStr)"
-                             Value="@cycleStr">
-                    <option></option>
-                    @foreach (string c in cycles)
-                    {
-                        if (c == cycleStr)
-                        {
-                            <option selected value="@c">@c</option>
-                        }
-                        else
-                        {
-                            <option value="@c">@c</option>
-                        }
-                    }
+            <TagsOverview Editing="editing"
+                          ProjectInputModel="projectInputModel"
+                          TagNames="projectInputModel.TagNames"></TagsOverview>
+            <BlazoredTypeahead SearchMethod="FilterTags"
+                               @bind-Value="AddedTag"
+                               Context="tag">
+                <SelectedTemplate>
+                    @tag.Name
+                </SelectedTemplate>
+                <ResultTemplate>
+                    @tag.Name
+                </ResultTemplate>
+                <NotFoundTemplate>
+                    Nema rezultata.
+                </NotFoundTemplate>
+            </BlazoredTypeahead>
+        </div>
 
-                </InputSelect>
+        @if (editing)
+        {
+            <div class="buttons">
+                <button class="button button-primary" type="button" @onclick="@AddCollaboratorPopUp">Dodaj profil saradnika</button>
+                <button class="button button-primary" type="submit">Sačuvaj izmjene</button>
+            </div>
+        }
+        else
+        {
+            <div class="buttons">
+                <button class="button button-primary" type="button" @onclick="@AddCollaboratorPopUp">Dodaj profil saradnika</button>
+                <button class="button button-primary" type="submit">Oglasi projekat</button>
+            </div>
+        }
+    </EditForm>
 
-                <h5>Studijski program</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string p) => ProgramSelected(p))"
-                             ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramName)"
-                             Value="@collaboratorProfileInputModel.StudyProgramName">
-                    <option></option>
-                    @foreach (var p in programs)
-                    {
-                        if (p.Name == collaboratorProfileInputModel.StudyProgramName)
-                        {
-                            <option selected value="@p.Name">@p.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@p.Name">@p.Name</option>
-                        }
-                    }
-                </InputSelect>
-
-
-                <h5>Studijski smjer</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string s) => SpecializationSelected(s))"
-                             ValueExpression="@(() => collaboratorProfileInputModel.StudyProgramSpecializationName)"
-                             Value="@collaboratorProfileInputModel.StudyProgramSpecializationName">
-                    <option></option>
-                    @foreach (var s in specializations)
-                    {
-                        if (s.Name == collaboratorProfileInputModel.StudyProgramSpecializationName)
-                        {
-                            <option selected value="@s.Name">@s.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@s.Name">@s.Name</option>
-                        }
-                    }
-                </InputSelect>
-
-                <h5>Godina</h5>
-                <InputSelect TValue="@string"
-                             ValueChanged="@((string y) => { YearSelected(y); })"
-                             ValueExpression="@(() => yearStr)"
-                             Value="@yearStr">
-                    <option></option>
-                    @foreach (int y in years)
-                    {
-                        if ($"{y}" == yearStr)
-                        {
-                            <option selected value="@y">@y</option>
-                        }
-                        else
-                        {
-                            <option value="@y">@y</option>
-                        }
-                    }
-                </InputSelect>
-            }
-
-            @if (collaboratorProfileInputModel.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
-            {
-                <h5>Uža naučna oblast</h5>
-                <InputSelect TValue="string"
-                             @bind-Value="@collaboratorProfileInputModel.StudyFieldName">
-                    <option value=null></option>
-                    @foreach (var sf in studyFields)
-                    {
-                        if (sf.Name == collaboratorProfileInputModel.StudyFieldName)
-                        {
-                            <option selected value="@sf.Name">@sf.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@sf.Name">@sf.Name</option>
-                        }
-                    }
-                </InputSelect>
-            }
-        </EditForm>
-    </div>*@
-
-    <br /><br />
-    
     <div class="section">
         <h4 class="title">Dodani profili saradnika</h4>
 

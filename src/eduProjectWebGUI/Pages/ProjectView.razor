@@ -55,21 +55,21 @@
         @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="buttons">
-                <button type="submit" class="button button-primary" @onclick="ShowModalVisitorActive">Prijavi se</button>
-                <button type="submit" class="button" @onclick="ShowCancelWarningVisitorActive">Poništi prijavu</button>
+                <button class="button button-primary" @onclick="ShowModalVisitorActive">Prijavi se</button>
+                <button class="button" @onclick="ShowCancelWarningVisitorActive">Poništi prijavu</button>
             </div>
         }
         else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="col-md-4 ml-auto projectview-final-btns">
-                <button type="submit" class="button button-primary" @onclick="ShowModalAuthorActive">Izmijeni</button>
-                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+                <button class="button button-primary" @onclick="ShowModalAuthorActive">Izmijeni</button>
+                <button class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
         else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="col-md-4 ml-auto projectview-final-btns">
-                <button type="submit" class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+                <button class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
     }
