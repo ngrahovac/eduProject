@@ -469,15 +469,15 @@ namespace eduProjectWebAPI.Data
                     project.StudyField != updatedProject.StudyField ||
                     project.ProjectStatus != updatedProject.ProjectStatus)
                 {
-                    await UpdateBasicProjectInfo(command, project);
+                    await UpdateBasicProjectInfo(command, updatedProject);
                 }
 
                 if (project.CollaboratorProfiles.Count != updatedProject.CollaboratorProfiles.Count) // profiles can only be added
                 {
-                    await UpdateCollaboratorProfilesInfo(command, project);
+                    await UpdateCollaboratorProfilesInfo(command, updatedProject);
                 }
 
-                // TODO: update tags
+                await UpdateTagsInfo(command, updatedProject);
 
                 await connection.CloseAsync();
             }
@@ -491,9 +491,10 @@ namespace eduProjectWebAPI.Data
                                     start_date = @startDate,
                                     end_date = @endDate,
                                     description = @description,
-                                    study_field_id = @fieldId,
-                                    project_status_id = @statusId
+                                    study_field_id = @fieldId
                                     WHERE project_id = @projectId";
+
+            // add project_status_id = @statusId
 
             command.Parameters.Clear();
 
@@ -532,12 +533,15 @@ namespace eduProjectWebAPI.Data
                 Value = StudyField.fields.Where(p => p.Value == project.StudyField).First().Key
             });
 
+            // FIX: can't update referencing row
+            /*
             command.Parameters.Add(new MySqlParameter
             {
                 ParameterName = "@statusId",
                 DbType = DbType.Int32,
                 Value = (int)project.ProjectStatus
             });
+            */
 
             command.Parameters.Add(new MySqlParameter
             {
@@ -684,7 +688,65 @@ namespace eduProjectWebAPI.Data
 
         private async Task UpdateTagsInfo(MySqlCommand command, Project project)
         {
-            throw new NotImplementedException();
+            var oldProject = await GetAsync(project.ProjectId);
+
+            // FIX: works because Tag instances are fetched and shared from a pool
+            var addedTags = project.Tags.Where(t => !oldProject.Tags.Contains(t));
+            var removedTags = oldProject.Tags.Where(t => !project.Tags.Contains(t));
+
+            var addedTagIds = addedTags.Select(t => Tag.tags.Where(p => p.Value == t).First().Key);
+            var removedTagIds = removedTags.Select(t => Tag.tags.Where(p => p.Value == t).First().Key);
+
+            foreach (var id in addedTagIds)
+            {
+                command.CommandText = @"INSERT INTO project_tag
+                                        (project_id, tag_id)
+                                        VALUES
+                                        (@projectId, @tagId)";
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@tagId",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await command.ExecuteNonQueryAsync();
+            }
+
+            foreach (var id in removedTagIds)
+            {
+                command.CommandText = @"DELETE FROM project_tag
+                                        WHERE project_id = @projectId
+                                        AND tag_id = @tagId";
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@tagId",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await command.ExecuteNonQueryAsync();
+            }
         }
 
         private async Task UpdateCollaboratorsInfo(MySqlCommand command, Project project)

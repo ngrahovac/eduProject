@@ -48,7 +48,7 @@ namespace eduProjectModel.Input
         public void MapTo(FacultyMemberProfile profile)
         {
             profile.Description = ActivityDescription;
-            profile.StudyField.Name = StudyFieldName;
+            profile.StudyField = StudyField.fields.Where(sf => sf.Value.Name == StudyFieldName).First().Value;
         }
 
         public static CollaboratorProfileInputModel FromCollaboratorProfileDisplayModel(CollaboratorProfileDisplayModel profile)

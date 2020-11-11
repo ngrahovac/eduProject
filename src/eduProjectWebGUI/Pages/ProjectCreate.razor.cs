@@ -18,7 +18,7 @@ namespace eduProjectWebGUI.Pages
 
         private bool editing = false;
 
-        // ProjectInputModel instance is injected as singleton
+        ProjectInputModel projectInputModel = new ProjectInputModel();
 
         // input model for collaborator profile the user is currently creating
         private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();
@@ -70,6 +70,7 @@ namespace eduProjectWebGUI.Pages
                     TagNames = model.Tags.Select(t => t.Name).ToList()
                 };
 
+                // add display model 
                 projectInputModel.CollaboratorProfileInputModels = new List<CollaboratorProfileInputModel>();
                 List<CollaboratorProfileDisplayModel> collaboratorProfileDisplayModels = new List<CollaboratorProfileDisplayModel>();
                 foreach (var p in model.StudentProfileDisplayModels)
@@ -123,6 +124,8 @@ namespace eduProjectWebGUI.Pages
         async Task AddCollaboratorPopUp()
         {
             var parameters = new ModalParameters();
+            parameters.Add("ProjectInputModel", projectInputModel);
+            parameters.Add("Editing", editing);
             parameters.Add("faculties", faculties);
             parameters.Add("studyFields", studyFields);
             parameters.Add("tags", tags);

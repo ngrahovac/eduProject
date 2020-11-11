@@ -50,11 +50,16 @@
 .collaborator-profiles-table {
     border-collapse: collapse;
     width: 100%;
+    overflow-y: auto;
 }
 
-    .collaborator-profiles-table tr:hover {
-        background-color: #f5f5f5
+    .collaborator-profiles-table tr {
+        height: 50px;
     }
+
+        .collaborator-profiles-table tr:hover {
+            background-color: #f5f5f5
+        }
 
 .selected-row {
     background-color: hotpink;

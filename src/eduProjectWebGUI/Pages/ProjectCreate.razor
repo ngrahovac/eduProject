@@ -2,7 +2,6 @@
 @page "/projects/{id:int}/edit"
 @inject ApiService ApiService
 @inject IModalService Modal
-@inject ProjectInputModel projectInputModel
 
 
 <div class="content">
@@ -85,36 +84,38 @@
     <div class="section">
         <h4 class="title">Dodani profili saradnika</h4>
 
-        <table class="collaborator-profiles-table">
-            <thead>
-                <tr>
-                    <th>Tip</th>
-                    <th>Fakultet</th>
-                    <th>Ciklus</th>
-                    <th>Program</th>
-                    <th>Smjer</th>
-                    <th>Godina</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-
-                @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
-                {
+        @*FIX: Add sticky header*@
+        <div style="height:500px; overflow-y:auto">
+            <table class="collaborator-profiles-table">
+                <thead>
                     <tr>
-                        <td>@p.CollaboratorProfileType</td>
-                        <td>@p.FacultyName</td>
-                        <td>@p.Cycle</td>
-                        <td>@p.StudyProgramName</td>
-                        <td>@p.StudyProgramSpecializationName</td>
-                        <td>@p.StudyFieldName</td>
-                        @if (!p.AddedOnCreate)
-                        {
-                            <td><button @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
-                        }
+                        <th>Tip</th>
+                        <th>Fakultet</th>
+                        <th>Ciklus</th>
+                        <th>Program</th>
+                        <th>Smjer</th>
+                        <th>Godina</th>
+                        <th></th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
+                    {
+                        <tr>
+                            <td>@p.CollaboratorProfileType</td>
+                            <td>@p.FacultyName</td>
+                            <td>@p.Cycle</td>
+                            <td>@p.StudyProgramName</td>
+                            <td>@p.StudyProgramSpecializationName</td>
+                            <td>@p.StudyFieldName</td>
+                            @if (!p.AddedOnCreate)
+                            {
+                                <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
