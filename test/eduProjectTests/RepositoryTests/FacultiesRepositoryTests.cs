@@ -21,6 +21,9 @@ namespace eduProjectTests.RepositoryTests
             var serviceProvider = services.BuildServiceProvider();
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
+            var testDbController = new TestDatabaseController(new TestDbConnectionString());
+            Task.Run(() => testDbController.SeedData()).Wait();
+
             faculties = new FacultiesRepository(new TestDbConnectionString(), memoryCache);
         }
 
@@ -36,6 +39,7 @@ namespace eduProjectTests.RepositoryTests
         {
             var result = await faculties.GetAsync(1);
             Assert.IsType<Faculty>(result);
+            Assert.Equal<int>(8, result.StudyPrograms.Count);
         }
 
         [Fact]

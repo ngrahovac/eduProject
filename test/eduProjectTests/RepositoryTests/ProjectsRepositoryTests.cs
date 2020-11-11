@@ -34,6 +34,9 @@ namespace eduProjectTests.RepositoryTests
                 StudyField.fields.Add(i, new StudyField { Name = "test field" });
                 Tag.tags.Add(i, new Tag { Name = "test tag" });
             }
+
+            var testDbController = new TestDatabaseController(new TestDbConnectionString());
+            Task.Run(() => testDbController.SeedData()).Wait();
         }
 
         [Fact]

@@ -6,13 +6,10 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebAPI", "src\eduProjectWebAPI\eduProjectWebAPI.csproj", "{26E390E9-07EC-445E-AEE0-4202CC107EA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectWebGUI", "src\eduProjectWebGUI\eduProjectWebGUI.csproj", "{DD54E987-3BF0-409A-A901-B4A2D3568EEB}"
-<<<<<<< development
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectModel", "src\eduProjectModelLib\eduProjectModel.csproj", "{C9105D01-18E4-489E-A758-EC86235047F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eduProjectTests", "test\eduProjectTests\eduProjectTests.csproj", "{2A1CA7F5-1E44-4254-A1BD-47983BBFFCC5}"
-=======
->>>>>>> Add basic layout on creating project page
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eduProjectTests", "test\eduProjectTests\eduProjectTests.csproj", "{2A1CA7F5-1E44-4254-A1BD-47983BBFFCC5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

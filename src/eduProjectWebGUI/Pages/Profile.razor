@@ -1,0 +1,94 @@
+﻿@page "/users/{UserId:int}"
+
+<div class="content">
+    @if (ProfileDisplayModel == null)
+    {
+        <h3>Loading...</h3>
+    }
+    else
+    {
+        <h3>@($"{ProfileDisplayModel.FirstName} {ProfileDisplayModel.LastName}")</h3>
+        @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
+        {
+            <h4>@($"Student, {ProfileDisplayModel.FacultyName}")</h4>
+        }
+        else
+        {
+            <h4>@($"{ProfileDisplayModel.AcademicRank}, {ProfileDisplayModel.FacultyName}")</h4>
+        }
+
+        <div class="section">
+            <h4 class="title">Osnovne informacije</h4>
+
+            <h5>Biografija</h5>
+            <p>@ProfileDisplayModel.Bio</p>
+        </div>
+
+        <div class="section">
+            @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
+            {
+                <h4 class="title">Institucija studiranja</h4>
+
+                <h5>Fakultet</h5>
+                <p>@ProfileDisplayModel.FacultyName</p>
+
+                <h5>Ciklus</h5>
+                <p>@ProfileDisplayModel.Cycle</p>
+
+                <h5>Studijski program</h5>
+                <p>@ProfileDisplayModel.StudyProgramName</p>
+
+                <h5>Studijski smjer</h5>
+                <p>@ProfileDisplayModel.StudyProgramSpecializationName</p>
+
+                <h5>Godina studija</h5>
+                <p>@ProfileDisplayModel.StudyYear</p>
+            }
+            else
+            {
+                <h4 class="title">Institucija djelovanja</h4>
+
+                <h5>Fakultet</h5>
+                <p>@ProfileDisplayModel.FacultyName</p>
+
+                <h5>Uža naučna oblast</h5>
+                <p>@ProfileDisplayModel.StudyFieldName</p>
+            }
+        </div>
+
+        <div class="section">
+            <h4 class="title">Kontakt</h4>
+
+            <h5>Email</h5>
+            <p>@ProfileDisplayModel.Email</p>
+
+            <h5>Broj telefona</h5>
+            <p>@ProfileDisplayModel.PhoneNumber</p>
+
+            <h5>Website</h5>
+            <p>@ProfileDisplayModel.Website</p>
+
+            <h5>LinkedIn</h5>
+            <p>@ProfileDisplayModel.LinkedinProfile</p>
+
+            <h5>ResearchGate</h5>
+            <p>@ProfileDisplayModel.ResearchgateProfile</p>
+        </div>
+
+        <div class="section">
+            <h4 class="title">Projekti</h4>
+
+            <h5>Oglašeni projekti</h5>
+            @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
+            {
+                <p>@(p.Title)</p>
+            }
+
+            <h5>Saradnje na projektima</h5>
+            @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
+            {
+                <p>@(p.Title)</p>
+            }
+        </div>
+    }
+</div>

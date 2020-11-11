@@ -17,30 +17,39 @@ namespace eduProjectWebGUI.Pages
     public partial class ProjectView
     {
         [Parameter]
-        public string ProjectId { get; set; }
+        public int ProjectId { get; set; }
+
         [Inject]
         ApiService ApiService { get; set; }
-
-        // private bool SignUpCancel = true;
-        // private bool SignUpButton = false;
 
         [Parameter]
         public ProjectDisplayModel ProjectDisplayModel { get; set; }
 
+        // Metoda koja prikazuje prozor sa mogucnoscu unosenja komentara kada se klikne na button PRIJAVI SE.
+        // Kada korisnik gleda tudji projekat na koji se moze prijaviti, a nije prethodno prijavljen.
         async Task ShowModalVisitorActive()
         {
             var messageForm = Modal.Show<LeaveComment>();
             var result = await messageForm.Result;
 
+            // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
             if (!result.Cancelled)
             {
                 // TODO: remove button enabling/disabling
-
-                var projectId = model.ProjectId = Int32.Parse(ProjectId);
+                // Bane je uklonio ↑ na client strani. 
                 await ApiService.PostAsync("/applications", model);
             }
         }
 
+        // Metoda koja bi sa klikom na button IZMIJENI dala mogucnost da autor mijenja nesto na AKTIVNOM projektu.
+        // Kada korisnik gleda svoj projekat koji je aktivan. (Autor projekta)
+        async Task ShowModalAuthorActive()
+        {
+            // TODO something
+        }
+
+        // Metoda koja izbacuje prozor koji pita da li smo sigurni da zelimo da ponistimo prijavu na projekat. (ako je korisnik uopste prijavljen na dati projekat)
+        // Kada korisnik gleda tudji projekat na koji se prethodno vec prijavio.
         async Task ShowCancelWarningVisitorActive()
         {
             var parameters = new ModalParameters();
@@ -49,25 +58,17 @@ namespace eduProjectWebGUI.Pages
             var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
             var result = await messageForm.Result;
 
+            // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
             if (!result.Cancelled)
             {
                 // revoke application
-
             }
         }
 
-        async Task ShowModalAuthorActive()
-        {
-            var messageForm = Modal.Show<LeaveComment>();
-            var result = await messageForm.Result;
-
-            if (!result.Cancelled)
-            {
-
-            }
-        }
-
-        async Task ShowCancelWarningAuthorActive()
+        // Metoda koja prikazuje prozor koji pita da li smo sigurni da zelimo da izbrisemo projekat.
+        // Kada korisnik gleda projekat koji je on sam napravio. (Autor projekta)
+        // Metoda je ista i za aktivan i za zatvoren projekat.
+        async Task ShowCancelWarningAuthor()
         {
             var parameters = new ModalParameters();
             string Title = "Potvrda o brisanju projekta";
@@ -75,25 +76,10 @@ namespace eduProjectWebGUI.Pages
             var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
             var result = await messageForm.Result;
 
+            // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
             if (!result.Cancelled)
             {
-                // SignUpCancel = true;
-                // SignUpButton = false;
-            }
-        }
-
-        async Task ShowCancelWarningAuthorClosed()
-        {
-            var parameters = new ModalParameters();
-            string Title = "Potvrda o brisanju projekta";
-            parameters.Add(nameof(Title), Title);
-            var messageForm = Modal.Show<CancelConfirmation>(nameof(Title), parameters);
-            var result = await messageForm.Result;
-
-            if (!result.Cancelled)
-            {
-                // SignUpCancel = true;
-                // SignUpButton = false;
+                 
             }
         }
 

@@ -450,5 +450,309 @@ namespace eduProjectWebAPI.Data
             }
         }
 
+        public async Task UpdateAsync(Project updatedProject)
+        {
+            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                var project = await GetAsync(updatedProject.ProjectId);
+
+                if (project.Title != updatedProject.Title ||
+                    project.Description != updatedProject.Description ||
+                    project.StartDate != updatedProject.StartDate ||
+                    project.StudyField != updatedProject.StudyField ||
+                    project.ProjectStatus != updatedProject.ProjectStatus)
+                {
+                    await UpdateBasicProjectInfo(command, updatedProject);
+                }
+
+                if (project.CollaboratorProfiles.Count != updatedProject.CollaboratorProfiles.Count) // profiles can only be added
+                {
+                    await UpdateCollaboratorProfilesInfo(command, updatedProject);
+                }
+
+                await UpdateTagsInfo(command, updatedProject);
+
+                await connection.CloseAsync();
+            }
+        }
+
+        private async Task UpdateBasicProjectInfo(MySqlCommand command, Project project)
+        {
+            command.CommandText = @"UPDATE project
+                                    SET
+                                    title = @title,
+                                    start_date = @startDate,
+                                    end_date = @endDate,
+                                    description = @description,
+                                    study_field_id = @fieldId
+                                    WHERE project_id = @projectId";
+
+            // add project_status_id = @statusId
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@title",
+                DbType = DbType.String,
+                Value = project.Title
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@startDate",
+                DbType = DbType.DateTime,
+                Value = project.StartDate
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@endDate",
+                DbType = DbType.DateTime,
+                Value = project.EndDate
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@description",
+                DbType = DbType.String,
+                Value = project.Description
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@fieldId",
+                DbType = DbType.Int32,
+                Value = StudyField.fields.Where(p => p.Value == project.StudyField).First().Key
+            });
+
+            // FIX: can't update referencing row
+            /*
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@statusId",
+                DbType = DbType.Int32,
+                Value = (int)project.ProjectStatus
+            });
+            */
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@projectId",
+                DbType = DbType.Int32,
+                Value = project.ProjectId
+            });
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task UpdateCollaboratorProfilesInfo(MySqlCommand command, Project project)
+        {
+            var oldProject = await GetAsync(project.ProjectId);
+
+            foreach (var profile in project.CollaboratorProfiles)
+            {
+                if (!oldProject.CollaboratorProfiles.Select(p => p.CollaboratorProfileId).Contains(profile.CollaboratorProfileId))
+                {
+                    // insert new profile into database
+
+                    command.CommandText = @"INSERT INTO collaborator_profile
+                                        (description, project_id, user_account_type_id)
+                                        VALUES
+                                        (@description, @projectId, @profileTypeId)";
+
+                    command.Parameters.Clear();
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@description",
+                        DbType = DbType.String,
+                        Value = profile.Description
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@projectId",
+                        DbType = DbType.Int32,
+                        Value = project.ProjectId
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@profileTypeId",
+                        DbType = DbType.Int32,
+                        Value = profile is StudentProfile ? (int)CollaboratorProfileType.Student : (int)CollaboratorProfileType.FacultyMember
+                    });
+
+                    await command.ExecuteNonQueryAsync();
+                    profile.CollaboratorProfileId = (int)command.LastInsertedId;
+
+                    if (profile is StudentProfile sp)
+                    {
+                        command.CommandText = @"INSERT INTO student_profile
+                                            (collaborator_profile_id, cycle, study_year,
+                                            faculty_id, study_program_id, study_program_specialization_id)
+                                            VALUES
+                                            (@profileId, @cycle, @year,
+                                            @facultyId, @programId, @specializationId)";
+
+                        command.Parameters.Clear();
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@profileId",
+                            DbType = DbType.Int32,
+                            Value = sp.CollaboratorProfileId
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@cycle",
+                            DbType = DbType.Int32,
+                            Value = sp.StudyCycle
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@year",
+                            DbType = DbType.Int32,
+                            Value = sp.StudyYear
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@facultyId",
+                            DbType = DbType.Int32,
+                            Value = sp.FacultyId
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@programId",
+                            DbType = DbType.Int32,
+                            Value = sp.StudyProgramId
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@specializationId",
+                            DbType = DbType.Int32,
+                            Value = sp.StudyProgramSpecializationId
+                        });
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                    else if (profile is FacultyMemberProfile fp)
+                    {
+                        command.CommandText = @"INSERT INTO faculty_member_profile
+                                            (collaborator_profile_id, faculty_id, study_field_id)
+                                            VALUES
+                                            (@profileId, @facultyId, @fieldId)";
+
+                        command.Parameters.Clear();
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@profileId",
+                            DbType = DbType.Int32,
+                            Value = fp.CollaboratorProfileId
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@facultyId",
+                            DbType = DbType.Int32,
+                            Value = fp.FacultyId
+                        });
+
+                        command.Parameters.Add(new MySqlParameter
+                        {
+                            ParameterName = "@fieldId",
+                            DbType = DbType.Int32,
+                            Value = StudyField.fields.Where(p => p.Value == fp.StudyField).First().Key
+                        });
+
+                        await command.ExecuteNonQueryAsync();
+                    }
+                }
+            }
+
+        }
+
+        private async Task UpdateTagsInfo(MySqlCommand command, Project project)
+        {
+            var oldProject = await GetAsync(project.ProjectId);
+
+            // FIX: works because Tag instances are fetched and shared from a pool
+            var addedTags = project.Tags.Where(t => !oldProject.Tags.Contains(t));
+            var removedTags = oldProject.Tags.Where(t => !project.Tags.Contains(t));
+
+            var addedTagIds = addedTags.Select(t => Tag.tags.Where(p => p.Value == t).First().Key);
+            var removedTagIds = removedTags.Select(t => Tag.tags.Where(p => p.Value == t).First().Key);
+
+            foreach (var id in addedTagIds)
+            {
+                command.CommandText = @"INSERT INTO project_tag
+                                        (project_id, tag_id)
+                                        VALUES
+                                        (@projectId, @tagId)";
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@tagId",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await command.ExecuteNonQueryAsync();
+            }
+
+            foreach (var id in removedTagIds)
+            {
+                command.CommandText = @"DELETE FROM project_tag
+                                        WHERE project_id = @projectId
+                                        AND tag_id = @tagId";
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@tagId",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await command.ExecuteNonQueryAsync();
+            }
+        }
+
+        private async Task UpdateCollaboratorsInfo(MySqlCommand command, Project project)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

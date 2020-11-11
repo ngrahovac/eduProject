@@ -1,0 +1,71 @@
+﻿@inject Microsoft.JSInterop.IJSRuntime js
+@inject ProjectApplicationInputModel model
+
+<div class="section">
+    <h4 class="title">Profili traženih saradnika</h4>
+    <h5> Profili nastavnog osoblja </h5>
+    <table id="faculty-member-profiles" class="collaborator-profiles-table">
+        <thead>
+            <tr>
+                <th>Fakultet</th>
+                <th>Naučna oblast</th>
+                <th>Opis aktivnosti</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
+            {
+                int index = i;
+                FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
+                <tr @onclick="@(() => CollaboratorProfileSelected("faculty member profile", index))">
+                    <td>@profile.FacultyName</td>
+                    <td>@profile.StudyFieldName</td>
+                    <td>@profile.Description</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5>Profili studenata</h5>
+    <table id="student-profiles" class="collaborator-profiles-table">
+        <tr>
+            <th>Fakultet</th>
+            <th>Ciklus</th>
+            <th>Studijski program</th>
+            <th>Studijski smjer</th>
+            <th>Godina</th>
+            <th>Opis aktivnosti</th>
+        </tr>
+        @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
+        {
+            int index = i;
+            StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
+            <tr @onclick="@(() => CollaboratorProfileSelected("student profile", index))">
+                <td>@profile.FacultyName</td>
+                <td>@profile.StudyCycle</td>
+                <td>@profile.StudyProgramName</td>
+                <td>@profile.StudyProgramSpecializationName</td>
+                <td>@profile.StudyYear</td>
+                <td>@profile.Description</td>
+            </tr>
+        }
+    </table>
+</div>
+
+@code {
+
+    [Parameter]
+    public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; }
+
+    [Parameter]
+    public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; }
+
+
+    public async Task CollaboratorProfileSelected(string profileType, int i)
+    {
+        await js.InvokeVoidAsync("selectCollaboratorProfile", profileType, i);
+        model.CollaboratorProfileIndex = i;
+        if (profileType == "student profile") model.CollaboratorProfileType = CollaboratorProfileType.Student;
+        else model.CollaboratorProfileType = CollaboratorProfileType.FacultyMember;
+    }
+}

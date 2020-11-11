@@ -1,5 +1,6 @@
 ﻿using eduProjectModel;
 using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using System;

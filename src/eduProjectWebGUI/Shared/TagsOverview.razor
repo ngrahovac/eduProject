@@ -1,0 +1,27 @@
+﻿<div class="component">
+    <h5>Tagovi</h5>
+    @if (TagNames.Count == 0)
+    {
+        <p>Ne postoje tagovi povezani sa ovim projektom.</p>
+    }
+    else
+    {
+        <div class="tags">
+            @foreach (var name in TagNames)
+            {
+                <div class="tag" @onclick="@(e => { if (Editing) ProjectInputModel.TagNames.Remove(name); })">
+                    @name
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public bool Editing { get; set; } = false;
+    [Parameter]
+    public ICollection<string> TagNames { get; set; } = new List<string>();
+    [Parameter]
+    public ProjectInputModel ProjectInputModel { get; set; } = null;
+}

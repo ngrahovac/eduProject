@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Blazored.Modal;
 using eduProjectWebGUI.Services;
+using eduProjectModel.Input;
 
 namespace eduProjectWebGUI
 {
@@ -27,6 +28,8 @@ namespace eduProjectWebGUI
             builder.Services.AddBlazoredModal();
 
             builder.Services.AddSingleton<ProjectApplicationInputModel>();
+
+            builder.Services.AddSingleton<ProjectInputModel>();
 
             await builder.Build().RunAsync();
         }

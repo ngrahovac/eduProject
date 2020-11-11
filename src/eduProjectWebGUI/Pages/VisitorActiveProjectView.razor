@@ -1,63 +1,6 @@
-﻿@inject Microsoft.JSInterop.IJSRuntime js
-@inject eduProjectWebGUI.ProjectApplicationInputModel model
+﻿<EditForm Model="@VisitorActiveProjectDisplayModel">
+    <CollaboratorProfilesOverview StudentProfileDisplayModels="VisitorActiveProjectDisplayModel.StudentProfileDisplayModels"
+                                  FacultyMemberProfileDisplayModels="VisitorActiveProjectDisplayModel.FacultyMemberProfileDisplayModels"></CollaboratorProfilesOverview>
 
-<EditForm Model="@VisitorActiveProjectDisplayModel">
 
-    <table id="faculty-member-profiles">
-        <tr>
-            <th>Naziv fakulteta</th>
-            <th>Naziv oblasti</th>
-            <th>Opis</th>
-        </tr>
-        @for (int i = 0; i < VisitorActiveProjectDisplayModel.FacultyMemberProfileDisplayModels.Count(); i++)
-        {
-            int index = i;
-            FacultyMemberProfileDisplayModel profile = VisitorActiveProjectDisplayModel.FacultyMemberProfileDisplayModels.ElementAt(index);
-            <tr @onclick="@(() => CollaboratorProfileSelected("faculty member profile", index))">
-                <td>@profile.FacultyName</td>
-                <td>@profile.StudyFieldName</td>
-                <td>@profile.Description</td>
-            </tr>
-        }
-    </table>
-    <br /><br />
-    <table id="student-profiles">
-        <tr>
-            <th>Naziv fakulteta</th>
-            <th>Naziv smjera</th>
-            <th>Opis</th>
-        </tr>
-        @for (int i = 0; i < VisitorActiveProjectDisplayModel.StudentProfileDisplayModels.Count(); i++)
-        {
-            int index = i;
-            StudentProfileDisplayModel profile = VisitorActiveProjectDisplayModel.StudentProfileDisplayModels.ElementAt(index);
-            <tr @onclick="@(() => CollaboratorProfileSelected("student profile", index))">
-                <td>@profile.FacultyName</td>
-                <td>@profile.StudyProgramName</td>
-                <td>@profile.Description</td>
-            </tr>
-        }
-    </table>
 </EditForm>
-
-<div class="row">
-    @if (VisitorActiveProjectDisplayModel.Tags == null)
-    {
-        <div class="col-md-4">
-            <br /><br /><h5>Ne postoje tagove povezani sa ovim projektom!</h5><br />
-        </div>
-    }
-    else
-    {
-        <div class="col-md-4">
-            <br /><br /><h5>Tagovi:</h5><br />
-        </div>
-        <div class="form-group mx-sm-3 mb-2 row">
-            @foreach (eduProjectModel.Domain.Tag tag in VisitorActiveProjectDisplayModel.Tags)
-            {
-                <h5><span class="badge badge-primary projectview-tag">#@tag.Name</span></h5>
-                @*<h5>@tag.Description</h5>*@
-            }
-        </div>
-    }
-</div>
