@@ -21,10 +21,10 @@ namespace eduProjectTests.RepositoryTests
             var serviceProvider = services.BuildServiceProvider();
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
-            var testDbController = new TestDatabaseController(new TestDbConnectionString());
+            var testDbController = new TestDatabaseController(new TestDbConnectionParameters());
             Task.Run(() => testDbController.SeedData()).Wait();
 
-            faculties = new FacultiesRepository(new TestDbConnectionString(), memoryCache);
+            faculties = new FacultiesRepository(new TestDbConnectionParameters(), memoryCache);
         }
 
         [Fact]

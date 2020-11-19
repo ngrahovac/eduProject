@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
 {
-    public class DevelopmentDbConnectionString : DbConnectionStringBase
+    public class DevelopmentDbConnectionParameters : DbConnectionParameters
     {
-        public DevelopmentDbConnectionString(IConfiguration configuration)
+        public DevelopmentDbConnectionParameters(IConfiguration configuration)
         {
             ConnectionString = configuration["ConnectionStrings:eduProjectDb"];
         }

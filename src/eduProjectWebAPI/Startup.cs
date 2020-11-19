@@ -47,10 +47,10 @@ namespace eduProjectWebAPI
             services.AddTransient<IUsersRepository, UsersRepository>();
             services.AddTransient<IFacultiesRepository, FacultiesRepository>();
             services.AddTransient<IProjectApplicationsRepository, ProjectApplicationsRepository>();
-            services.AddTransient<DbConnectionStringBase, TestDbConnectionString>();
+            services.AddTransient<DbConnectionParameters, TestDbConnectionParameters>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionStringBase dbConnection)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionParameters dbConnection)
         {
             if (env.IsDevelopment())
             {

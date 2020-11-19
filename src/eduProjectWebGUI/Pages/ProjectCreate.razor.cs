@@ -60,6 +60,8 @@ namespace eduProjectWebGUI.Pages
                 // editing project
                 editing = true;
                 var model = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
+                projectInputModel = new ProjectInputModel(model);
+                /*
                 projectInputModel = new ProjectInputModel
                 {
                     Title = model.Title,
@@ -88,7 +90,7 @@ namespace eduProjectWebGUI.Pages
                     collaboratorProfileInputModel.AddedOnCreate = true;
                     projectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
                 }
-
+                */
             }
             else
             {

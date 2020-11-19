@@ -14,9 +14,9 @@ namespace eduProjectWebAPI.Data
     public class FacultiesRepository : IFacultiesRepository
     {
         private readonly IMemoryCache cache;
-        private readonly DbConnectionStringBase dbConnectionString;
+        private readonly DbConnectionParameters dbConnectionString;
 
-        public FacultiesRepository(DbConnectionStringBase dbConnectionString, IMemoryCache cache)
+        public FacultiesRepository(DbConnectionParameters dbConnectionString, IMemoryCache cache)
         {
             this.dbConnectionString = dbConnectionString;
             this.cache = cache;

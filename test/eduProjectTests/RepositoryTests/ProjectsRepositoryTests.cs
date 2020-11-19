@@ -24,7 +24,7 @@ namespace eduProjectTests.RepositoryTests
             var serviceProvider = services.BuildServiceProvider();
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
-            projects = new ProjectsRepository(new TestDbConnectionString(), memoryCache);
+            projects = new ProjectsRepository(new TestDbConnectionParameters(), memoryCache);
 
             StudyField.fields.Clear();
             Tag.tags.Clear();
@@ -35,19 +35,19 @@ namespace eduProjectTests.RepositoryTests
                 Tag.tags.Add(i, new Tag { Name = "test tag" });
             }
 
-            var testDbController = new TestDatabaseController(new TestDbConnectionString());
+            var testDbController = new TestDatabaseController(new TestDbConnectionParameters());
             Task.Run(() => testDbController.SeedData()).Wait();
         }
 
         [Fact]
-        public async Task GetById_IdIsNonExisting_ReturnNull()
+        public async void GetById_IdIsNonExisting_ReturnNull()
         {
             var result = await projects.GetAsync(0);
             Assert.Null(result);
         }
 
         [Fact]
-        public async Task GetById_IdExists_ReturnProject()
+        public async void GetById_IdExists_ReturnProject()
         {
             var result = await projects.GetAsync(1);
             Assert.IsType<Project>(result);

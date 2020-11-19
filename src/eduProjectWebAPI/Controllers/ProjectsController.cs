@@ -47,7 +47,7 @@ namespace eduProjectWebAPI.Controllers
                 foreach (var fid in facultyIds)
                     facultiesList.Add(await faculties.GetAsync((int)fid));
 
-                return new ProjectDisplayModel(project, author, false, true, null, facultiesList);
+                return new ProjectDisplayModel(project, author, true, true, null, facultiesList);
             }
             else
             {

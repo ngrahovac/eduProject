@@ -37,6 +37,11 @@ namespace eduProjectWebGUI.Services
             await httpClient.PutAsJsonAsync(url, obj);
         }
 
+        public async Task DeleteAsync(string url)
+        {
+            await httpClient.DeleteAsync(url);
+        }
+
     }
 }
 
