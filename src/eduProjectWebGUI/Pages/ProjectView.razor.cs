@@ -69,7 +69,7 @@ namespace eduProjectWebGUI.Pages
         // Metoda koja prikazuje prozor koji pita da li smo sigurni da zelimo da izbrisemo projekat.
         // Kada korisnik gleda projekat koji je on sam napravio. (Autor projekta)
         // Metoda je ista i za aktivan i za zatvoren projekat.
-        async Task ShowCancelWarningAuthor()
+        async Task ShowProjectDeleteWarning()
         {
             var parameters = new ModalParameters();
             string Title = "Potvrda o brisanju projekta";
@@ -80,7 +80,7 @@ namespace eduProjectWebGUI.Pages
             // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
             if (!result.Cancelled)
             {
-
+                await ApiService.DeleteAsync($"projects/{ProjectId}");
             }
         }
 

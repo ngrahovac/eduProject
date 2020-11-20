@@ -13,11 +13,11 @@ namespace eduProjectWebAPI.Data
     public class ProjectsRepository : IProjectsRepository
     {
         private readonly IMemoryCache cache;
-        private readonly DbConnectionParameters dbConnectionString;
+        private readonly DbConnectionParameters dbConnectionParameters;
 
-        public ProjectsRepository(DbConnectionParameters dbConnectionString, IMemoryCache cache)
+        public ProjectsRepository(DbConnectionParameters dbConnectionParameters, IMemoryCache cache)
         {
-            this.dbConnectionString = dbConnectionString;
+            this.dbConnectionParameters = dbConnectionParameters;
             this.cache = cache;
         }
 
@@ -25,7 +25,7 @@ namespace eduProjectWebAPI.Data
         {
             Project project = null;
 
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
                 MySqlCommand command = new MySqlCommand
                 {
@@ -59,7 +59,7 @@ namespace eduProjectWebAPI.Data
         {
             ICollection<Project> projects = new List<Project>();
 
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
                 MySqlCommand command = new MySqlCommand
                 {
@@ -279,7 +279,7 @@ namespace eduProjectWebAPI.Data
 
         public async Task AddAsync(Project project)
         {
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
                 MySqlCommand command = new MySqlCommand
                 {
@@ -517,7 +517,7 @@ namespace eduProjectWebAPI.Data
 
         public async Task UpdateAsync(Project updatedProject)
         {
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
                 MySqlCommand command = new MySqlCommand
                 {
@@ -846,5 +846,54 @@ namespace eduProjectWebAPI.Data
             }
         }
 
+        public async Task DeleteAsync(Project project)
+        {
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                command.CommandText = @"DELETE FROM project_collaborator WHERE project_id = @id";
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@id",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE FROM project_tag WHERE project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE project_application
+                                        FROM project
+                                        INNER JOIN collaborator_profile USING(project_id)
+                                        LEFT OUTER JOIN project_application USING(collaborator_profile_id)
+                                        WHERE project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
+                // delete applications for collaborator profiles of this project
+                command.CommandText = @"DELETE student_profile, faculty_member_profile
+                                        FROM project
+                                        INNER JOIN collaborator_profile USING(project_id)
+                                        LEFT OUTER JOIN student_profile USING(collaborator_profile_id)
+                                        LEFT OUTER JOIN faculty_member_profile USING(collaborator_profile_id)
+                                        LEFT OUTER JOIN project_application USING(collaborator_profile_id)
+                                        WHERE project.project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE FROM collaborator_profile WHERE project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE FROM project WHERE project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
+                await connection.CloseAsync();
+            }
+        }
     }
 }

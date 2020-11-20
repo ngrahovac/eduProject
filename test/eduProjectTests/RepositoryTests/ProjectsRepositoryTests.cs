@@ -52,5 +52,15 @@ namespace eduProjectTests.RepositoryTests
             var result = await projects.GetAsync(1);
             Assert.IsType<Project>(result);
         }
+
+        [Fact]
+        public async void Delete_ProjectExists_ProjectNoLongerExists()
+        {
+            var project = new Project { ProjectId = 1 };
+            await projects.DeleteAsync(project);
+            var result = await projects.GetAsync(1);
+
+            Assert.Null(result);
+        }
     }
 }

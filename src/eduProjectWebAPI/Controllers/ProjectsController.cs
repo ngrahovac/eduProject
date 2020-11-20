@@ -125,6 +125,21 @@ namespace eduProjectWebAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            try
+            {
+                var project = await projects.GetAsync(id);
+                await projects.DeleteAsync(project);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
     }
 }
 

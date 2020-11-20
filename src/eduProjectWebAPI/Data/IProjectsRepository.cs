@@ -15,5 +15,7 @@ namespace eduProjectWebAPI.Data
         public Task AddAsync(Project project);
 
         public Task UpdateAsync(Project project);
+
+        public Task DeleteAsync(Project project);
     }
 }
