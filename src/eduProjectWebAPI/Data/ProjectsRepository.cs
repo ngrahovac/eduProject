@@ -198,7 +198,7 @@ namespace eduProjectWebAPI.Data
                                 CollaboratorProfileId = reader.GetInt32(0),
                                 Description = reader.GetString(1),
                                 StudyCycle = reader.GetInt32(3),
-                                StudyYear = reader.GetInt32(4),
+                                StudyYear = !reader.IsDBNull(4) ? (int?)reader.GetInt32(4) : null,
                                 FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
                                 StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
                                 StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null
