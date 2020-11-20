@@ -64,13 +64,13 @@
             <div class="buttons">
                 <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsModal">Odaberi saradnike</button>
                 <button class="button button-primary" @onclick="ShowModalAuthorActive">Izmijeni</button>
-                <button class="button" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+                <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
             </div>
         }
         else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
             <div class="buttons">
-                <button class="button" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+                <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
             </div>
         }
     }
