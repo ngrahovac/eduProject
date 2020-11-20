@@ -1,4 +1,5 @@
-﻿using eduProjectModel.Domain;
+﻿using eduProjectModel.Display;
+using eduProjectModel.Domain;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,39 @@ namespace eduProjectModel.Input
         public ProjectInputModel()
         {
 
+        }
+
+        public ProjectInputModel(ProjectDisplayModel model)
+        {
+            // FIX
+            // ProjectDisplayModel ima polje CollaboratorDisplayModel
+            // svakako zatvoren projekat ne mozemo vise praviti tj ne mozemo praviti input model
+            // od njega
+
+            Title = model.Title;
+            Description = model.Description;
+            StudyFieldName = model.StudyField != null ? model.StudyField.Name : null;
+            StartDate = model.StartDate;
+            EndDate = model.EndDate;
+            TagNames = model.Tags.Select(t => t.Name).ToList();
+
+            CollaboratorProfileInputModels = new List<CollaboratorProfileInputModel>();
+            List<CollaboratorProfileDisplayModel> collaboratorProfileDisplayModels = new List<CollaboratorProfileDisplayModel>();
+            foreach (var p in model.StudentProfileDisplayModels)
+            {
+                collaboratorProfileDisplayModels.Add(p);
+            }
+            foreach (var p in model.FacultyMemberProfileDisplayModels)
+            {
+                collaboratorProfileDisplayModels.Add(p);
+            }
+
+            foreach (var profileDisplayModel in collaboratorProfileDisplayModels)
+            {
+                var collaboratorProfileInputModel = CollaboratorProfileInputModel.FromCollaboratorProfileDisplayModel(profileDisplayModel);
+                collaboratorProfileInputModel.AddedOnCreate = true;
+                CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
+            }
         }
 
         public void MapTo(Project project, ICollection<Faculty> faculties)

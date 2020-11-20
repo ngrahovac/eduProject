@@ -12,10 +12,10 @@ namespace eduProjectWebAPI.Controllers
     [ApiController]
     public class ValueObjectsController : ControllerBase
     {
-        private readonly DbConnectionStringBase dbConnectionString;
+        private readonly DbConnectionParameters dbConnectionString;
         private readonly IFacultiesRepository faculties;
 
-        public ValueObjectsController(DbConnectionStringBase dbConnectionString, IFacultiesRepository faculties)
+        public ValueObjectsController(DbConnectionParameters dbConnectionString, IFacultiesRepository faculties)
         {
             this.dbConnectionString = dbConnectionString;
             this.faculties = faculties;

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using MySqlConnector;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace eduProjectWebAPI.Data
     public class ProjectsRepository : IProjectsRepository
     {
         private readonly IMemoryCache cache;
-        private readonly DbConnectionStringBase dbConnectionString;
+        private readonly DbConnectionParameters dbConnectionString;
 
-        public ProjectsRepository(DbConnectionStringBase dbConnectionString, IMemoryCache cache)
+        public ProjectsRepository(DbConnectionParameters dbConnectionString, IMemoryCache cache)
         {
             this.dbConnectionString = dbConnectionString;
             this.cache = cache;
@@ -52,6 +53,71 @@ namespace eduProjectWebAPI.Data
             }
 
             return project;
+        }
+
+        public async Task<ICollection<Project>> GetAllByAuthor(int authorId)
+        {
+            ICollection<Project> projects = new List<Project>();
+
+            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    CommandText = @"SELECT project_id FROM project WHERE user_id = @authorId",
+                    Connection = connection
+                };
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    DbType = DbType.Int32,
+                    ParameterName = "@authorId",
+                    Value = authorId
+                });
+
+                await connection.OpenAsync();
+
+                var projectIds = new List<int>();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            projectIds.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                if (projectIds.Count > 0)
+                {
+                    foreach (var id in projectIds)
+                    {
+                        // read project attributes from table `project`
+                        var project = await ReadBasicProjectInfo(command, id);
+
+                        if (project != null)
+                        {
+                            // read collaborator profiles from  table `collaborator_profiles`
+                            await ReadCollaboratorProfilesInfo(command, id, project);
+
+                            // read tag ids from table `project_tag`
+                            await ReadTagsInfo(command, id, project);
+
+                            // read collaborator ids from table `project_collaborator`
+                            await ReadCollaboratorIds(command, id, project);
+
+                            projects.Add(project);
+                        }
+                    }
+                }
+
+                await connection.CloseAsync();
+            }
+
+            return projects;
         }
 
         private async Task<Project> ReadBasicProjectInfo(MySqlCommand command, int id)
@@ -203,10 +269,9 @@ namespace eduProjectWebAPI.Data
             {
                 if (reader.HasRows)
                 {
-                    int row = 0;
                     while (await reader.ReadAsync())
                     {
-                        project.CollaboratorIds.Add(reader.GetInt32(row++));
+                        project.CollaboratorIds.Add(reader.GetInt32(0));
                     }
                 }
             }
@@ -477,6 +542,11 @@ namespace eduProjectWebAPI.Data
                     await UpdateCollaboratorProfilesInfo(command, updatedProject);
                 }
 
+                if (updatedProject.CollaboratorIds.Count > 0)
+                {
+                    await UpdateCollaboratorsInfo(command, updatedProject);
+                }
+
                 await UpdateTagsInfo(command, updatedProject);
 
                 await connection.CloseAsync();
@@ -491,7 +561,8 @@ namespace eduProjectWebAPI.Data
                                     start_date = @startDate,
                                     end_date = @endDate,
                                     description = @description,
-                                    study_field_id = @fieldId
+                                    study_field_id = @fieldId,
+                                    project_status_id = @statusId
                                     WHERE project_id = @projectId";
 
             // add project_status_id = @statusId
@@ -528,20 +599,17 @@ namespace eduProjectWebAPI.Data
 
             command.Parameters.Add(new MySqlParameter
             {
-                ParameterName = "@fieldId",
-                DbType = DbType.Int32,
-                Value = StudyField.fields.Where(p => p.Value == project.StudyField).First().Key
-            });
-
-            // FIX: can't update referencing row
-            /*
-            command.Parameters.Add(new MySqlParameter
-            {
                 ParameterName = "@statusId",
                 DbType = DbType.Int32,
                 Value = (int)project.ProjectStatus
             });
-            */
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@fieldId",
+                DbType = DbType.Int32,
+                Value = StudyField.fields.Where(p => p.Value == project.StudyField).First().Key
+            });
 
             command.Parameters.Add(new MySqlParameter
             {
@@ -751,7 +819,31 @@ namespace eduProjectWebAPI.Data
 
         private async Task UpdateCollaboratorsInfo(MySqlCommand command, Project project)
         {
-            throw new NotImplementedException();
+            command.CommandText = @"INSERT INTO project_collaborator
+                                    (project_id, user_id)
+                                    VALUES
+                                    (@projectId, @userId)";
+
+            foreach (var id in project.CollaboratorIds)
+            {
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@userId",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await command.ExecuteNonQueryAsync();
+            }
         }
 
     }

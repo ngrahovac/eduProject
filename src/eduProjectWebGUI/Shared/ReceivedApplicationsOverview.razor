@@ -1,0 +1,112 @@
+﻿@inject ApiService ApiService
+
+<div class="section" style="height:500px; overflow-y:auto">
+    <h4 class="title">@ProjectApplicationsDisplayModel.Title</h4>
+
+    @for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
+    {
+        var profileApplicationsDisplayModel = ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.ElementAt(j);
+
+        <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
+
+        <table class="collaborator-profiles-table">
+            <thead>
+                <tr>
+                    <td>Id prijavljenog</td>
+                    <td>Komentar prijavljenog</td>
+                    <td>Odabran za saradnju</td>
+                    <td>Komentar autora</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
+                {
+                    <tr>
+                        <td>@applicationDisplayModel.ApplicantId</td>
+                        <td>@applicationDisplayModel.ApplicantComment</td>
+                        <td>
+                            <input type="checkbox" @onchange="@((e) =>
+                                                                    {
+                                                                        var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
+                                                                        ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
+                                                                                                     .First()
+                                                                                                     .ProjectApplicationStatus = status;
+
+                                                                    })" />
+                        </td>
+                        <td>
+                            <input type="text" @onchange="@((e) =>
+                                                                {
+                                                                    var comment = (string)e.Value;
+                                                                    ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
+                                                                                                     .First()
+                                                                                                     .AuthorComment = comment;
+                                                                })" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="buttons">
+        <button @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
+    </div>
+</div>
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [CascadingParameter] ModalParameters ModalParameters { get; set; }
+
+    [Parameter] public int ProjectId { get; set; }
+
+    public ProjectApplicationsDisplayModel ProjectApplicationsDisplayModel { get; set; } = new ProjectApplicationsDisplayModel();
+
+    List<ProjectApplicationInputModel> ProjectApplicationInputModels = new List<ProjectApplicationInputModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        ProjectId = ModalParameters.Get<int>("ProjectId");
+        ProjectApplicationsDisplayModel = await ApiService.GetAsync<ProjectApplicationsDisplayModel>($"/applications/project/{ProjectId}");
+
+        foreach (var profileApplication in ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels)
+        {
+            foreach (var application in profileApplication.ApplicationDisplayModels)
+            {
+                var model = new ProjectApplicationInputModel
+                {
+                    ApplicationId = application.ApplicationId,
+                    CollaboratorProfileId = profileApplication.CollaboratorProfileDisplayModel.CollaboratorProfileId,
+                    ProjectId = ProjectApplicationsDisplayModel.ProjectId,
+                    ApplicantComment = application.ApplicantComment,
+                    ProjectApplicationStatus = ProjectApplicationStatus.Rejected,
+                    ApplicantId = application.ApplicantId
+                };
+
+                ProjectApplicationInputModels.Add(model);
+            }
+        }
+    }
+
+    public async Task SelectCollaboratorsAndCloseProject()
+    {
+        var projectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{ProjectApplicationsDisplayModel.ProjectId}");
+        var projectInputModel = new ProjectInputModel(projectDisplayModel);
+
+        foreach (var model in ProjectApplicationInputModels)
+        {
+            await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
+
+            if (model.ProjectApplicationStatus == ProjectApplicationStatus.Accepted)
+            {
+                projectInputModel.CollaboratorIds.Add(model.ApplicantId);
+            }
+        }
+
+        projectInputModel.ProjectStatus = ProjectStatus.Closed;
+        await ApiService.PutAsync($"/projects/{ProjectApplicationsDisplayModel.ProjectId}", projectInputModel);
+
+    }
+}

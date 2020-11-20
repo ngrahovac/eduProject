@@ -155,7 +155,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        protected async Task OnInitializedAsync()
+        protected override async Task OnInitializedAsync()
         {
             ProjectInputModel = ModalParameters.Get<ProjectInputModel>("ProjectInputModel");
             Editing = ModalParameters.Get<bool>("Editing");

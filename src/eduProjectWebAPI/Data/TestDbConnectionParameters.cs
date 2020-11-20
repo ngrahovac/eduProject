@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
 {
-    public class TestDbConnectionString : DbConnectionStringBase
+    public class TestDbConnectionParameters : DbConnectionParameters
     {
-        public TestDbConnectionString()
+        public TestDbConnectionParameters()
         {
             ConnectionString = "server=localhost;database=eduproject_test;user=root";
         }

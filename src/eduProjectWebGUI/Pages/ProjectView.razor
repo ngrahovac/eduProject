@@ -61,15 +61,16 @@
         }
         else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
-            <div class="col-md-4 ml-auto projectview-final-btns">
+            <div class="buttons">
+                <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsModal">Odaberi saradnike</button>
                 <button class="button button-primary" @onclick="ShowModalAuthorActive">Izmijeni</button>
-                <button class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+                <button class="button" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
         else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
         {
-            <div class="col-md-4 ml-auto projectview-final-btns">
-                <button class="btn btn-danger projectview-final-btn" @onclick="ShowCancelWarningAuthor">Izbriši</button>
+            <div class="buttons">
+                <button class="button" @onclick="ShowCancelWarningAuthor">Izbriši</button>
             </div>
         }
     }

@@ -15,7 +15,7 @@ namespace TimeTracker
         {
             var host = CreateHostBuilder(args).Build();
 
-            var service = (DbConnectionStringBase)host.Services.GetService(typeof(DbConnectionStringBase));
+            var service = (DbConnectionParameters)host.Services.GetService(typeof(DbConnectionParameters));
             var connString = service.ConnectionString;
             await InitializeTags(connString);
             await InitializeStudyFields(connString);

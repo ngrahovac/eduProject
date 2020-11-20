@@ -37,6 +37,7 @@ namespace eduProjectWebGUI.Pages
             {
                 // TODO: remove button enabling/disabling
                 // Bane je uklonio ↑ na client strani. 
+                model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
                 await ApiService.PostAsync("/applications", model);
             }
         }
@@ -79,8 +80,15 @@ namespace eduProjectWebGUI.Pages
             // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
             if (!result.Cancelled)
             {
-                 
+
             }
+        }
+
+        async Task ShowReceivedApplicationsModal()
+        {
+            var parameters = new ModalParameters();
+            parameters.Add("ProjectId", ProjectId);
+            Modal.Show(typeof(ReceivedApplicationsOverview), "Pristigle prijave", parameters);
         }
 
         protected override async Task OnInitializedAsync()
