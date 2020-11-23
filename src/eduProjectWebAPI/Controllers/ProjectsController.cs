@@ -60,6 +60,47 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ICollection<ProjectDisplayModel>>> GetAll()
+        {
+            var projectDisplayModels = new List<ProjectDisplayModel>();
+
+            try
+            {
+                var allProjects = await projects.GetAll();
+
+                foreach (var project in allProjects)
+                {
+                    User author = await users.GetAsync(project.AuthorId);
+
+                    if (project.ProjectStatus == ProjectStatus.Active)
+                    {
+                        var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Distinct();
+                        var facultiesList = new List<Faculty>();
+                        foreach (var fid in facultyIds)
+                            facultiesList.Add(await faculties.GetAsync((int)fid));
+
+                        projectDisplayModels.Add(new ProjectDisplayModel(project, author, false, true, null, facultiesList));
+                    }
+                    else
+                    {
+                        var collaboratorIds = project.CollaboratorIds;
+                        List<User> collaborators = new List<User>();
+                        foreach (int collabId in collaboratorIds)
+                            collaborators.Add(await users.GetAsync(collabId));
+
+                        projectDisplayModels.Add(new ProjectDisplayModel(project, author, false, false, collaborators));
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+            return projectDisplayModels;
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(ProjectInputModel model)
         {
