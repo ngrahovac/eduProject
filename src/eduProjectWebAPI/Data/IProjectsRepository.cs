@@ -10,6 +10,8 @@ namespace eduProjectWebAPI.Data
     {
         public Task<Project> GetAsync(int id);
 
+        public Task<ICollection<Project>> GetAll();
+
         public Task<ICollection<Project>> GetAllByAuthor(int authorId);
 
         public Task AddAsync(Project project);

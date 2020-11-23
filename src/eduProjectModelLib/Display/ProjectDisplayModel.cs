@@ -10,7 +10,8 @@ namespace eduProjectModel.Display
         public bool IsDisplayForAuthor { get; set; }
         public bool IsProjectActive { get; set; }
 
-        public string ProjectStatus { get; set; }
+        public int ProjectId { get; set; }
+        public ProjectStatus ProjectStatus { get; set; }
         public string Title { get; set; }
         public string AuthorFullName { get; set; }
         public StudyField StudyField { get; set; }
@@ -31,7 +32,8 @@ namespace eduProjectModel.Display
             IsDisplayForAuthor = isDisplayForAuthor;
             IsProjectActive = isProjectActive;
 
-            ProjectStatus = project.ProjectStatus.ToString();
+            ProjectId = project.ProjectId;
+            ProjectStatus = project.ProjectStatus;
             Title = project.Title;
             AuthorFullName = $"{author.FirstName} {author.LastName}";
             StudyField = project.StudyField;

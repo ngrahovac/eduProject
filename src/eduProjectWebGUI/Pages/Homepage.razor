@@ -1,0 +1,74 @@
+﻿@page "/homepage"
+@inject ApiService ApiService
+
+<div class="content">
+    <div class="section">
+        @*TODO: make a search component*@
+        <EditForm Model="searchParameters">
+            <InputText @bind-Value="searchParameters.SearchText">Unesite pojam za pretragu</InputText>
+        </EditForm>
+        <button type="button" class="button button-primary" @onclick="SearchProjects">Pretraži</button>
+    </div>
+
+    <h3>Pregled projekata</h3>
+
+    @foreach (var model in projectDisplayModels)
+    {
+        <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
+            <h4 class="title">@model.Title</h4>
+
+            <h5>Opis</h5>
+            <p>@model.Description</p>
+
+            <h5>Oblast</h5>
+            <p>@model.StudyField.Name</p>
+        </div>
+    }
+
+</div>
+
+@code {
+
+    private ICollection<ProjectDisplayModel> projectDisplayModels = new List<ProjectDisplayModel>();
+
+    private SearchParameters searchParameters = new SearchParameters();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetAllProjects();
+    }
+
+    private async Task LoadProject(int projectId)
+    {
+        // navigates to project page
+    }
+
+    // filtering functions for different tabs
+    // ako se ne mogne namjestiti da tabovi u navigaciji ne mijenjaju stranicu nego okidaju funkcije, napraviti odvojene stranice
+
+    private async Task GetAllProjects()
+    {
+        projectDisplayModels = (await ApiService.GetAsync<ICollection<ProjectDisplayModel>>("/projects")).ToList();
+    }
+
+    private async Task GetActiveProjects()
+    {
+        projectDisplayModels = projectDisplayModels.Where(p => p.ProjectStatus == ProjectStatus.Active).ToList();
+    }
+
+    private async Task GetRecommendedProjects()
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task GetAuthorProjects()
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task SearchProjects()
+    {
+        //
+    }
+
+}

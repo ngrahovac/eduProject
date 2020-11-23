@@ -55,6 +55,43 @@ namespace eduProjectWebAPI.Data
             return project;
         }
 
+        public async Task<ICollection<Project>> GetAll()
+        {
+            List<Project> projects = new List<Project>();
+            List<int> ids = new List<int>();
+
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection,
+                    CommandText = @"SELECT project_id FROM project"
+                };
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            ids.Add(reader.GetInt32(0));
+                        }
+                    }
+                }
+
+                foreach (var id in ids)
+                {
+                    projects.Add(await GetAsync(id));
+                }
+
+                await connection.CloseAsync();
+            }
+
+            return projects;
+        }
+
         public async Task<ICollection<Project>> GetAllByAuthor(int authorId)
         {
             ICollection<Project> projects = new List<Project>();
