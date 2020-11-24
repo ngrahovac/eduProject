@@ -35,7 +35,7 @@ namespace eduProjectModel.Input
 
             Title = model.Title;
             Description = model.Description;
-            StudyFieldName = model.StudyField != null ? model.StudyField.Name : null;
+            StudyFieldName = model.StudyField?.Name;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
             TagNames = model.Tags.Select(t => t.Name).ToList();

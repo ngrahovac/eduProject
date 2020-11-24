@@ -1,0 +1,100 @@
+﻿@page "/users/{UserId:int}/settings"
+@inject ApiService ApiService
+
+<div class="content">
+    @if (displayModel == null)
+    {
+
+    }
+    else
+    {
+        <h3>Podešavanja</h3>
+        <EditForm Model="@inputModel">
+            <div class="section">
+                <h4 class="title">Osnovne informacije</h4>
+                <h5>Biografija</h5>
+                <InputTextArea @bind-Value="@inputModel.Bio"></InputTextArea>
+                <h5>Cv</h5>
+                <InputText @bind-Value="@inputModel.CvLink"></InputText>
+                <h5>Website</h5>
+                <InputText @bind-Value="@inputModel.Website"></InputText>
+                <h5>Linkedin profil</h5>
+                <InputText @bind-Value="@inputModel.LinkedinProfile"></InputText>
+                <h5>ResearchGate profil</h5>
+                <InputText @bind-Value="@inputModel.ResearchgateProfile"></InputText>
+            </div>
+
+            <div class="section">
+                <h4 class="title">Privatnost</h4>
+                <h5>Vidljiv email</h5>
+                <InputCheckbox @bind-Value="@inputModel.EmailVisible">
+                </InputCheckbox>
+                <h5>Vidljiv telefon</h5>
+                <InputCheckbox @bind-Value="@inputModel.PhoneVisible">
+                </InputCheckbox>
+                <h5>Vidljivi projekti</h5>
+                <InputCheckbox @bind-Value="@inputModel.ProjectsVisible">
+                </InputCheckbox>
+            </div>
+
+            <TagsOverview Editing="true" TagNames="@inputModel.UserTagNames"></TagsOverview>
+
+            <BlazoredTypeahead SearchMethod="@FilterTags"
+                               @bind-Value="@AddedTag"
+                               Context="tag">
+                <SelectedTemplate>
+                    @tag.Name
+                </SelectedTemplate>
+                <ResultTemplate>
+                    @tag.Name
+                </ResultTemplate>
+                <NotFoundTemplate>
+                    Nema rezultata.
+                </NotFoundTemplate>
+            </BlazoredTypeahead>
+
+        </EditForm>
+
+        <div class="buttons">
+            <button class="button">Odustani</button>
+            <button class="button button-primary" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    private UserSettingsDisplayModel displayModel;
+    private UserSettingsInputModel inputModel;
+
+    private ICollection<Tag> tags = new List<Tag>();
+
+    private Tag addedTag;
+    private Tag AddedTag
+    {
+        get { return addedTag; }
+        set { addedTag = value; inputModel.UserTagNames.Add(value.Name); }
+    }
+
+    protected async override Task OnInitializedAsync()
+    {
+        tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
+        displayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
+        inputModel = new UserSettingsInputModel(displayModel);
+    }
+
+    private async Task<IEnumerable<Tag>> FilterTags(string searchText)
+    {
+        return tags.Where(t => t.Name.StartsWith(searchText));
+    }
+
+    private async Task UpdateSettings()
+    {
+        await ApiService.PutAsync($"/users/{UserId}/settings", UserSettingsInputModel);
+    }
+
+
+}
