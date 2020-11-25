@@ -40,7 +40,7 @@ namespace eduProjectWebGUI.Pages
 
         private async Task UpdateSettings()
         {
-            await ApiService.PutAsync($"/users/{UserId}/settings", UserSettingsInputModel);
+            await ApiService.PutAsync($"/users/{UserId}/settings", inputModel);
         }
 
 
