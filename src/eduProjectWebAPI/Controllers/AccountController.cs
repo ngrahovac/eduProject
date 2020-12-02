@@ -4,11 +4,14 @@ using System.Threading.Tasks;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using System.Security.Claims;
 
 namespace eduProjectWebAPI.Controllers
 {
+    [ApiController]
     [Route("[controller]")]
-    public class AccountController : Controller
+    public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
@@ -18,9 +21,6 @@ namespace eduProjectWebAPI.Controllers
             this.userManager = userManager;
             this.signInManager = signInManager;
         }
-
-        /*If getting to a register page on blazor side cannot be done, try adding here HTTP POST Register method
-         with [AllowAnonymous] attribute and returning some status code.*/
 
         [AllowAnonymous]
         [Route("[action]")]
@@ -35,7 +35,7 @@ namespace eduProjectWebAPI.Controllers
                     Email = model.Email
                 };
 
-                newUser.Id = IdCounter.GetNextId();
+                newUser.Id = GetNextAvailableUserId();
 
                 var result = await userManager.CreateAsync(newUser, model.Password);
 
@@ -75,26 +75,30 @@ namespace eduProjectWebAPI.Controllers
                 var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
                 if (result.Succeeded)
-                    return Ok(); //Redirect here to the HOME PAGE
+                    return Ok("Login successful"); //Redirect here to the HOME PAGE
                 else
                     ModelState.AddModelError(string.Empty, "Neispravan pokušaj logovanja");
             }
 
             return BadRequest(ModelState);
         }
-    }
 
-    /// <summary>
-    /// Temporary class to solve not having a numerical ID in SqlServer database.
-    /// </summary>
-    static class IdCounter
-    {
-        static int idCounter = 0;
-
-        public static string GetNextId()
+        private string GetNextAvailableUserId()
         {
-            idCounter++;
-            return idCounter.ToString();
+            var users = userManager.Users.ToList();
+
+            if (users.Count == 0)
+                return "1";
+            else
+                return (int.Parse(users.Last().Id) + 1).ToString();
+        }
+
+        //TEST for fetching current logged in user ID and UserName
+        [Route("[action]")]
+        [HttpGet]
+        public IActionResult WhoAmI()
+        {
+            return Content(User.FindFirstValue(ClaimTypes.NameIdentifier) + " " + User.FindFirstValue(ClaimTypes.Name));
         }
     }
 }

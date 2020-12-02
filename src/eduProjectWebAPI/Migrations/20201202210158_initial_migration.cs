@@ -152,6 +152,17 @@ namespace eduProjectWebAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "1", 0, "255fd95b-c771-4be6-852c-5634244b17ac", "nikolinagrahovac@test.com", false, true, null, "NIKOLINAGRAHOVAC@TEST.COM", "NIKOLINAGRAHOVAC@TEST.COM", "AQAAAAEAACcQAAAAEB3fErhGcr/yNJzrnpwkMN0eSAjxvNKxRhnu+pc/nKkNmCuBIFm9Hb6ow4nuD2EBrA==", null, false, "BRPZ5G5VMPU533RX5YC3S62EYN5H22EL", false, "nikolinagrahovac@test.com" },
+                    { "2", 0, "1dd40535-18b6-47ec-bb00-d0b770505ad1", "nikolinamaksimovic@test.com", false, true, null, "NIKOLINAMAKSIMOVIC@TEST.COM", "NIKOLINAMAKSIMOVIC@TEST.COM", "AQAAAAEAACcQAAAAEKNjZLA00+meOz9bw9rokp6svoTGUBUu2psELguBARlsD8aQ2DULpNZwMgnvfv4amw==", null, false, "ZW5I3YK2S6L6WZCX3WNE24LITMDVRXA5", false, "nikolinamaksimovic@test.com" },
+                    { "3", 0, "f8e8dfc8-f20e-44fe-9d46-2e322c1d41df", "branislavkljajic@test.com", false, true, null, "BRANISLAVKLJAJIC@TEST.COM", "BRANISLAVKLJAJIC@TEST.COM", "AQAAAAEAACcQAAAAEKNDYYoI7EzH7+XXPzTmscNqBXX0sM8WqCejUG2K9Uj0vGPHrMzlghVlhiA1Zx5iLA==", null, false, "7XZHWB2VVO2IAE6OLBPGLASCGPBD7GVD", false, "branislavkljajic@test.com" },
+                    { "4", 0, "80088041-9c29-474a-8668-3277462c4d51", "zoranpantos@test.com", false, true, null, "ZORANPANTOS@TEST.COM", "ZORANPANTOS@TEST.COM", "AQAAAAEAACcQAAAAEFhPDeoQp9iRyCWYDdk+1+BVvrNObJl/WW/vJBiezvzhe69X92GG4+z9XUzHS8qN3A==", null, false, "7ZTQGH5Q7AX4CPI73DWSQS2OMESYR6KT", false, "zoranpantos@test.com" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",

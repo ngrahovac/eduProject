@@ -213,6 +213,72 @@ namespace eduProjectWebAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "255fd95b-c771-4be6-852c-5634244b17ac",
+                            Email = "nikolinagrahovac@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "NIKOLINAGRAHOVAC@TEST.COM",
+                            NormalizedUserName = "NIKOLINAGRAHOVAC@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEB3fErhGcr/yNJzrnpwkMN0eSAjxvNKxRhnu+pc/nKkNmCuBIFm9Hb6ow4nuD2EBrA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "BRPZ5G5VMPU533RX5YC3S62EYN5H22EL",
+                            TwoFactorEnabled = false,
+                            UserName = "nikolinagrahovac@test.com"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "1dd40535-18b6-47ec-bb00-d0b770505ad1",
+                            Email = "nikolinamaksimovic@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "NIKOLINAMAKSIMOVIC@TEST.COM",
+                            NormalizedUserName = "NIKOLINAMAKSIMOVIC@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKNjZLA00+meOz9bw9rokp6svoTGUBUu2psELguBARlsD8aQ2DULpNZwMgnvfv4amw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ZW5I3YK2S6L6WZCX3WNE24LITMDVRXA5",
+                            TwoFactorEnabled = false,
+                            UserName = "nikolinamaksimovic@test.com"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f8e8dfc8-f20e-44fe-9d46-2e322c1d41df",
+                            Email = "branislavkljajic@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "BRANISLAVKLJAJIC@TEST.COM",
+                            NormalizedUserName = "BRANISLAVKLJAJIC@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKNDYYoI7EzH7+XXPzTmscNqBXX0sM8WqCejUG2K9Uj0vGPHrMzlghVlhiA1Zx5iLA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7XZHWB2VVO2IAE6OLBPGLASCGPBD7GVD",
+                            TwoFactorEnabled = false,
+                            UserName = "branislavkljajic@test.com"
+                        },
+                        new
+                        {
+                            Id = "4",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "80088041-9c29-474a-8668-3277462c4d51",
+                            Email = "zoranpantos@test.com",
+                            EmailConfirmed = false,
+                            LockoutEnabled = true,
+                            NormalizedEmail = "ZORANPANTOS@TEST.COM",
+                            NormalizedUserName = "ZORANPANTOS@TEST.COM",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFhPDeoQp9iRyCWYDdk+1+BVvrNObJl/WW/vJBiezvzhe69X92GG4+z9XUzHS8qN3A==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7ZTQGH5Q7AX4CPI73DWSQS2OMESYR6KT",
+                            TwoFactorEnabled = false,
+                            UserName = "zoranpantos@test.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
