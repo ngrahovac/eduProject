@@ -6,6 +6,7 @@ using eduProjectModel.Input;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -90,7 +91,13 @@ namespace eduProjectWebAPI.Controllers
             if (users.Count == 0)
                 return "1";
             else
-                return (int.Parse(users.Last().Id) + 1).ToString();
+            {
+                var ids = users.Select(x => x.Id).ToList();
+
+                for (int i = 1; true; i++)
+                    if (!ids.Contains(i.ToString()))
+                        return i.ToString();
+            }
         }
 
         //TEST for fetching current logged in user ID and UserName

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
@@ -52,7 +53,10 @@ namespace eduProjectWebAPI.Controllers
 
             var faculty = await faculties.GetAsync(user.FacultyId);
 
-            bool isPersonal = true;
+            //Da li je id ID od trenutno ulogovanog korisnika?
+
+            bool isPersonal = User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(id.ToString());
+
             return new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations);
         }
     }

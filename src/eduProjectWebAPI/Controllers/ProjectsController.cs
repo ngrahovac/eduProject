@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using FluentValidation.Results;
 using System;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -33,12 +34,18 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDisplayModel>> GetById(int id)
         {
+            //i ovdje treba ima neki fleg nesto dole pogledaj log in je l to to 
+            //(Logicno je sve nemoj se zajebati)
+
+
             Project project = await projects.GetAsync(id);
 
             if (project == null)
                 return NotFound();
 
             User author = await users.GetAsync(project.AuthorId);
+
+            bool isDisplayForAuthor = User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(project.AuthorId.ToString());
 
             if (project.ProjectStatus == ProjectStatus.Active)
             {
@@ -47,7 +54,7 @@ namespace eduProjectWebAPI.Controllers
                 foreach (var fid in facultyIds)
                     facultiesList.Add(await faculties.GetAsync((int)fid));
 
-                return new ProjectDisplayModel(project, author, true, true, null, facultiesList);
+                return new ProjectDisplayModel(project, author, isDisplayForAuthor, true, null, facultiesList);
             }
             else
             {
@@ -56,7 +63,7 @@ namespace eduProjectWebAPI.Controllers
                 foreach (int collabId in collaboratorIds)
                     collaborators.Add(await users.GetAsync(collabId));
 
-                return new ProjectDisplayModel(project, author, false, false, collaborators);
+                return new ProjectDisplayModel(project, author, isDisplayForAuthor, false, collaborators);
             }
         }
 
@@ -123,6 +130,7 @@ namespace eduProjectWebAPI.Controllers
             model.MapTo(project, facultiesList);
 
             //Initialize AuthorId from Project class - see authentication/authorization
+            project.AuthorId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             //Write created project to database
             try

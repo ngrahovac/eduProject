@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Controllers
@@ -24,31 +25,45 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<UserSettingsDisplayModel>> Get(int userId)
         {
-            try
+            //Da li je userId ID od trenutno ulogovanog korisnika?
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(userId.ToString()))
             {
-                var userSettings = await settings.GetAsync(userId);
-                return new UserSettingsDisplayModel(userSettings);
+                try
+                {
+                    var userSettings = await settings.Get(userId);
+                    return new UserSettingsDisplayModel(userSettings);
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            else
+                return NotFound();
         }
 
         [HttpPut]
         public async Task<ActionResult> Update(int userId, UserSettingsInputModel model)
         {
-            try
+            //Da li je userId ID od trenutno ulogovanog korisnika?
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(userId.ToString()))
             {
-                var userSettings = await settings.GetAsync(userId);
-                model.MapTo(userSettings);
-                await settings.UpdateAsync(userSettings);
-                return NoContent();
+                try
+                {
+                    var userSettings = await settings.Get(userId);
+                    model.MapTo(userSettings);
+                    await settings.Update(userSettings);
+                    return NoContent();
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message);
+                }
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            else
+                return NotFound();
         }
     }
 }

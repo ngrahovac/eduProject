@@ -21,7 +21,7 @@ namespace eduProjectWebAPI.Data
             builder.Entity<ApplicationUser>().HasData(
                 new ApplicationUser
                 {
-                   Id = "1",
+                   Id = "9",
                    UserName = "nikolinagrahovac@test.com",
                    NormalizedUserName = "NIKOLINAGRAHOVAC@TEST.COM",
                    Email = "nikolinagrahovac@test.com",
@@ -36,7 +36,22 @@ namespace eduProjectWebAPI.Data
                 },
                 new ApplicationUser
                 {
-                    Id = "2",
+                    Id = "10",
+                    UserName = "zoranpantos@test.com",
+                    NormalizedUserName = "ZORANPANTOS@TEST.COM",
+                    Email = "zoranpantos@test.com",
+                    NormalizedEmail = "ZORANPANTOS@TEST.COM",
+                    EmailConfirmed = false,
+                    PasswordHash = "AQAAAAEAACcQAAAAEFhPDeoQp9iRyCWYDdk+1+BVvrNObJl/WW/vJBiezvzhe69X92GG4+z9XUzHS8qN3A==",
+                    SecurityStamp = "7ZTQGH5Q7AX4CPI73DWSQS2OMESYR6KT",
+                    ConcurrencyStamp = "80088041-9c29-474a-8668-3277462c4d51",
+                    PhoneNumberConfirmed = false,
+                    TwoFactorEnabled = false,
+                    LockoutEnabled = true
+                },
+                new ApplicationUser
+                {
+                    Id = "11",
                     UserName = "nikolinamaksimovic@test.com",
                     NormalizedUserName = "NIKOLINAMAKSIMOVIC@TEST.COM",
                     Email = "nikolinamaksimovic@test.com",
@@ -51,7 +66,7 @@ namespace eduProjectWebAPI.Data
                 },
                 new ApplicationUser
                 {
-                    Id = "3",
+                    Id = "12",
                     UserName = "branislavkljajic@test.com",
                     NormalizedUserName = "BRANISLAVKLJAJIC@TEST.COM",
                     Email = "branislavkljajic@test.com",
@@ -60,21 +75,6 @@ namespace eduProjectWebAPI.Data
                     PasswordHash = "AQAAAAEAACcQAAAAEKNDYYoI7EzH7+XXPzTmscNqBXX0sM8WqCejUG2K9Uj0vGPHrMzlghVlhiA1Zx5iLA==",
                     SecurityStamp = "7XZHWB2VVO2IAE6OLBPGLASCGPBD7GVD",
                     ConcurrencyStamp = "f8e8dfc8-f20e-44fe-9d46-2e322c1d41df",
-                    PhoneNumberConfirmed = false,
-                    TwoFactorEnabled = false,
-                    LockoutEnabled = true
-                },
-                new ApplicationUser
-                {
-                    Id = "4",
-                    UserName = "zoranpantos@test.com",
-                    NormalizedUserName = "ZORANPANTOS@TEST.COM",
-                    Email = "zoranpantos@test.com",
-                    NormalizedEmail = "ZORANPANTOS@TEST.COM",
-                    EmailConfirmed = false,
-                    PasswordHash = "AQAAAAEAACcQAAAAEFhPDeoQp9iRyCWYDdk+1+BVvrNObJl/WW/vJBiezvzhe69X92GG4+z9XUzHS8qN3A==",
-                    SecurityStamp = "7ZTQGH5Q7AX4CPI73DWSQS2OMESYR6KT",
-                    ConcurrencyStamp = "80088041-9c29-474a-8668-3277462c4d51",
                     PhoneNumberConfirmed = false,
                     TwoFactorEnabled = false,
                     LockoutEnabled = true
