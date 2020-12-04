@@ -1,0 +1,19 @@
+﻿@page "/account/login"
+@inject NavigationManager Navigation
+@inject ApiService ApiService
+
+<EditForm Model="@loginInputModel" OnValidSubmit="LoginToSystemAsync">
+    <div class="login-box">
+        <img src="../img/logo.JPG" class="logo-img" />
+        <label>Email:</label>
+        <InputText type="text" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
+        <label>Lozinka:</label>
+        <InputText type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
+        <div>
+            <label>Da li želite da zapamtite nalog?</label>
+            <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
+        </div>
+        <input type="button" class="btn btn-primary" value="Prijavi se" @onclick="LoginToSystemAsync" />
+        <input type="button" class="btn btn-primary" value="Registruj se" @onclick="RegisterToSystem" />
+    </div>
+</EditForm>

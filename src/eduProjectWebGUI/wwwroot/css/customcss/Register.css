@@ -1,0 +1,11 @@
+﻿.register-box {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 15%);
+    text-align: center;
+}
+
+    .register-box .btn {
+        width: 10%;
+        cursor: pointer;
+    }

@@ -10,7 +10,7 @@ using eduProjectWebAPI.Data;
 namespace eduProjectWebAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201202210158_initial_migration")]
+    [Migration("20201204151245_initial_migration")]
     partial class initial_migration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
