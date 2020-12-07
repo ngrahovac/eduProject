@@ -65,6 +65,12 @@ namespace eduProjectWebAPI
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
+
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId = "70290035778-q5ujcqm43l9mt53be4cma09jsimtniva.apps.googleusercontent.com";
+                options.ClientSecret = "ZFKtPq_liv_LtL5xTlXJ4wg_";
+            });
         }
 
         private void ConfigureDataLayerServices(IServiceCollection services)

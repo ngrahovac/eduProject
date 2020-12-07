@@ -107,5 +107,62 @@ namespace eduProjectWebAPI.Controllers
         {
             return Content(User.FindFirstValue(ClaimTypes.NameIdentifier) + " " + User.FindFirstValue(ClaimTypes.Name));
         }
+
+        [AllowAnonymous]
+        [Route("[action]")]
+        public IActionResult ExternalLogin(string returnUrl = null)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
+
+            return new ChallengeResult("Google", properties);
+        }
+
+        [AllowAnonymous]
+        [Route("[action]")]
+        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
+        {
+            //Configure where to redirect after a successful login in case of returnUrl being null
+            returnUrl = returnUrl ?? Url.Content("~/Projects/1");
+
+            var info = await signInManager.GetExternalLoginInfoAsync();
+
+            if (info == null)
+                return BadRequest("Greška pri učitavanju eksternih login informacija");
+
+            var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+            if (signInResult.Succeeded)
+                return LocalRedirect(returnUrl);
+            else
+            {
+                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
+                if (email != null)
+                {
+                    var user = await userManager.FindByEmailAsync(email);
+
+                    if (user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
+                            Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        };
+
+                        user.Id = GetNextAvailableUserId();
+
+                        await userManager.CreateAsync(user);
+                    }
+
+                    await userManager.AddLoginAsync(user, info);
+                    await signInManager.SignInAsync(user, isPersistent: false);
+
+                    return LocalRedirect(returnUrl);
+                }
+
+                return BadRequest("Greška pri logovanju");
+            }
+        }
     }
 }
