@@ -157,11 +157,11 @@ namespace eduProjectWebGUI.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectInputModel = ModalParameters.Get<ProjectInputModel>("ProjectInputModel");
+            /*ProjectInputModel = ModalParameters.Get<ProjectInputModel>("ProjectInputModel");
             Editing = ModalParameters.Get<bool>("Editing");
             faculties = ModalParameters.Get<ICollection<Faculty>>("faculties");
             studyFields = ModalParameters.Get<ICollection<StudyField>>("studyFields");
-            tags = ModalParameters.Get<ICollection<Tag>>("tags");
+            tags = ModalParameters.Get<ICollection<Tag>>("tags");*/
         }
     }
 }
