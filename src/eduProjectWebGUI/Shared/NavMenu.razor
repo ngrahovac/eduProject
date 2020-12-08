@@ -1,37 +1,43 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">eduProjectWebGUI</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+﻿<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="font-size:1.6rem">
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-</div>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
 
-@code {
-    private bool collapseNavMenu = true;
+            <li class="nav-item my-1 mx-2">
+                <a class="nav-link" href="#">Početna</a>
+            </li>
+            <li class="nav-item my-1 mx-2">
+                <a class="nav-link" href="#">Aktivni projekti</a>
+            </li>
+            <li class="nav-item my-1 mx-2">
+                <a class="nav-link" href="#">Moji projekti</a>
+            </li>
+            <li class="nav-item my-1 mx-2">
+                <a class="nav-link" href="#">Moje prijave</a>
+            </li>
+        </ul>
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+        <div class="nav-item my-1 mx-2">
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control m-sm-2" type="search" placeholder="Unesite pojam za pretragu" aria-label="Search">
+                <button class="button my-2 my-sm-0" type="submit">Pretraži</button>
+            </form>
+        </div>
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
-}
+        <div class="nav-item dropdown my-1">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Podešavanja
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Podešavanja profila</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">O aplikaciji</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
