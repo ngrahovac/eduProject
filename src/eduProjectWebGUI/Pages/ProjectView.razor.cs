@@ -87,8 +87,8 @@ namespace eduProjectWebGUI.Pages
         async Task ShowReceivedApplicationsModal()
         {
             var parameters = new ModalParameters();
-            parameters.Add("ProjectId", ProjectId);
-            Modal.Show(typeof(ReceivedApplicationsOverview), "Pristigle prijave", parameters);
+            parameters.Add(nameof(ProjectId), ProjectId);
+            Modal.Show<ReceivedApplicationsOverview>("Pristigle prijave", parameters);
         }
 
         protected override async Task OnInitializedAsync()

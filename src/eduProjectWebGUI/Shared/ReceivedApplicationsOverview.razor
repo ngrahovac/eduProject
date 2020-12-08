@@ -68,8 +68,9 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ProjectId = ModalParameters.Get<int>("ProjectId");
-        ProjectApplicationsDisplayModel = await ApiService.GetAsync<ProjectApplicationsDisplayModel>($"/applications/project/{ProjectId}");
+        // ProjectId = ModalParameters.Get<int>(nameof(ProjectId));
+        ProjectApplicationsDisplayModel = await ApiService.GetAsync<ProjectApplicationsDisplayModel>
+        ($"/applications/project/{ProjectId}");
 
         foreach (var profileApplication in ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels)
         {
