@@ -9,7 +9,7 @@
         <div class="tags">
             @foreach (var name in TagNames)
             {
-                <div class="tag" @onclick="@(e => { if (Editing) ProjectInputModel.TagNames.Remove(name); })">
+                <div class="tag" @onclick="@(e => { if (Editing)TagNames.Remove(name);  Console.WriteLine($"Dodan tag sad ih je {TagNames.Count()}"); })">
                     @name
                 </div>
             }
@@ -21,7 +21,12 @@
     [Parameter]
     public bool Editing { get; set; } = false;
     [Parameter]
-    public ICollection<string> TagNames { get; set; } = new List<string>();
+    public ICollection<string> TagNames { get; set; } = new HashSet<string>();
     [Parameter]
     public ProjectInputModel ProjectInputModel { get; set; } = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
 }

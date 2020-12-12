@@ -1,15 +1,9 @@
-﻿@page "/homepage"
+﻿@page "/homepage/{queryString}"
+@page "/homepage"
 @inject ApiService ApiService
+@inject NavigationManager NavigationManager
 
 <div class="content">
-    <div class="section">
-        @*TODO: make a search component*@
-        <EditForm Model="searchParameters">
-            <InputText @bind-Value="searchParameters.SearchText">Unesite pojam za pretragu</InputText>
-        </EditForm>
-        <button type="button" class="button button-primary" @onclick="SearchProjects">Pretraži</button>
-    </div>
-
     <h3>Pregled projekata</h3>
 
     @foreach (var model in projectDisplayModels)
@@ -24,6 +18,5 @@
             <p>@model.StudyField.Name</p>
         </div>
     }
-
 </div>
 

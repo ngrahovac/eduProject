@@ -31,7 +31,7 @@ namespace eduProjectWebGUI.Pages
         public Tag AddedTag
         {
             get { return addedTag; }
-            set { addedTag = value; Console.WriteLine($"Dodan {addedTag.Name}"); projectInputModel.TagNames.Add(addedTag.Name); }
+            set { addedTag = value; projectInputModel.TagNames.Add(addedTag.Name); Console.WriteLine($"Dodan tag sad ih je {projectInputModel.TagNames.Count()}"); }
         }
 
         private Faculty faculty;
@@ -48,7 +48,6 @@ namespace eduProjectWebGUI.Pages
         private ICollection<int> years = new List<int>();
         private ICollection<Tag> tags = new List<Tag>();
 
-
         protected override async Task OnInitializedAsync()
         {
             faculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
@@ -61,36 +60,6 @@ namespace eduProjectWebGUI.Pages
                 editing = true;
                 var model = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
                 projectInputModel = new ProjectInputModel(model);
-                /*
-                projectInputModel = new ProjectInputModel
-                {
-                    Title = model.Title,
-                    Description = model.Description,
-                    StudyFieldName = model.StudyField != null ? model.StudyField.Name : null,
-                    StartDate = model.StartDate,
-                    EndDate = model.EndDate,
-                    TagNames = model.Tags.Select(t => t.Name).ToList()
-                };
-
-                // add display model 
-                projectInputModel.CollaboratorProfileInputModels = new List<CollaboratorProfileInputModel>();
-                List<CollaboratorProfileDisplayModel> collaboratorProfileDisplayModels = new List<CollaboratorProfileDisplayModel>();
-                foreach (var p in model.StudentProfileDisplayModels)
-                {
-                    collaboratorProfileDisplayModels.Add(p);
-                }
-                foreach (var p in model.FacultyMemberProfileDisplayModels)
-                {
-                    collaboratorProfileDisplayModels.Add(p);
-                }
-
-                foreach (var profileDisplayModel in collaboratorProfileDisplayModels)
-                {
-                    var collaboratorProfileInputModel = CollaboratorProfileInputModel.FromCollaboratorProfileDisplayModel(profileDisplayModel);
-                    collaboratorProfileInputModel.AddedOnCreate = true;
-                    projectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
-                }
-                */
             }
             else
             {
@@ -103,17 +72,56 @@ namespace eduProjectWebGUI.Pages
         {
             if (editing)
             {
-                await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
+                var parameters = new ModalParameters();
+                string Title = "Potvrda o čuvanju izmjena";
+                parameters.Add(nameof(Title), Title);
+                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+                var result = await messageForm.Result;
+
+                if (!result.Cancelled)
+                {
+                    await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
+                    NavigationManager.NavigateTo($"/projects/{Id}", true);
+                }
+
             }
             else
             {
-                await ApiService.PostAsync("/projects", projectInputModel);
+                var parameters = new ModalParameters();
+                string Title = "Potvrda o objavljivanju projekta";
+                parameters.Add(nameof(Title), Title);
+                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+                var result = await messageForm.Result;
+
+                if (!result.Cancelled)
+                {
+                    await ApiService.PostAsync("/projects", projectInputModel);
+                    NavigationManager.NavigateTo("/homepage", true);
+                }
             }
         }
 
         private async void RemoveCollaboratorProfile(CollaboratorProfileInputModel profile)
         {
             projectInputModel.CollaboratorProfileInputModels.Remove(profile);
+        }
+
+        private async void EditCollaboratorProfile(CollaboratorProfileInputModel model)
+        {
+            int index = -1;
+            for (int i = 0; i < projectInputModel.CollaboratorProfileInputModels.Count; i++)
+            {
+                if (projectInputModel.CollaboratorProfileInputModels.ElementAt(i).Equals(model))
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index != -1)
+            {
+                ShowCreateCollaboratorProfilePopup(true, index);
+            }
         }
 
         private async Task<IEnumerable<Tag>> FilterTags(string searchText)
@@ -123,16 +131,26 @@ namespace eduProjectWebGUI.Pages
             return tags.Where(t => t.Name.StartsWith(searchText));
         }
 
-        async Task AddCollaboratorPopUp()
+        async void ShowCreateCollaboratorProfilePopup(bool editing, int profileIndex)
         {
             var parameters = new ModalParameters();
             parameters.Add("ProjectInputModel", projectInputModel);
-            parameters.Add("Editing", editing);
+            parameters.Add("editingProfile", editing);
+            parameters.Add("profileIndex", profileIndex);
+
             parameters.Add("faculties", faculties);
             parameters.Add("studyFields", studyFields);
             parameters.Add("tags", tags);
 
-            Modal.Show(typeof(ProjectCreateAddCollaborator), "Kreiranje profila saradnika", parameters);
+            var form = Modal.Show(typeof(ProjectCreateAddCollaborator), "Kreiranje profila saradnika", parameters);
+            var result = await form.Result;
+            if (!result.Cancelled)
+                StateHasChanged();
+        }
+
+        async Task CancelEditing()
+        {
+            NavigationManager.NavigateTo($"/projects/{Id}");
         }
     }
 }

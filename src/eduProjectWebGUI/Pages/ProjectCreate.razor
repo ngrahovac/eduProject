@@ -3,6 +3,8 @@
 @inject ApiService ApiService
 @inject IModalService Modal
 
+@inject NavigationManager NavigationManager
+
 
 <div class="content">
     @if (editing)
@@ -47,7 +49,7 @@
             <h5>Opis projekta</h5>
             <InputTextArea @bind-Value="@projectInputModel.Description"></InputTextArea>
 
-            <TagsOverview Editing="editing"
+            <TagsOverview Editing="true"
                           ProjectInputModel="projectInputModel"
                           TagNames="projectInputModel.TagNames"></TagsOverview>
             <BlazoredTypeahead SearchMethod="FilterTags"
@@ -68,14 +70,15 @@
         @if (editing)
         {
             <div class="buttons">
-                <button class="button button-primary" type="button" @onclick="@AddCollaboratorPopUp">Dodaj profil saradnika</button>
+                <button class="button button-primary" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
                 <button class="button button-primary" type="submit">Sačuvaj izmjene</button>
+                <button class="button button-primary" type="button" @onclick="@CancelEditing">Odustani</button>
             </div>
         }
         else
         {
             <div class="buttons">
-                <button class="button button-primary" type="button" @onclick="@AddCollaboratorPopUp">Dodaj profil saradnika</button>
+                <button class="button button-primary" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
                 <button class="button button-primary" type="submit">Oglasi projekat</button>
             </div>
         }
@@ -96,6 +99,7 @@
                         <th>Smjer</th>
                         <th>Godina</th>
                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -111,6 +115,10 @@
                             @if (!p.AddedOnCreate)
                             {
                                 <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+                            }
+                            @if (!p.AddedOnCreate)
+                            {
+                                <td><button class="button" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
                             }
                         </tr>
                     }
