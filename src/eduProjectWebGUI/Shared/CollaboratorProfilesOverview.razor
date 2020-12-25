@@ -17,7 +17,7 @@
             {
                 int index = i;
                 FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
-                <tr @onclick="@(() => CollaboratorProfileSelected("faculty member profile", profile.CollaboratorProfileId, index))">
+                <tr @onclick="@(() => CollaboratorProfileSelected("faculty-member-profiles","student-profiles", profile.CollaboratorProfileId, index))">
                     <td>@profile.FacultyName</td>
                     <td>@profile.StudyFieldName</td>
                     <td>@profile.Description</td>
@@ -40,7 +40,7 @@
         {
             int index = i;
             StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
-            <tr @onclick="@(() => CollaboratorProfileSelected("student profile", profile.CollaboratorProfileId, index))">
+            <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
                 <td>@profile.FacultyName</td>
                 <td>@profile.StudyCycle</td>
                 <td>@profile.StudyProgramName</td>
@@ -61,9 +61,10 @@
     public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; }
 
 
-    public async Task CollaboratorProfileSelected(string profileType, int collaboratorProfileId, int index)
+    public async Task CollaboratorProfileSelected(string tableToHighlight, string tableToClear, int collaboratorProfileId, int index)
     {
-        await js.InvokeVoidAsync("selectCollaboratorProfile", profileType, index);
+        string[] tablesToClear = { tableToClear };
+        await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
         model.CollaboratorProfileId = collaboratorProfileId;
     }
 }

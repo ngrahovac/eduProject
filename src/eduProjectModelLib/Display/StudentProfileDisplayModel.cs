@@ -16,7 +16,7 @@ namespace eduProjectModel.Display
 
         public StudentProfileDisplayModel() { }
 
-        public StudentProfileDisplayModel(StudentProfile profile, Faculty faculty)
+        public StudentProfileDisplayModel(StudentProfile profile, Faculty faculty) : base(profile)
         {
             CollaboratorProfileId = profile.CollaboratorProfileId;
             StudyCycle = profile.StudyCycle;

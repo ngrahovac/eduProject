@@ -1,7 +1,7 @@
-﻿@*Kada korisnik klikne na PRIJAVI SE i ostavi komentar, to se sacuva u model.ApplicantComment, tako da bi bilo pametno 
-    da, ako korisnik ide na X na vrhu prozora ili klikne na ODUSTANI button da se taj string postavi na null vrijednost 
-    ili na prazan string, kako bazi odgovara. Jer npr ja ako hocu da se prijavim, i napisao sam neki komentar i tu se 
-    sad premisljam nesto i kliknem na ODUSTANI, i prebaci me u glavi da opet hocu da se prijavim, kad kliknem na 
+﻿@*Kada korisnik klikne na PRIJAVI SE i ostavi komentar, to se sacuva u model.ApplicantComment, tako da bi bilo pametno
+    da, ako korisnik ide na X na vrhu prozora ili klikne na ODUSTANI button da se taj string postavi na null vrijednost
+    ili na prazan string, kako bazi odgovara. Jer npr ja ako hocu da se prijavim, i napisao sam neki komentar i tu se
+    sad premisljam nesto i kliknem na ODUSTANI, i prebaci me u glavi da opet hocu da se prijavim, kad kliknem na
     PRIJAVI SE ostaje onaj komentar koji sam prethodno napisao, on mi se prikaze, a mislim da je bolje da ga se obrise.*@
 
 @inject ProjectApplicationInputModel model
@@ -14,8 +14,8 @@
         <textarea @bind="@model.ApplicantComment" type="text" class="form-control comment-field" id="message" placeholder="Ako želite da priložite komentar uz prijavu, molimo Vas da ga unesete." style="resize: none; height: 200px; width: 500px;" />
     </div>
 
-    <button @onclick="SubmitForm" class="btn btn-primary">Prihvati</button>
-    <button @onclick="Cancel" class="btn btn-secondary">Odustani</button>
+    <button @onclick="SubmitForm" class="button button-primary">Prihvati</button>
+    <button @onclick="Cancel" class="button">Odustani</button>
 
 </div>
 

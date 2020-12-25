@@ -1,4 +1,6 @@
 ﻿@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IModalService Modal
 
 <div class="section" style="height:500px; overflow-y:auto">
     <h4 class="title">@ProjectApplicationsDisplayModel.Title</h4>
@@ -93,21 +95,33 @@
 
     public async Task SelectCollaboratorsAndCloseProject()
     {
-        var projectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{ProjectApplicationsDisplayModel.ProjectId}");
-        var projectInputModel = new ProjectInputModel(projectDisplayModel);
+        var parameters = new ModalParameters();
+        string Title = "Potvrda o odabiru saradnika i brisanju projekta";
+        parameters.Add(nameof(Title), Title);
+        var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+        var result = await messageForm.Result;
 
-        foreach (var model in ProjectApplicationInputModels)
+        if (!result.Cancelled)
         {
-            await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
+            var projectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{ProjectApplicationsDisplayModel.ProjectId}");
+            var projectInputModel = new ProjectInputModel(projectDisplayModel);
 
-            if (model.ProjectApplicationStatus == ProjectApplicationStatus.Accepted)
+            foreach (var model in ProjectApplicationInputModels)
             {
-                projectInputModel.CollaboratorIds.Add(model.ApplicantId);
+                await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
+
+                if (model.ProjectApplicationStatus == ProjectApplicationStatus.Accepted)
+                {
+                    projectInputModel.CollaboratorIds.Add(model.ApplicantId);
+                }
             }
+
+            projectInputModel.ProjectStatus = ProjectStatus.Closed;
+            await ApiService.PutAsync($"/projects/{ProjectApplicationsDisplayModel.ProjectId}", projectInputModel);
+            NavigationManager.NavigateTo("/homepage", true);
         }
 
-        projectInputModel.ProjectStatus = ProjectStatus.Closed;
-        await ApiService.PutAsync($"/projects/{ProjectApplicationsDisplayModel.ProjectId}", projectInputModel);
 
     }
+
 }

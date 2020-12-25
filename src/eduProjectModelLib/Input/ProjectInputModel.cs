@@ -17,7 +17,7 @@ namespace eduProjectModel.Input
         public string StudyFieldName { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public ICollection<CollaboratorProfileInputModel> CollaboratorProfileInputModels { get; set; } = new List<CollaboratorProfileInputModel>();
+        public List<CollaboratorProfileInputModel> CollaboratorProfileInputModels { get; set; } = new List<CollaboratorProfileInputModel>();
         public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
         public ICollection<string> TagNames { get; set; } = new HashSet<string>();
 
@@ -38,7 +38,7 @@ namespace eduProjectModel.Input
             StudyFieldName = model.StudyField?.Name;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
-            TagNames = model.Tags.Select(t => t.Name).ToList();
+            TagNames = model.Tags.Select(t => t.Name).ToHashSet();
 
             CollaboratorProfileInputModels = new List<CollaboratorProfileInputModel>();
             List<CollaboratorProfileDisplayModel> collaboratorProfileDisplayModels = new List<CollaboratorProfileDisplayModel>();

@@ -1,5 +1,8 @@
 ﻿@page "/applications/user/{UserId:int}"
 @inject ApiService ApiService
+@inject Microsoft.JSInterop.IJSRuntime js
+@inject IModalService Modal
+@inject NavigationManager NavigationManager
 
 <div class="content">
     <h3>Poslane prijave</h3>
@@ -11,8 +14,9 @@
 
             @foreach (var profileModel in projectModel.CollaboratorProfileApplicationsDisplayModels)
             {
+                allTables.Add($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
                 <h5>@profileModel.CollaboratorProfileDisplayModel.Description</h5>
-                <table class="collaborator-profiles-table">
+                <table class="collaborator-profiles-table" id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
                     <thead>
                         <tr>
                             <td>Id prijave</td>
@@ -22,9 +26,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var applicationModel in profileModel.ApplicationDisplayModels)
+                        @for (int i = 0; i < profileModel.ApplicationDisplayModels.Count(); i++)
                         {
-                            <tr @onclick="@(()=> { selectedApplicationId = applicationModel.ApplicationId; })">
+                            int index = i;
+                            var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
+
+                            <tr @onclick="@(async () =>
+                                            {
+                                                selectedApplicationId = applicationModel.ApplicationId;
+                                                tablesToClear.Clear();
+                                                foreach (var item in allTables)
+                                                    tablesToClear.Add(item);
+                                                tablesToClear.Remove($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
+                                                var arr = tablesToClear.ToArray();
+                                                await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
+                                            })">
                                 <td>@applicationModel.ApplicationId</td>
                                 <td>@applicationModel.ApplicantComment</td>
                                 <td>@applicationModel.AuthorComment</td>

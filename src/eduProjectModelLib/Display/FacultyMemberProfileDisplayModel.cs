@@ -14,7 +14,7 @@ namespace eduProjectModel.Display
 
         public FacultyMemberProfileDisplayModel() { }
 
-        public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile, Faculty faculty)
+        public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile, Faculty faculty) : base(profile)
         {
             CollaboratorProfileId = profile.CollaboratorProfileId;
             FacultyName = profile.FacultyId != null ? faculty.Name : null;

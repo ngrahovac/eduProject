@@ -38,7 +38,7 @@ namespace eduProjectModel.Input
             CvLink = model.CvLink;
             PhotoLink = model.PhotoLink;
             Bio = model.Bio;
-            UserTagNames = model.UserTags.Select(t => t.Name).ToList();
+            UserTagNames = model.UserTags.Select(t => t.Name).ToHashSet();
         }
 
         public void MapTo(UserSettings model)

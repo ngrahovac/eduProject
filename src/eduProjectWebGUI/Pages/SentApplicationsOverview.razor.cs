@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
 using eduProjectModel.Display;
+using eduProjectWebGUI.Shared;
 using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
@@ -12,6 +14,9 @@ namespace eduProjectWebGUI.Pages
         [Parameter] public int UserId { get; set; }
 
         private int selectedApplicationId = 0;
+
+        private HashSet<string> allTables = new HashSet<string>();
+        private List<string> tablesToClear = new List<string>();
 
         public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; } = new List<ProjectApplicationsDisplayModel>();
 
@@ -30,7 +35,17 @@ namespace eduProjectWebGUI.Pages
         {
             if (selectedApplicationId != 0)
             {
-                await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
+                var parameters = new ModalParameters();
+                string Title = "Potvrda o povlačenju prijave";
+                parameters.Add(nameof(Title), Title);
+                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+                var result = await messageForm.Result;
+
+                if (!result.Cancelled)
+                {
+                    await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
+                    NavigationManager.NavigateTo($"/applications/user/{UserId}", true);
+                }
             }
         }
     }

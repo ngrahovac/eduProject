@@ -25,46 +25,41 @@ namespace eduProjectWebGUI.Shared
         [Parameter] public ProjectInputModel ProjectInputModel { get; set; }
         [Parameter] public ICollection<StudyField> studyFields { get; set; } = new List<StudyField>();
         [Parameter] public ICollection<Faculty> faculties { get; set; } = new List<Faculty>();
-
-        [Parameter] public bool Editing { get; set; }
+        [Parameter] public bool editingProfile { get; set; }
+        [Parameter] public int profileIndex { get; set; }
+        [Parameter] public ICollection<Tag> tags { get; set; } = new List<Tag>();
 
         private ICollection<string> cycles = new List<string>();
         private ICollection<StudyProgram> programs = new List<StudyProgram>();
         private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
         private ICollection<int> years = new List<int>();
-        [Parameter] public ICollection<Tag> tags { get; set; } = new List<Tag>();
 
         private Faculty faculty;
         int cycle;
-        private StudyProgram program;
-        private StudyProgramSpecialization specialization;
 
         [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-        private async void CollaboratorProfileTypeChanged(CollaboratorProfileType type)
+        private async Task CollaboratorProfileTypeChanged(CollaboratorProfileType type)
         {
-            collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-            yearStr = string.Empty;
-            cycleStr = string.Empty;
+            if (type != collaboratorProfileInputModel.CollaboratorProfileType)
+            {
+                CollaboratorProfileInputModel newModel = new CollaboratorProfileInputModel
+                {
+                    FacultyName = collaboratorProfileInputModel.FacultyName,
+                    ActivityDescription = collaboratorProfileInputModel.ActivityDescription
+                };
 
-            collaboratorProfileInputModel.CollaboratorProfileType = type;
-            Console.WriteLine($"Odabran tip saradnika {type}");
+                collaboratorProfileInputModel = newModel;
+
+                yearStr = string.Empty;
+                cycleStr = string.Empty;
+
+                collaboratorProfileInputModel.CollaboratorProfileType = type;
+                Console.WriteLine($"Odabran tip saradnika {type}");
+            }
         }
 
-        private async void AddCollaboratorProfile()
-        {
-            Console.WriteLine($"Adding {collaboratorProfileInputModel.CollaboratorProfileType}");
-            collaboratorProfileInputModel.AddedOnCreate = !Editing;
-            ProjectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
-            collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-
-            yearStr = string.Empty;
-            cycleStr = string.Empty;
-
-            await BlazoredModal.Close();
-        }
-
-        private async void FacultySelected(string facultyName)
+        private async Task FacultySelected(string facultyName)
         {
             Console.WriteLine($"Odabran fakultet {facultyName}");
             cycles.Clear();
@@ -86,7 +81,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private void CycleSelected(string cycleStr)
+        private async Task CycleSelected(string cycleStr)
         {
             this.cycleStr = cycleStr;
             Console.WriteLine($"Odabran ciklus {cycleStr}");
@@ -106,7 +101,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private void ProgramSelected(string programName)
+        private async Task ProgramSelected(string programName)
         {
             Console.WriteLine($"Odabran program {programName}");
             specializations.Clear();
@@ -117,6 +112,8 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.StudyProgramName = programName;
                 var program = programs.Where(p => p.Cycle == cycle && p.Name == programName).First();
+                Console.WriteLine("program je ");
+                Console.WriteLine(program);
                 specializations = program.StudyProgramSpecializations.ToList();
                 years = Enumerable.Range(1, program.DurationYears).ToList();
             }
@@ -126,7 +123,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private void YearSelected(string yearStr)
+        private async Task YearSelected(string yearStr)
         {
             this.yearStr = yearStr;
             Console.WriteLine($"Odabran ciklus {yearStr}");
@@ -141,7 +138,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private void SpecializationSelected(string specializationName)
+        private async Task SpecializationSelected(string specializationName)
         {
             Console.WriteLine($"Odabran smjer {specializationName}");
 
@@ -157,11 +154,78 @@ namespace eduProjectWebGUI.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            /*ProjectInputModel = ModalParameters.Get<ProjectInputModel>("ProjectInputModel");
-            Editing = ModalParameters.Get<bool>("Editing");
-            faculties = ModalParameters.Get<ICollection<Faculty>>("faculties");
-            studyFields = ModalParameters.Get<ICollection<StudyField>>("studyFields");
-            tags = ModalParameters.Get<ICollection<Tag>>("tags");*/
+            if (editingProfile == true)
+            {
+                collaboratorProfileInputModel = ProjectInputModel.CollaboratorProfileInputModels.ElementAt(profileIndex);
+                base.StateHasChanged();
+
+                var model = collaboratorProfileInputModel;
+                await CollaboratorProfileTypeChanged(model.CollaboratorProfileType);
+
+                if (model.CollaboratorProfileType == CollaboratorProfileType.Student)
+                {
+                    if (model.FacultyName != null)
+                    {
+                        await FacultySelected(model.FacultyName);
+                        if (model.Cycle != null)
+                        {
+                            await CycleSelected(model.Cycle.ToString());
+                            if (model.StudyProgramName != null)
+                            {
+                                await ProgramSelected(model.StudyProgramName);
+                                if (model.StudyYear != null)
+                                {
+                                    await YearSelected(model.StudyYear.ToString());
+                                    if (model.StudyProgramSpecializationName != null)
+                                    {
+                                        await SpecializationSelected(model.StudyProgramSpecializationName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                else if (model.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+                {
+                    if (model.FacultyName != null)
+                    {
+                        await FacultySelected(model.FacultyName);
+                    }
+                    Console.WriteLine($"NAUCNA OBLAST JE {model.StudyFieldName}");
+                    base.StateHasChanged();
+                }
+            }
+        }
+
+        private async void AddCollaboratorProfile()
+        {
+            if (!editingProfile)
+            {
+                Console.WriteLine($"Adding {collaboratorProfileInputModel.CollaboratorProfileType}");
+                collaboratorProfileInputModel.AddedOnCreate = false;
+                ProjectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
+                collaboratorProfileInputModel = new CollaboratorProfileInputModel();
+
+                yearStr = string.Empty;
+                cycleStr = string.Empty;
+
+                await BlazoredModal.Close();
+            }
+            else
+            {
+                Console.WriteLine($"Editing {collaboratorProfileInputModel.CollaboratorProfileType}");
+                collaboratorProfileInputModel.AddedOnCreate = false;
+                ProjectInputModel.CollaboratorProfileInputModels.RemoveAt(profileIndex);
+                ProjectInputModel.CollaboratorProfileInputModels.Insert(profileIndex, collaboratorProfileInputModel);
+
+                collaboratorProfileInputModel = new CollaboratorProfileInputModel();
+
+                yearStr = string.Empty;
+                cycleStr = string.Empty;
+
+                await BlazoredModal.Close();
+            }
         }
     }
 }

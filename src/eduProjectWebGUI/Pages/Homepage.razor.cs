@@ -4,11 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
+using Microsoft.AspNetCore.Components;
+using eduProjectWebGUI.Utils;
 
 namespace eduProjectWebGUI.Pages
 {
     public partial class Homepage
     {
+        [Parameter]
+        public string QueryString { get; set; }
 
         private ICollection<ProjectDisplayModel> projectDisplayModels = new List<ProjectDisplayModel>();
 
@@ -16,40 +20,34 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            await GetAllProjects();
+            projectDisplayModels = (await ApiService.GetAsync<ICollection<ProjectDisplayModel>>("/projects")).ToList();
+
+            var queryString = NavigationManager.QueryString();
+
+            if (queryString.Count == 0)
+            {
+                // recommended projects
+            }
+
+            if (queryString["status"] == "active")
+            {
+                projectDisplayModels = projectDisplayModels.Where(m => m.ProjectStatus == ProjectStatus.Active).ToList();
+            }
+
+            if (queryString["authored"] == "true")
+            {
+                projectDisplayModels = projectDisplayModels.Where(m => m.IsDisplayForAuthor == true).ToList();
+            }
         }
 
         private async Task LoadProject(int projectId)
         {
-            // navigates to project page
+            NavigationManager.NavigateTo($"/projects/{projectId}");
         }
 
-        // filtering functions for different tabs
-        // ako se ne mogne namjestiti da tabovi u navigaciji ne mijenjaju stranicu nego okidaju funkcije, napraviti odvojene stranice
-
-        private async Task GetAllProjects()
+        private async void SearchProjects()
         {
-            projectDisplayModels = (await ApiService.GetAsync<ICollection<ProjectDisplayModel>>("/projects")).ToList();
-        }
 
-        private async Task GetActiveProjects()
-        {
-            projectDisplayModels = projectDisplayModels.Where(p => p.ProjectStatus == ProjectStatus.Active).ToList();
-        }
-
-        private async Task GetRecommendedProjects()
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task GetAuthorProjects()
-        {
-            throw new NotImplementedException();
-        }
-
-        private async Task SearchProjects()
-        {
-            //
         }
 
     }
