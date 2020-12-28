@@ -13,13 +13,11 @@ namespace eduProjectWebAPI.Data
 {
     public class FacultiesRepository : IFacultiesRepository
     {
-        private readonly IMemoryCache cache;
         private readonly DbConnectionParameters dbConnectionString;
 
-        public FacultiesRepository(DbConnectionParameters dbConnectionString, IMemoryCache cache)
+        public FacultiesRepository(DbConnectionParameters dbConnectionString)
         {
             this.dbConnectionString = dbConnectionString;
-            this.cache = cache;
         }
 
         public async Task<Faculty> GetAsync(int id)
@@ -117,21 +115,22 @@ namespace eduProjectWebAPI.Data
             // add faculty, its programs and specializations to cache
             if (faculty != null)
             {
+                /*
                 var key = $"{CacheKeyTemplate.Faculty}{faculty.FacultyId}";
                 cache.CreateEntry(key);
-                cache.Set(key, faculty);
+                cache.Set(key, faculty);*/
 
                 foreach (var p in faculty.StudyPrograms)
-                {
+                {/*
                     key = $"{CacheKeyTemplate.Program}{p.ProgramId}";
                     cache.CreateEntry(key);
-                    cache.Set(key, p);
+                    cache.Set(key, p);*/
 
                     foreach (var s in p.StudyProgramSpecializations)
-                    {
+                    {/*
                         key = $"{CacheKeyTemplate.Specialization}{s.SpecializationId}";
                         cache.CreateEntry(key);
-                        cache.Set(key, s);
+                        cache.Set(key, s);*/
                     }
                 }
             }

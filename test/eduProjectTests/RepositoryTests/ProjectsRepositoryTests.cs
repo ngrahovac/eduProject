@@ -24,7 +24,7 @@ namespace eduProjectTests.RepositoryTests
             var serviceProvider = services.BuildServiceProvider();
             var memoryCache = serviceProvider.GetService<IMemoryCache>();
 
-            projects = new ProjectsRepository(new TestDbConnectionParameters(), memoryCache);
+            projects = new ProjectsRepository(new TestDbConnectionParameters());
 
             StudyField.fields.Clear();
             Tag.tags.Clear();

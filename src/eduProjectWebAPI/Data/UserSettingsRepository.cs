@@ -18,7 +18,7 @@ namespace eduProjectWebAPI.Data
             this.dbConnectionParameters = dbConnectionParameters;
         }
 
-        public async Task<UserSettings> Get(int userId)
+        public async Task<UserSettings> GetAsync(int userId)
         {
             UserSettings settings = null;
 
@@ -82,12 +82,10 @@ namespace eduProjectWebAPI.Data
             return settings;
         }
 
-        public async Task Update(UserSettings settings)
+        public async Task UpdateAsync(UserSettings settings)
         {
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
-                // update basic information
-
                 MySqlCommand command = new MySqlCommand
                 {
                     Connection = connection,
@@ -196,7 +194,7 @@ namespace eduProjectWebAPI.Data
 
         private async Task UpdateBasicInfo(MySqlCommand command, UserSettings settings)
         {
-            var currentSettings = await Get(settings.UserId);
+            var currentSettings = await GetAsync(settings.UserId);
 
             var removedTags = currentSettings.UserTags.Where(t => !settings.UserTags.Contains(t));
             var newTags = settings.UserTags.Where(t => !currentSettings.UserTags.Contains(t));

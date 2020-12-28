@@ -24,6 +24,5 @@ namespace eduProjectModel.Domain
         {
             StudyPrograms.Add(program);
         }
-        // ograniciti programe na 5 ?
     }
 }

@@ -67,7 +67,7 @@ namespace eduProjectWebAPI.Controllers
 
             try
             {
-                var allProjects = await projects.GetAll();
+                var allProjects = await projects.GetAllAsync();
 
                 foreach (var project in allProjects)
                 {

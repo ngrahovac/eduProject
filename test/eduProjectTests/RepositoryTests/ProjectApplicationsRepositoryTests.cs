@@ -43,21 +43,21 @@ namespace eduProjectTests.RepositoryTests
         [Fact]
         public async void GetById_IdExists_ReturnApplication()
         {
-            var result = await applications.GetById(1);
+            var result = await applications.GetAsync(1);
             Assert.IsType<ProjectApplication>(result);
         }
 
         [Fact]
         public async void GetById_IdIsNonExisting_ReturnNull()
         {
-            var result = await applications.GetById(0);
+            var result = await applications.GetAsync(0);
             Assert.Null(result);
         }
 
         [Fact]
         public async void GetByApplicant_ApplicationsExist_ReturnApplications()
         {
-            var result = await applications.GetByApplicantId(6);
+            var result = await applications.GetByApplicantIdAsync(6);
             var count = result.Count;
             Assert.Equal(2, count);
         }
@@ -65,7 +65,7 @@ namespace eduProjectTests.RepositoryTests
         [Fact]
         public async void GetByProject_ApplicationsExist_ReturnApplications()
         {
-            var result = await applications.GetByProjectId(1);
+            var result = await applications.GetByProjectIdAsync(1);
             var count = result.Count;
             Assert.Equal(5, count);
         }

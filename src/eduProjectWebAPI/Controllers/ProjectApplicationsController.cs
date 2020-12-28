@@ -30,7 +30,7 @@ namespace eduProjectWebAPI.Controllers
         {
             try
             {
-                var projectApplication = await applications.GetById(id);
+                var projectApplication = await applications.GetAsync(id);
 
                 return new ApplicationDisplayModel(projectApplication);
             }
@@ -45,9 +45,9 @@ namespace eduProjectWebAPI.Controllers
         {
             try
             {
-                var application = await applications.GetById(model.ApplicationId);
+                var application = await applications.GetAsync(model.ApplicationId);
                 model.MapTo(application);
-                await applications.Update(application);
+                await applications.UpdateAsync(application);
 
                 return Ok();
 
@@ -65,7 +65,7 @@ namespace eduProjectWebAPI.Controllers
             try
             {
                 var project = await projects.GetAsync(projectId);
-                var projectApplications = await applications.GetByProjectId(projectId);
+                var projectApplications = await applications.GetByProjectIdAsync(projectId);
 
                 return new ProjectApplicationsDisplayModel(project, projectApplications);
             }
@@ -80,7 +80,7 @@ namespace eduProjectWebAPI.Controllers
         {
             try
             {
-                var authoredProjects = await projects.GetAllByAuthor(authorId);
+                var authoredProjects = await projects.GetAllByAuthorAsync(authorId);
                 var ids = authoredProjects.Select(p => p.ProjectId);
 
                 List<ProjectApplicationsDisplayModel> projectApplicationsDisplayModels = new List<ProjectApplicationsDisplayModel>();
@@ -88,7 +88,7 @@ namespace eduProjectWebAPI.Controllers
                 foreach (var id in ids)
                 {
                     var project = authoredProjects.Where(p => p.ProjectId == id).First();
-                    var projectApplications = await applications.GetByProjectId(id);
+                    var projectApplications = await applications.GetByProjectIdAsync(id);
                     projectApplicationsDisplayModels.Add(new ProjectApplicationsDisplayModel(project, projectApplications));
                 }
 
@@ -106,7 +106,7 @@ namespace eduProjectWebAPI.Controllers
         {
             try
             {
-                ICollection<ProjectApplication> usersApplications = await applications.GetByApplicantId(applicantId);
+                ICollection<ProjectApplication> usersApplications = await applications.GetByApplicantIdAsync(applicantId);
                 List<ProjectApplicationsDisplayModel> models = new List<ProjectApplicationsDisplayModel>();
 
                 var projectIds = usersApplications.Select(a => a.ProjectId).Distinct();
@@ -147,8 +147,8 @@ namespace eduProjectWebAPI.Controllers
         {
             try
             {
-                var application = await applications.GetById(id);
-                await applications.Delete(application);
+                var application = await applications.GetAsync(id);
+                await applications.DeleteAsync(application);
                 return Ok();
             }
             catch (Exception e)

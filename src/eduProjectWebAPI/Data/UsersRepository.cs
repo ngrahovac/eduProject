@@ -10,12 +10,10 @@ namespace eduProjectWebAPI.Data
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly IMemoryCache cache;
         private readonly DbConnectionParameters dbConnectionString;
 
-        public UsersRepository(DbConnectionParameters dbConnectionString, IMemoryCache cache)
+        public UsersRepository(DbConnectionParameters dbConnectionString)
         {
-            this.cache = cache;
             this.dbConnectionString = dbConnectionString;
         }
 
@@ -36,9 +34,9 @@ namespace eduProjectWebAPI.Data
 
                 if (user != null)
                 {
-                    await ReadAuthoredProjectsIds(command, id, user);
+                    await ReadAuthoredProjectIds(command, id, user);
 
-                    await ReadProjectCollaborationsIds(command, id, user);
+                    await ReadProjectCollaborationIds(command, id, user);
                 }
 
                 await connection.CloseAsync();
@@ -47,7 +45,7 @@ namespace eduProjectWebAPI.Data
             return user;
         }
 
-        private async Task ReadProjectCollaborationsIds(MySqlCommand command, int id, User user)
+        private async Task ReadProjectCollaborationIds(MySqlCommand command, int id, User user)
         {
             command.CommandText = @"SELECT project_id 
                                     FROM project_collaborator
@@ -74,7 +72,7 @@ namespace eduProjectWebAPI.Data
             }
         }
 
-        private async Task ReadAuthoredProjectsIds(MySqlCommand command, int id, User user)
+        private async Task ReadAuthoredProjectIds(MySqlCommand command, int id, User user)
         {
             command.CommandText = @"SELECT project_id 
                                     FROM project
@@ -127,8 +125,9 @@ namespace eduProjectWebAPI.Data
             {
                 if (reader.HasRows)
                 {
+                    user = new User();
                     await reader.ReadAsync();
-                    user = GetUserFromRow(reader);
+                    GetUserFromRow(reader);
                 }
             }
 

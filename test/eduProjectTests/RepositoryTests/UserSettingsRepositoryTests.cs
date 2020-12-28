@@ -29,21 +29,21 @@ namespace eduProjectTests.RepositoryTests
         [Fact]
         public async void GetById_IdExists_ReturnUserSettings()
         {
-            var result = await settings.Get(1);
+            var result = await settings.GetAsync(1);
             Assert.IsType<UserSettings>(result);
         }
 
         [Fact]
         public async void GetById_IdIsNonExisting_ReturnNull()
         {
-            var result = await settings.Get(0);
+            var result = await settings.GetAsync(0);
             Assert.Null(result);
         }
 
         [Fact]
         public async void UpdateTags_UserTagsExist_TagListUpdated()
         {
-            var s = await settings.Get(1);
+            var s = await settings.GetAsync(1);
             s.UserTags.Remove(Tag.tags[1]);
             Assert.Equal(1, s.UserTags.Count);
             s.UserTags.Add(Tag.tags[4]);

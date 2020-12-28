@@ -12,13 +12,11 @@ namespace eduProjectWebAPI.Data
 {
     public class ProjectsRepository : IProjectsRepository
     {
-        private readonly IMemoryCache cache;
         private readonly DbConnectionParameters dbConnectionParameters;
 
-        public ProjectsRepository(DbConnectionParameters dbConnectionParameters, IMemoryCache cache)
+        public ProjectsRepository(DbConnectionParameters dbConnectionParameters)
         {
             this.dbConnectionParameters = dbConnectionParameters;
-            this.cache = cache;
         }
 
         public async Task<Project> GetAsync(int id)
@@ -34,18 +32,12 @@ namespace eduProjectWebAPI.Data
 
                 await connection.OpenAsync();
 
-                // read project attributes from table `project`
-                project = await ReadBasicProjectInfo(command, id);
+                project = await ReadBasicProjectInfo(command, id);  // null if the project doesn't exist
 
                 if (project != null)
                 {
-                    // read collaborator profiles from  table `collaborator_profiles`
                     await ReadCollaboratorProfilesInfo(command, id, project);
-
-                    // read tag ids from table `project_tag`
                     await ReadTagsInfo(command, id, project);
-
-                    // read collaborator ids from table `project_collaborator`
                     await ReadCollaboratorIds(command, id, project);
                 }
 
@@ -55,7 +47,7 @@ namespace eduProjectWebAPI.Data
             return project;
         }
 
-        public async Task<ICollection<Project>> GetAll()
+        public async Task<ICollection<Project>> GetAllAsync()
         {
             List<Project> projects = new List<Project>();
             List<int> ids = new List<int>();
@@ -81,20 +73,21 @@ namespace eduProjectWebAPI.Data
                     }
                 }
 
-                foreach (var id in ids)
-                {
-                    projects.Add(await GetAsync(id));
-                }
-
                 await connection.CloseAsync();
+            }
+
+            foreach (var id in ids)
+            {
+                projects.Add(await GetAsync(id));
             }
 
             return projects;
         }
 
-        public async Task<ICollection<Project>> GetAllByAuthor(int authorId)
+        public async Task<ICollection<Project>> GetAllByAuthorAsync(int authorId)
         {
             ICollection<Project> projects = new List<Project>();
+            var ids = new List<int>();
 
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
@@ -115,38 +108,13 @@ namespace eduProjectWebAPI.Data
 
                 await connection.OpenAsync();
 
-                var projectIds = new List<int>();
-
                 using (var reader = await command.ExecuteReaderAsync())
                 {
                     if (reader.HasRows)
                     {
                         while (await reader.ReadAsync())
                         {
-                            projectIds.Add(reader.GetInt32(0));
-                        }
-                    }
-                }
-
-                if (projectIds.Count > 0)
-                {
-                    foreach (var id in projectIds)
-                    {
-                        // read project attributes from table `project`
-                        var project = await ReadBasicProjectInfo(command, id);
-
-                        if (project != null)
-                        {
-                            // read collaborator profiles from  table `collaborator_profiles`
-                            await ReadCollaboratorProfilesInfo(command, id, project);
-
-                            // read tag ids from table `project_tag`
-                            await ReadTagsInfo(command, id, project);
-
-                            // read collaborator ids from table `project_collaborator`
-                            await ReadCollaboratorIds(command, id, project);
-
-                            projects.Add(project);
+                            ids.Add(reader.GetInt32(0));
                         }
                     }
                 }
@@ -154,12 +122,17 @@ namespace eduProjectWebAPI.Data
                 await connection.CloseAsync();
             }
 
+            foreach (var id in ids)
+            {
+                projects.Add(await GetAsync(id));
+            }
+
             return projects;
         }
 
         private async Task<Project> ReadBasicProjectInfo(MySqlCommand command, int id)
         {
-            Project project = new Project();
+            Project project = null;
 
             command.CommandText = @"SELECT project_id, title, start_date, end_date, 
                                            project.description, project.study_field_id, 
@@ -180,23 +153,12 @@ namespace eduProjectWebAPI.Data
             {
                 if (reader.HasRows)
                 {
+                    project = new Project();
                     while (await reader.ReadAsync())
                     {
-                        project.ProjectId = reader.GetInt32(0);
-                        project.Title = reader.GetString(1);
-                        project.StartDate = !reader.IsDBNull(2) ? (DateTime?)reader.GetDateTime(2) : null;
-                        project.EndDate = !reader.IsDBNull(3) ? (DateTime?)reader.GetDateTime(3) : null;
-                        project.Description = reader.GetString(4);
-
-                        int studyFieldId = reader.GetInt32(5);
-                        project.StudyField = StudyField.fields[studyFieldId];
-
-                        project.ProjectStatus = (ProjectStatus)Enum.ToObject(typeof(ProjectStatus), reader.GetInt32(6));
-                        project.AuthorId = reader.GetInt32(7);
+                        GetBasicProjectInfoFromRow(reader, project);
                     }
                 }
-                else
-                    project = null;
             }
 
             return project;
@@ -226,38 +188,58 @@ namespace eduProjectWebAPI.Data
                 {
                     while (await reader.ReadAsync())
                     {
-                        CollaboratorProfileType profileType = (CollaboratorProfileType)Enum.ToObject(typeof(CollaboratorProfileType), reader.GetInt32(2));
-
-                        if (profileType is CollaboratorProfileType.Student)
-                        {
-                            StudentProfile profile = new StudentProfile
-                            {
-                                CollaboratorProfileId = reader.GetInt32(0),
-                                Description = reader.GetString(1),
-                                StudyCycle = reader.GetInt32(3),
-                                StudyYear = !reader.IsDBNull(4) ? (int?)reader.GetInt32(4) : null,
-                                FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
-                                StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
-                                StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null
-                            };
-
-                            project.CollaboratorProfiles.Add(profile);
-                        }
-
-                        else if (profileType is CollaboratorProfileType.FacultyMember)
-                        {
-                            FacultyMemberProfile profile = new FacultyMemberProfile
-                            {
-                                CollaboratorProfileId = reader.GetInt32(0),
-                                Description = reader.GetString(1),
-                                FacultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null,
-                                StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null
-                            };
-
-                            project.CollaboratorProfiles.Add(profile);
-                        }
+                        GetCollaboratorProfileFromRow(reader, project);
                     }
                 }
+            }
+        }
+
+        private void GetBasicProjectInfoFromRow(MySqlDataReader reader, Project project)
+        {
+            project.ProjectId = reader.GetInt32(0);
+            project.Title = reader.GetString(1);
+            project.StartDate = !reader.IsDBNull(2) ? (DateTime?)reader.GetDateTime(2) : null;
+            project.EndDate = !reader.IsDBNull(3) ? (DateTime?)reader.GetDateTime(3) : null;
+            project.Description = reader.GetString(4);
+
+            int studyFieldId = reader.GetInt32(5);
+            project.StudyField = StudyField.fields[studyFieldId];
+
+            project.ProjectStatus = (ProjectStatus)Enum.ToObject(typeof(ProjectStatus), reader.GetInt32(6));
+            project.AuthorId = reader.GetInt32(7);
+        }
+
+        private void GetCollaboratorProfileFromRow(MySqlDataReader reader, Project project)
+        {
+            CollaboratorProfileType profileType = (CollaboratorProfileType)Enum.ToObject(typeof(CollaboratorProfileType), reader.GetInt32(2));
+
+            if (profileType is CollaboratorProfileType.Student)
+            {
+                StudentProfile profile = new StudentProfile
+                {
+                    CollaboratorProfileId = reader.GetInt32(0),
+                    Description = reader.GetString(1),
+                    StudyCycle = reader.GetInt32(3),
+                    StudyYear = !reader.IsDBNull(4) ? (int?)reader.GetInt32(4) : null,
+                    FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
+                    StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
+                    StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null
+                };
+
+                project.CollaboratorProfiles.Add(profile);
+            }
+
+            else if (profileType is CollaboratorProfileType.FacultyMember)
+            {
+                FacultyMemberProfile profile = new FacultyMemberProfile
+                {
+                    CollaboratorProfileId = reader.GetInt32(0),
+                    Description = reader.GetString(1),
+                    FacultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null,
+                    StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null
+                };
+
+                project.CollaboratorProfiles.Add(profile);
             }
         }
 
@@ -565,6 +547,7 @@ namespace eduProjectWebAPI.Data
 
                 var project = await GetAsync(updatedProject.ProjectId);
 
+                // TODO: equals to
                 if (project.Title != updatedProject.Title ||
                     project.Description != updatedProject.Description ||
                     project.StartDate != updatedProject.StartDate ||
@@ -601,8 +584,6 @@ namespace eduProjectWebAPI.Data
                                     study_field_id = @fieldId,
                                     project_status_id = @statusId
                                     WHERE project_id = @projectId";
-
-            // add project_status_id = @statusId
 
             command.Parameters.Clear();
 
@@ -913,7 +894,6 @@ namespace eduProjectWebAPI.Data
                                         WHERE project_id = @id";
                 await command.ExecuteNonQueryAsync();
 
-                // delete applications for collaborator profiles of this project
                 command.CommandText = @"DELETE student_profile, faculty_member_profile
                                         FROM project
                                         INNER JOIN collaborator_profile USING(project_id)
@@ -932,5 +912,6 @@ namespace eduProjectWebAPI.Data
                 await connection.CloseAsync();
             }
         }
+
     }
 }

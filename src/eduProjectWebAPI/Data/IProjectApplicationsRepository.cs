@@ -10,15 +10,15 @@ namespace eduProjectWebAPI.Data
     {
         public Task AddAsync(ProjectApplication application);
 
-        public Task<ProjectApplication> GetById(int id);
+        public Task<ProjectApplication> GetAsync(int id);
 
-        public Task<ICollection<ProjectApplication>> GetByApplicantId(int applicantId);
+        public Task<ICollection<ProjectApplication>> GetByApplicantIdAsync(int applicantId);
 
-        public Task<ICollection<ProjectApplication>> GetByProjectId(int projectId);
+        public Task<ICollection<ProjectApplication>> GetByProjectIdAsync(int projectId);
 
-        public Task Update(ProjectApplication application);
+        public Task UpdateAsync(ProjectApplication application);
 
-        public Task Delete(ProjectApplication application);
+        public Task DeleteAsync(ProjectApplication application);
 
     }
 }

@@ -68,7 +68,7 @@ namespace eduProjectWebAPI.Data
             }
         }
 
-        public async Task<ProjectApplication> GetById(int id)
+        public async Task<ProjectApplication> GetAsync(int id)
         {
             ProjectApplication application = null;
 
@@ -100,6 +100,7 @@ namespace eduProjectWebAPI.Data
                 {
                     if (reader.HasRows)
                     {
+                        application = new ProjectApplication();
                         await reader.ReadAsync();
                         application = GetProjectApplicationFromRow(reader);
                     }
@@ -111,7 +112,7 @@ namespace eduProjectWebAPI.Data
             return application;
         }
 
-        public async Task<ICollection<ProjectApplication>> GetByApplicantId(int applicantId)
+        public async Task<ICollection<ProjectApplication>> GetByApplicantIdAsync(int applicantId)
         {
             ICollection<ProjectApplication> applications = new List<ProjectApplication>();
 
@@ -156,7 +157,7 @@ namespace eduProjectWebAPI.Data
             return applications;
         }
 
-        public async Task<ICollection<ProjectApplication>> GetByProjectId(int projectId)
+        public async Task<ICollection<ProjectApplication>> GetByProjectIdAsync(int projectId)
         {
             ICollection<ProjectApplication> applications = new List<ProjectApplication>();
 
@@ -216,7 +217,7 @@ namespace eduProjectWebAPI.Data
             };
         }
 
-        public async Task Update(ProjectApplication application)
+        public async Task UpdateAsync(ProjectApplication application)
         {
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
@@ -269,7 +270,7 @@ namespace eduProjectWebAPI.Data
             }
         }
 
-        public async Task Delete(ProjectApplication application)
+        public async Task DeleteAsync(ProjectApplication application)
         {
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {

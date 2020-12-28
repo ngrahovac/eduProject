@@ -8,8 +8,8 @@ namespace eduProjectWebAPI.Data
 {
     public interface IUserSettingsRepository
     {
-        public Task<UserSettings> Get(int userId);
+        public Task<UserSettings> GetAsync(int userId);
 
-        public Task Update(UserSettings settings);
+        public Task UpdateAsync(UserSettings settings);
     }
 }
