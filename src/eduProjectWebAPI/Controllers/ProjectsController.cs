@@ -12,6 +12,8 @@ using FluentValidation.Results;
 using System;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Text.Json;
+using eduProjectWebAPI.Services;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -31,19 +33,11 @@ namespace eduProjectWebAPI.Controllers
             this.faculties = faculties;
         }
 
-
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProjectDisplayModel>> GetById(int id, [FromHeader] string authString)
+        public async Task<ActionResult<ProjectDisplayModel>> GetById(int id)
         {
-            //Raspakovanje kolaca
-            Console.WriteLine(authString);
+            int userId = int.Parse(HttpContext.Request.ExtractUserId());
 
-
-
-
-            //i ovdje treba ima neki fleg nesto dole pogledaj log in je l to to 
-            //(Logicno je sve nemoj se zajebati)
-            
             Project project = await projects.GetAsync(id);
 
             if (project == null)
@@ -51,7 +45,7 @@ namespace eduProjectWebAPI.Controllers
 
             User author = await users.GetAsync(project.AuthorId);
 
-            bool isDisplayForAuthor = false; // User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(project.AuthorId.ToString());
+            bool isDisplayForAuthor = userId == project.AuthorId;
 
             if (project.ProjectStatus == ProjectStatus.Active)
             {

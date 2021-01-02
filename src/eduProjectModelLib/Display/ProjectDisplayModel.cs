@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace eduProjectModel.Display
 {
+    [Serializable]
     public class ProjectDisplayModel
     {
         public bool IsDisplayForAuthor { get; set; }

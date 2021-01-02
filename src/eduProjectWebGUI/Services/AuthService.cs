@@ -1,6 +1,5 @@
 ﻿using Blazored.LocalStorage;
 using eduProjectModel.Input;
-using eduProjectWebGUI.Pages;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Net.Http;
@@ -37,12 +36,9 @@ namespace eduProjectWebGUI.Services
             ((ApiAuthenticationStateProvider)authenticationStateProvider).MarkUserAsAuthenticated(model.Email);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.Token);
 
-            //TEST
-            Console.WriteLine(loginResult.loggedUserId); //Ispisuje dobro
-
             return loginResult;
         }
-
+        
         public async Task Logout()
         {
             await localStorage.RemoveItemAsync("authToken");

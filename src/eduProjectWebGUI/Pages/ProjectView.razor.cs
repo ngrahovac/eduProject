@@ -20,8 +20,8 @@ namespace eduProjectWebGUI.Pages
 {
     public partial class ProjectView
     {
-        private readonly ILocalStorageService localStorage;
-        public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
+        //private ILocalStorageService localStorage; //bilo je readonly
+        //public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
         public ProjectView() { }
 
         [Parameter]
@@ -84,18 +84,18 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            //ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            //if (localStorage == null)
+                //Console.WriteLine("Local storage is null");
 
-            //var token = await localStorage.GetItemAsync("authToken");
+            //var token = await localStorage.GetItemAsStringAsync("authToken");
 
-            if (localStorage == null)
-                Console.WriteLine("LOCAL STORAGE JE NULL");
+            //For testing
+            //Console.WriteLine("ProjectView.razor.cs: TOKEN=" + token);
 
-            var token = await localStorage.GetItemAsStringAsync("authToken");
-            var result = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}",
-                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token));
+            ProjectDisplayModel = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}");
 
-            ProjectDisplayModel = JsonSerializer.Deserialize<ProjectDisplayModel>(result);
+            //ProjectDisplayModel = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}",
+                //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token));
         }
 
     }

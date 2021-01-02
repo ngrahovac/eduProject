@@ -182,18 +182,13 @@ namespace eduProjectWebAPI.Controllers
             if (!result.Succeeded)
                 return BadRequest();
 
-            //__________________________________________________________________________________________________________________________
-            //Test fetching real user ID from sql server database to put inside jwt token
-
             var user = userManager.FindByEmailAsync(model.Email);
-            var id = user.Result.Id.ToString(); //WORKS
-
-            //__________________________________________________________________________________________________________________________
+            var id = user.Result.Id.ToString();
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, model.Email),
-                new Claim(ClaimTypes.NameIdentifier, id) //putting ID in jwt like a claim, WORKS
+                new Claim(ClaimTypes.NameIdentifier, id)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]));
@@ -206,7 +201,6 @@ namespace eduProjectWebAPI.Controllers
                 claims, expires: expiry, signingCredentials: creds
             );
 
-            //Naknadno u LoginResult dodajem ID korisnika kao property u svrhu testiranja. Izbrisati ako pravi problem.
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token), loggedUserId = id });
         }
     }

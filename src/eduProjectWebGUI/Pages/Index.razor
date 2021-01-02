@@ -11,18 +11,11 @@
         @foreach (var claim in context.User.Claims)
         {
             <p>@claim.Type : @claim.Value</p>
-
-            //tmp2 = context.User.Claims.ToArray()[1].ToString().Split("nameidentifier:")[1];
         }
 
-        <h1>@tmp2</h1>
     </Authorized>
 
     <NotAuthorized>
-        Not Allowed
+        <h1 style="text-align:center">Not Allowed</h1>
     </NotAuthorized>
 </AuthorizeView>
-
-@code{
-    string tmp2;
-}
