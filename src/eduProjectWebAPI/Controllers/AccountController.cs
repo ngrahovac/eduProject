@@ -61,8 +61,18 @@ namespace eduProjectWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
-            await signInManager.SignOutAsync();
-            return RedirectToAction("Login", "Account");
+            try
+            {
+                await signInManager.SignOutAsync();
+                return Ok("Logout from API successful");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return BadRequest("Logout exception happened");
+            //return RedirectToAction("Login", "Account");
         }
 
         [AllowAnonymous]

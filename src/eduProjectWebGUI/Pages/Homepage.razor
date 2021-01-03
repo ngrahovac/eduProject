@@ -3,28 +3,33 @@
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <form OnValidSubmit="Logout">
+            <input type="button" class="btn btn-primary" value="Odjavi se" @onclick="Logout" />
+        </form>
+    </Authorized>
+    <NotAuthorized>
+
+    </NotAuthorized>
+</AuthorizeView>
+
 <div class="content">
     <h3>Pregled projekata</h3>
 
     @foreach (var model in projectDisplayModels)
     {
-        <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
-            <h4 class="title">@model.Title</h4>
+    <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
+        <h4 class="title">@model.Title</h4>
 
-            <h5>Opis</h5>
-            <p>@model.Description</p>
+        <h5>Opis</h5>
+        <p>@model.Description</p>
 
-            <h5>Oblast</h5>
-            <p>@model.StudyField.Name</p>
-        </div>
+        <h5>Oblast</h5>
+        <p>@model.StudyField.Name</p>
+    </div>
     }
 </div>
-
-<AuthorizeView>
-    <Authorized>
-        <p>hello</p>
-    </Authorized>
-    <NotAuthorized>
-        no hello for you
-    </NotAuthorized>
-</AuthorizeView>

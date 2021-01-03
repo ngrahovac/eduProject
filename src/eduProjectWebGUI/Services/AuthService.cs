@@ -41,6 +41,9 @@ namespace eduProjectWebGUI.Services
         
         public async Task Logout()
         {
+            //This line of code is additional. If something is broken, try removing it.
+            await httpClient.PostAsync("account/logout", new StringContent(string.Empty, Encoding.UTF8, "application/json"));
+
             await localStorage.RemoveItemAsync("authToken");
             ((ApiAuthenticationStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
             httpClient.DefaultRequestHeaders.Authorization = null;

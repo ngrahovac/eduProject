@@ -50,5 +50,12 @@ namespace eduProjectWebGUI.Pages
 
         }
 
+        //Method for testing logout feature. Should be placed somewhere else.
+        public async Task Logout()
+        {
+            await AuthService.Logout();
+            Navigation.NavigateTo("/");
+        }
+
     }
 }
