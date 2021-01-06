@@ -6,12 +6,12 @@ using eduProjectModel.Input;
 using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Security.Claims;
-using System.Collections.Generic;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using eduProjectWebAPI.Services;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -44,17 +44,49 @@ namespace eduProjectWebAPI.Controllers
                 };
 
                 newUser.Id = GetNextAvailableUserId();
-
                 var result = await userManager.CreateAsync(newUser, model.Password);
 
                 if (result.Succeeded)
-                    return RedirectToAction("Login", "Account");
+                {
+                    try
+                    {
+                        var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, token = confirmationToken }, Request.Scheme);
+                        
+                        MailSender.SendActivationEmail(model.Email, confirmationLink);
+                        return Ok("Na Vašu email adresu je poslan link za aktivaciju naloga.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
 
                 foreach (var error in result.Errors)
                     ModelState.AddModelError(string.Empty, error.Description);
             }
 
             return BadRequest(ModelState);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+                return NotFound();
+            else
+            {
+                var result = await userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                    return Ok("Vaš nalog na eduProject platformi je uspješno aktiviran. Zahvaljujemo Vam na saradnji!");
+                else
+                    return BadRequest("Aktivacija naloga je neuspješna");
+            }
         }
 
         [Route("[action]")]
@@ -72,7 +104,6 @@ namespace eduProjectWebAPI.Controllers
             }
 
             return BadRequest("Logout exception happened");
-            //return RedirectToAction("Login", "Account");
         }
 
         [AllowAnonymous]
@@ -187,6 +218,15 @@ namespace eduProjectWebAPI.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Login2(LoginInputModel model)
         {
+            //Code beneath must be synchronous to work, but for email confirmation
+            //user must be fetched asynchronously which results in code redundancy.
+            //This is just for initial testing. Code refarctoring needed here.
+
+            var confUser = await userManager.FindByEmailAsync(model.Email);
+            if (confUser != null && !confUser.EmailConfirmed && await userManager.CheckPasswordAsync(confUser, model.Password))
+                return BadRequest("Niste aktivirali vas nalog");
+            
+
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
             if (!result.Succeeded)

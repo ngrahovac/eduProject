@@ -51,8 +51,12 @@ namespace eduProjectWebAPI
 
             ConfigureDataLayerServices(services);
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<AppDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                options.SignIn.RequireConfirmedEmail = true;
+            })
+            .AddEntityFrameworkStores<AppDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddDbContextPool<AppDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("EduProjectIdentityDB")));
 
