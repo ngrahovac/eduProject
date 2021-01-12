@@ -31,7 +31,7 @@ namespace eduProjectWebAPI.Controllers
             {
                 try
                 {
-                    var userSettings = await settings.Get(userId);
+                    var userSettings = await settings.GetAsync(userId);
                     return new UserSettingsDisplayModel(userSettings);
                 }
                 catch (Exception e)
@@ -52,9 +52,9 @@ namespace eduProjectWebAPI.Controllers
             {
                 try
                 {
-                    var userSettings = await settings.Get(userId);
+                    var userSettings = await settings.GetAsync(userId);
                     model.MapTo(userSettings);
-                    await settings.Update(userSettings);
+                    await settings.UpdateAsync(userSettings);
                     return NoContent();
                 }
                 catch (Exception e)
