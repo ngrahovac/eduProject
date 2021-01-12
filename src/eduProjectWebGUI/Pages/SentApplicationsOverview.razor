@@ -16,22 +16,23 @@
             {
                 allTables.Add($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
                 <h5>@profileModel.CollaboratorProfileDisplayModel.Description</h5>
-                <table class="collaborator-profiles-table" id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
-                    <thead>
-                        <tr>
-                            <td>Id prijave</td>
-                            <td>Komentar prijavljenog</td>
-                            <td>Komentar autora</td>
-                            <td>Status prijave</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @for (int i = 0; i < profileModel.ApplicationDisplayModels.Count(); i++)
-                        {
-                            int index = i;
-                            var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
+                <div class="collaborator-profiles-table">
+                    <table id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
+                        <thead>
+                            <tr>
+                                <td>Id prijave</td>
+                                <td>Komentar prijavljenog</td>
+                                <td>Komentar autora</td>
+                                <td>Status prijave</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < profileModel.ApplicationDisplayModels.Count(); i++)
+                            {
+                                int index = i;
+                                var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
 
-                            <tr @onclick="@(async () =>
+                                <tr @onclick="@(async () =>
                                             {
                                                 selectedApplicationId = applicationModel.ApplicationId;
                                                 tablesToClear.Clear();
@@ -41,14 +42,15 @@
                                                 var arr = tablesToClear.ToArray();
                                                 await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
                                             })">
-                                <td>@applicationModel.ApplicationId</td>
-                                <td>@applicationModel.ApplicantComment</td>
-                                <td>@applicationModel.AuthorComment</td>
-                                <td>@applicationModel.ProjectApplicationStatus</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                                    <td>@applicationModel.ApplicationId</td>
+                                    <td>@applicationModel.ApplicantComment</td>
+                                    <td>@applicationModel.AuthorComment</td>
+                                    <td>@applicationModel.ProjectApplicationStatus</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             }
         </div>
     }

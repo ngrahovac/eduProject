@@ -1,11 +1,13 @@
 /* sadzaj stranice */
 .content {
-    margin: 100px 400px 100px 400px;
+    width: 70vw;
+    margin: 100px auto 100px auto;
 }
 
-/* komponenta */
+/* komponenta - moze biti dio neke sekcije*/
 .component {
     margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* vizuelno odvojen dio stranice ili komponente*/
@@ -17,14 +19,28 @@
     margin-top: 20px;
 }
 
-    .section .title {
-        font-family: 'Patua One', cursive;
-        font-weight: 500;
+.collaborator-profiles-table {
+    min-width: 200px;
+    table-layout: fixed;
+    border-collapse: collapse;
+    overflow: auto;
+}
+
+    .collaborator-profiles-table tr {
+        height: 50px;
     }
 
+        .collaborator-profiles-table tr:hover {
+            background-color: #f5f5f5
+        }
+
+    .collaborator-profiles-table table {
+        width: 100%;
+    }
 
 .time-period {
     display: flex;
+    flex-wrap: wrap;
 }
 
     .time-period .date {
@@ -34,6 +50,7 @@
 
 .tags {
     display: flex;
+    flex-wrap: wrap;
 }
 
     .tags .tag {
@@ -47,25 +64,23 @@
             background-color: lightgray;
         }
 
-.collaborator-profiles-table {
-    border-collapse: collapse;
-    width: 100%;
-    overflow-y: auto;
-}
-
-    .collaborator-profiles-table tr {
-        height: 50px;
-    }
-
-        .collaborator-profiles-table tr:hover {
-            background-color: #f5f5f5
-        }
-
 .selected-row {
     background-color: hotpink;
 }
 
-.buttons {
-    display: flex;
-    flex-direction: row-reverse;
+
+
+.scrollable {
+    height: 500px;
+    overflow-y: auto;
 }
+
+/* uklanja unutrasnji border typeahead kontrole */
+
+.blazored-typeahead__controls input {
+    border: none;
+}
+
+    .blazored-typeahead__controls input:focus {
+        border: none;
+    }

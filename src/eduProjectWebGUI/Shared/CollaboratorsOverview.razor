@@ -7,21 +7,23 @@
     }
     else
     {
-        <table class="collaborator-profiles-table">
-            <thead>
-                <tr>
-                    <th>Ime i prezime</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var model in CollaboratorDisplayModels)
-                {
+        <div class="collaborator-profiles-table">
+            <table>
+                <thead>
                     <tr>
-                        <td>@model.FirstName @model.LastName</td>
+                        <th>Ime i prezime</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var model in CollaboratorDisplayModels)
+                    {
+                        <tr>
+                            <td>@model.FirstName @model.LastName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 </div>
 

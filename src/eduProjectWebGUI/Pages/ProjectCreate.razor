@@ -67,6 +67,51 @@
             </BlazoredTypeahead>
         </div>
 
+        <div class="section">
+            <h4 class="title">Dodani profili saradnika</h4>
+
+            @*FIX: Add sticky header*@
+            <div class="collaborator-profiles-table scrollable">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tip</th>
+                            <th>Fakultet</th>
+                            <th>Ciklus</th>
+                            <th>Program</th>
+                            <th>Smjer</th>
+                            <th>Godina</th>
+                            <th>Naučna oblast</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
+                        {
+                            <tr>
+                                <td>@p.CollaboratorProfileType</td>
+                                <td>@p.FacultyName</td>
+                                <td>@p.Cycle</td>
+                                <td>@p.StudyProgramName</td>
+                                <td>@p.StudyProgramSpecializationName</td>
+                                <td>@p.StudyYear</td>
+                                <td>@p.StudyFieldName</td>
+                                @if (!p.AddedOnCreate)
+                                {
+                                    <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+                                }
+                                @if (!p.AddedOnCreate)
+                                {
+                                    <td><button class="button" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         @if (editing)
         {
             <div class="buttons">
@@ -82,50 +127,9 @@
                 <button class="button button-primary" type="submit">Oglasi projekat</button>
             </div>
         }
+
+
     </EditForm>
 
-    <div class="section">
-        <h4 class="title">Dodani profili saradnika</h4>
 
-        @*FIX: Add sticky header*@
-        <div style="height:500px; overflow-y:auto">
-            <table class="collaborator-profiles-table">
-                <thead>
-                    <tr>
-                        <th>Tip</th>
-                        <th>Fakultet</th>
-                        <th>Ciklus</th>
-                        <th>Program</th>
-                        <th>Smjer</th>
-                        <th>Godina</th>
-                        <th>Naučna oblast</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
-                    {
-                        <tr>
-                            <td>@p.CollaboratorProfileType</td>
-                            <td>@p.FacultyName</td>
-                            <td>@p.Cycle</td>
-                            <td>@p.StudyProgramName</td>
-                            <td>@p.StudyProgramSpecializationName</td>
-                            <td>@p.StudyYear</td>
-                            <td>@p.StudyFieldName</td>
-                            @if (!p.AddedOnCreate)
-                            {
-                                <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
-                            }
-                            @if (!p.AddedOnCreate)
-                            {
-                                <td><button class="button" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
-                            }
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
 </div>

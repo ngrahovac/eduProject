@@ -4,53 +4,58 @@
 <div class="section">
     <h4 class="title">Profili traženih saradnika</h4>
     <h5> Profili nastavnog osoblja </h5>
-    <table id="faculty-member-profiles" class="collaborator-profiles-table">
-        <thead>
+    <div class="collaborator-profiles-table">
+        <table id="faculty-member-profiles">
+            <thead>
+                <tr>
+                    <th>Fakultet</th>
+                    <th>Naučna oblast</th>
+                    <th>Opis aktivnosti</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
+                {
+                    int index = i;
+                    FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
+                    <tr @onclick="@(() => CollaboratorProfileSelected("faculty-member-profiles","student-profiles", profile.CollaboratorProfileId, index))">
+                        <td>@profile.FacultyName</td>
+                        <td>@profile.StudyFieldName</td>
+                        <td>@profile.Description</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <h5>Profili studenata</h5>
+    <div class="collaborator-profiles-table">
+        <table id="student-profiles">
             <tr>
                 <th>Fakultet</th>
-                <th>Naučna oblast</th>
+                <th>Ciklus</th>
+                <th>Studijski program</th>
+                <th>Studijski smjer</th>
+                <th>Godina</th>
                 <th>Opis aktivnosti</th>
             </tr>
-        </thead>
-        <tbody>
-            @for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
+            @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
             {
                 int index = i;
-                FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
-                <tr @onclick="@(() => CollaboratorProfileSelected("faculty-member-profiles","student-profiles", profile.CollaboratorProfileId, index))">
+                StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
+                <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
                     <td>@profile.FacultyName</td>
-                    <td>@profile.StudyFieldName</td>
+                    <td>@profile.StudyCycle</td>
+                    <td>@profile.StudyProgramName</td>
+                    <td>@profile.StudyProgramSpecializationName</td>
+                    <td>@profile.StudyYear</td>
                     <td>@profile.Description</td>
                 </tr>
             }
-        </tbody>
-    </table>
-
-    <h5>Profili studenata</h5>
-    <table id="student-profiles" class="collaborator-profiles-table">
-        <tr>
-            <th>Fakultet</th>
-            <th>Ciklus</th>
-            <th>Studijski program</th>
-            <th>Studijski smjer</th>
-            <th>Godina</th>
-            <th>Opis aktivnosti</th>
-        </tr>
-        @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
-        {
-            int index = i;
-            StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
-            <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-                <td>@profile.FacultyName</td>
-                <td>@profile.StudyCycle</td>
-                <td>@profile.StudyProgramName</td>
-                <td>@profile.StudyProgramSpecializationName</td>
-                <td>@profile.StudyYear</td>
-                <td>@profile.Description</td>
-            </tr>
-        }
-    </table>
+        </table>
+    </div>
 </div>
+
 
 @code {
 

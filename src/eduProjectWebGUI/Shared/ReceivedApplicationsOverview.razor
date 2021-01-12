@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject IModalService Modal
 
-<div class="section" style="height:500px; overflow-y:auto">
+<div class="section scrollable">
     <h4 class="title">@ProjectApplicationsDisplayModel.Title</h4>
 
     @for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
@@ -11,23 +11,24 @@
 
         <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
 
-        <table class="collaborator-profiles-table">
-            <thead>
-                <tr>
-                    <td>Id prijavljenog</td>
-                    <td>Komentar prijavljenog</td>
-                    <td>Odabran za saradnju</td>
-                    <td>Komentar autora</td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
-                {
+        <div class="collaborator-profiles-table">
+            <table>
+                <thead>
                     <tr>
-                        <td>@applicationDisplayModel.ApplicantId</td>
-                        <td>@applicationDisplayModel.ApplicantComment</td>
-                        <td>
-                            <input type="checkbox" @onchange="@((e) =>
+                        <td>Id prijavljenog</td>
+                        <td>Komentar prijavljenog</td>
+                        <td>Odabran za saradnju</td>
+                        <td>Komentar autora</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
+                    {
+                        <tr>
+                            <td>@applicationDisplayModel.ApplicantId</td>
+                            <td>@applicationDisplayModel.ApplicantComment</td>
+                            <td>
+                                <input type="checkbox" @onchange="@((e) =>
                                                                     {
                                                                         var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
                                                                         ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
@@ -35,20 +36,21 @@
                                                                                                      .ProjectApplicationStatus = status;
 
                                                                     })" />
-                        </td>
-                        <td>
-                            <input type="text" @onchange="@((e) =>
+                            </td>
+                            <td>
+                                <input type="text" @onchange="@((e) =>
                                                                 {
                                                                     var comment = (string)e.Value;
                                                                     ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
                                                                                                      .First()
                                                                                                      .AuthorComment = comment;
                                                                 })" />
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     }
 
     <div class="buttons">
