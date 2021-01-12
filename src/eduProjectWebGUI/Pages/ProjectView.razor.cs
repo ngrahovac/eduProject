@@ -1,21 +1,29 @@
-﻿using Blazored.Modal;
+﻿using Blazored.LocalStorage;
+using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
     public partial class ProjectView
     {
+        private readonly ILocalStorageService localStorage;
+        public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
+        public ProjectView() { }
+
         [Parameter]
         public int ProjectId { get; set; }
 
@@ -76,7 +84,18 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            //ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+
+            //var token = await localStorage.GetItemAsync("authToken");
+
+            if (localStorage == null)
+                Console.WriteLine("LOCAL STORAGE JE NULL");
+
+            var token = await localStorage.GetItemAsStringAsync("authToken");
+            var result = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}",
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token));
+
+            ProjectDisplayModel = JsonSerializer.Deserialize<ProjectDisplayModel>(result);
         }
 
     }

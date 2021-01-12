@@ -3,75 +3,84 @@
 @inject ProjectApplicationInputModel model
 @inject NavigationManager NavigationManager
 
-<div class="content">
-    @if (ProjectDisplayModel == null)
-    {
-        <h3>Loading...</h3>
-    }
-    else
-    {
-        <h3>@ProjectDisplayModel.Title</h3>
+@inject ILocalStorageService localStorage
 
-        <h5>Status projekta</h5>
-        <p>@ProjectDisplayModel.ProjectStatus</p>
+<AuthorizeView>
+    <Authorized>
+        <div class="content">
+            @if (ProjectDisplayModel == null)
+            {
+                <h3>Loading...</h3>
+            }
+            else
+            {
+                <h3>@ProjectDisplayModel.Title</h3>
+                <h5>Status projekta</h5>
+                <p>@ProjectDisplayModel.ProjectStatus</p>
 
-        <div class="section">
-            <h4 class="title">Osnovne informacije</h4>
+                <div class="section">
+                    <h4 class="title">Osnovne informacije</h4>
 
-            <h5>Opis projekta</h5>
-            <p>@ProjectDisplayModel.Description</p>
+                    <h5>Opis projekta</h5>
+                    <p>@ProjectDisplayModel.Description</p>
 
-            <h5>Autor</h5>
-            <p>@ProjectDisplayModel.AuthorFullName</p>
+                    <h5>Autor</h5>
+                    <p>@ProjectDisplayModel.AuthorFullName</p>
 
-            <h5>Period realizacije</h5>
-            <div class="time-period">
-                <p class="date">@ProjectDisplayModel.StartDate</p>
-                <p class="date"> - </p>
-                <p class="date">@ProjectDisplayModel.EndDate</p>
-            </div>
+                    <h5>Period realizacije</h5>
+                    <div class="time-period">
+                        <p class="date">@ProjectDisplayModel.StartDate</p>
+                        <p class="date"> - </p>
+                        <p class="date">@ProjectDisplayModel.EndDate</p>
+                    </div>
 
-            <TagsOverview Editing="false"
-                          TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToHashSet()"></TagsOverview>
+                    <TagsOverview Editing="false"
+                                  TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToHashSet()"></TagsOverview>
+                </div>
 
+
+                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@ProjectDisplayModel" />
+                }
+                else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@ProjectDisplayModel" />
+                }
+                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <AuthorActiveProjectView AuthorActiveProjectDisplayModel="@ProjectDisplayModel" />
+                }
+                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="@ProjectDisplayModel" />
+                }
+
+                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <div class="buttons">
+                        <button class="button button-primary" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
+                    </div>
+                }
+                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <div class="buttons">
+                        <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
+                        <button class="button button-primary" @onclick="EditProject">Izmijeni</button>
+                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+                    </div>
+                }
+                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+                {
+                    <div class="buttons">
+                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+                    </div>
+                }
+            }
         </div>
+    </Authorized>
 
-        @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@ProjectDisplayModel" />
-        }
-        else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@ProjectDisplayModel" />
-        }
-        else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <AuthorActiveProjectView AuthorActiveProjectDisplayModel="@ProjectDisplayModel" />
-        }
-        else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <AuthorClosedProjectView AuthorClosedProjectDisplayModel="@ProjectDisplayModel" />
-        }
-
-        @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <div class="buttons">
-                <button class="button button-primary" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
-            </div>
-        }
-        else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <div class="buttons">
-                <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
-                <button class="button button-primary" @onclick="EditProject">Izmijeni</button>
-                <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
-            </div>
-        }
-        else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-        {
-            <div class="buttons">
-                <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
-            </div>
-        }
-    }
-</div>
+    <NotAuthorized>
+        <h1 style="text-align:center">Not allowed</h1>
+    </NotAuthorized>
+</AuthorizeView>

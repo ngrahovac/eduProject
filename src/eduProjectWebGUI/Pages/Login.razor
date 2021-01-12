@@ -2,7 +2,9 @@
 @inject NavigationManager Navigation
 @inject ApiService ApiService
 
-<EditForm Model="@loginInputModel" OnValidSubmit="LoginToSystemAsync">
+@inject IAuthService AuthService
+
+<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
     <div class="login-box">
         <img src="../img/logo.JPG" class="logo-img" />
         <label>Email:</label>
@@ -13,7 +15,7 @@
             <label>Da li želite da zapamtite nalog?</label>
             <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
         </div>
-        <input type="button" class="btn btn-primary" value="Prijavi se" @onclick="LoginToSystemAsync" />
+        <input type="button" class="btn btn-primary" value="Prijavi se" @onclick="Login2" />
         <input type="button" class="btn btn-primary" value="Registruj se" @onclick="RegisterToSystem" />
     </div>
 </EditForm>

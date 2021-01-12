@@ -12,6 +12,11 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace eduProjectWebAPI
 {
@@ -38,6 +43,8 @@ namespace eduProjectWebAPI
                     });
             });
 
+            services.AddCors();
+
             services.AddControllers();
 
             services.AddMemoryCache();
@@ -59,17 +66,32 @@ namespace eduProjectWebAPI
                 options.Password.RequireDigit = false;
             });
 
-            /*Test for setting up global authorization. Using Mvc services is not mandatory.*/
-            services.AddMvc(config =>
+            //Global API authorization (equal to having an [Authorize] attribute above every controller class)
+            /*services.AddMvc(config =>
             {
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 config.Filters.Add(new AuthorizeFilter(policy));
-            });
+            });*/
 
             services.AddAuthentication().AddGoogle(options =>
             {
                 options.ClientId = "70290035778-q5ujcqm43l9mt53be4cma09jsimtniva.apps.googleusercontent.com";
                 options.ClientSecret = "ZFKtPq_liv_LtL5xTlXJ4wg_";
+            });
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = configuration["JwtIssuer"],
+                    ValidAudience = configuration["JwtAudience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]))
+                };
             });
         }
 

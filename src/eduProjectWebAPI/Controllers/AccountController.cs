@@ -7,6 +7,11 @@ using Microsoft.AspNetCore.Authorization;
 using System.Linq;
 using System.Security.Claims;
 using System.Collections.Generic;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -16,11 +21,13 @@ namespace eduProjectWebAPI.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly IConfiguration configuration;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.configuration = configuration;
         }
 
         [AllowAnonymous]
@@ -163,6 +170,44 @@ namespace eduProjectWebAPI.Controllers
 
                 return BadRequest("Greška pri logovanju");
             }
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> Login2(LoginInputModel model)
+        {
+            var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+
+            if (!result.Succeeded)
+                return BadRequest();
+
+            //__________________________________________________________________________________________________________________________
+            //Test fetching real user ID from sql server database to put inside jwt token
+
+            var user = userManager.FindByEmailAsync(model.Email);
+            var id = user.Result.Id.ToString(); //WORKS
+
+            //__________________________________________________________________________________________________________________________
+
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, model.Email),
+                new Claim(ClaimTypes.NameIdentifier, id) //putting ID in jwt like a claim, WORKS
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var expiry = DateTime.Now.AddDays(Convert.ToInt32(configuration["JwtExpiryInDays"]));
+
+            var token = new JwtSecurityToken(
+                configuration["JwtIssuer"],
+                configuration["JwtAudience"],
+                claims, expires: expiry, signingCredentials: creds
+            );
+
+            //Naknadno u LoginResult dodajem ID korisnika kao property u svrhu testiranja. Izbrisati ako pravi problem.
+            return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token), loggedUserId = id });
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Blazored.LocalStorage;
 using eduProjectModel.Input;
+using eduProjectWebGUI.Pages;
 using Microsoft.AspNetCore.Components.Authorization;
+using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -22,8 +24,6 @@ namespace eduProjectWebGUI.Services
             this.authenticationStateProvider = authenticationStateProvider;
         }
 
-        //public async Task<RegisterResult> Register(RegisterInputModel model) { }
-
         public async Task<LoginResult> Login(LoginInputModel model)
         {
             var loginAsJson = JsonSerializer.Serialize(model);
@@ -31,13 +31,14 @@ namespace eduProjectWebGUI.Services
             var loginResult = JsonSerializer.Deserialize<LoginResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (!response.IsSuccessStatusCode)
-            {
                 return loginResult;
-            }
-
+            
             await localStorage.SetItemAsync("authToken", loginResult.Token);
             ((ApiAuthenticationStateProvider)authenticationStateProvider).MarkUserAsAuthenticated(model.Email);
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", loginResult.Token);
+
+            //TEST
+            Console.WriteLine(loginResult.loggedUserId); //Ispisuje dobro
 
             return loginResult;
         }
