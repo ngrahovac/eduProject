@@ -96,8 +96,6 @@ namespace eduProjectModel.Display
                 }
                 //Dugme za izmjenu?
             }
-            else
-                ProjectCollaborationsDisplayModels = null;
         }
     }
 }
