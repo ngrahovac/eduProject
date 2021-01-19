@@ -45,7 +45,7 @@
                                     <td>@applicationModel.ApplicationId</td>
                                     <td>@applicationModel.ApplicantComment</td>
                                     <td>@applicationModel.AuthorComment</td>
-                                    <td>@applicationModel.ProjectApplicationStatus</td>
+                                    <td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
                                 </tr>
                             }
                         </tbody>

@@ -16,7 +16,7 @@
             {
                 <h3>@ProjectDisplayModel.Title</h3>
                 <h5>Status projekta</h5>
-                <p>@ProjectDisplayModel.ProjectStatus</p>
+                <p>@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
 
                 <div class="section">
                     <h4 class="title">Osnovne informacije</h4>

@@ -14,7 +14,7 @@
         }
         else
         {
-            <h4>@($"{ProfileDisplayModel.AcademicRank}, {ProfileDisplayModel.FacultyName}")</h4>
+            <h4>@($"{ProfileDisplayModel.AcademicRank.GetAttribute<DisplayAttribute>().Name}, {ProfileDisplayModel.FacultyName}")</h4>
         }
 
         <div class="section">
