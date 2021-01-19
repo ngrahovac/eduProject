@@ -125,9 +125,8 @@ namespace eduProjectWebAPI.Data
             {
                 if (reader.HasRows)
                 {
-                    user = new User();
                     await reader.ReadAsync();
-                    GetUserFromRow(reader);
+                    user = GetUserFromRow(reader);
                 }
             }
 
