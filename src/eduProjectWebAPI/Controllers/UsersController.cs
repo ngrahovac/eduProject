@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectWebAPI.Data;
+using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eduProjectWebAPI.Controllers
@@ -15,9 +17,9 @@ namespace eduProjectWebAPI.Controllers
     [Route("/users")]
     public class UsersController : ControllerBase
     {
-        private IProjectsRepository projects;
-        private IUsersRepository users;
-        private IFacultiesRepository faculties;
+        private readonly IProjectsRepository projects;
+        private readonly IUsersRepository users;
+        private readonly IFacultiesRepository faculties;
 
         public UsersController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties)
         {
@@ -29,35 +31,46 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProfileDisplayModel>> GetById(int id)
         {
-            User user = await users.GetAsync(id);
-
-            if (user == null)
-                return NotFound();
-
-            ICollection<Project> authoredProjects = null;
-            ICollection<Project> projectCollaborations = null;
-
-            if (user.AuthoredProjectIds != null)
+            if (HttpContext.Request.ExtractUserId() == null)
             {
-                authoredProjects = new HashSet<Project>();
-                foreach (int projectId in user.AuthoredProjectIds)
-                    authoredProjects.Add(await projects.GetAsync(projectId));
+                return Unauthorized();
             }
-
-            if (user.ProjectCollaborationIds != null)
+            else
             {
-                projectCollaborations = new HashSet<Project>();
-                foreach (int projectId in user.ProjectCollaborationIds)
-                    projectCollaborations.Add(await projects.GetAsync(projectId));
+                try
+                {
+                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+
+                    User user = await users.GetAsync(id);
+
+                    if (user == null)
+                        return NotFound();
+
+                    var authoredProjects = new List<Project>();
+                    var projectCollaborations = new List<Project>();
+
+                    if (user.AuthoredProjectIds != null)
+                    {
+                        foreach (int projectId in user.AuthoredProjectIds)
+                            authoredProjects.Add(await projects.GetAsync(projectId));
+                    }
+
+                    if (user.ProjectCollaborationIds != null)
+                    {
+                        foreach (int projectId in user.ProjectCollaborationIds)
+                            projectCollaborations.Add(await projects.GetAsync(projectId));
+                    }
+
+                    var faculty = await faculties.GetAsync(user.FacultyId);
+                    bool isPersonal = currentUserId == id;
+
+                    return new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations);
+                }
+                catch (Exception e)
+                {
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                }
             }
-
-            var faculty = await faculties.GetAsync(user.FacultyId);
-
-            //Da li je id ID od trenutno ulogovanog korisnika?
-
-            bool isPersonal = User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(id.ToString());
-
-            return new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations);
         }
     }
 }

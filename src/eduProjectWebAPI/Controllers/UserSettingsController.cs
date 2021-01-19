@@ -2,6 +2,8 @@
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
+using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,7 +17,7 @@ namespace eduProjectWebAPI.Controllers
     [Route("/users/{userId}/settings")]
     public class UserSettingsController : ControllerBase
     {
-        private IUserSettingsRepository settings;
+        private readonly IUserSettingsRepository settings;
 
         public UserSettingsController(IUserSettingsRepository settings)
         {
@@ -25,45 +27,65 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<UserSettingsDisplayModel>> Get(int userId)
         {
-            //Da li je userId ID od trenutno ulogovanog korisnika?
-
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(userId.ToString()))
+            if (HttpContext.Request.ExtractUserId() == null)
+            {
+                return Unauthorized();
+            }
+            else
             {
                 try
                 {
-                    var userSettings = await settings.GetAsync(userId);
-                    return new UserSettingsDisplayModel(userSettings);
+                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+
+                    if (userId == currentUserId)
+                    {
+                        var userSettings = await settings.GetAsync(currentUserId);
+                        return new UserSettingsDisplayModel(userSettings);
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
                 }
                 catch (Exception e)
                 {
-                    return BadRequest(e.Message);
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
             }
-            else
-                return NotFound();
         }
 
         [HttpPut]
         public async Task<ActionResult> Update(int userId, UserSettingsInputModel model)
         {
-            //Da li je userId ID od trenutno ulogovanog korisnika?
-
-            if (User.FindFirstValue(ClaimTypes.NameIdentifier).Equals(userId.ToString()))
+            if (HttpContext.Request.ExtractUserId() == null)
+            {
+                return Unauthorized();
+            }
+            else
             {
                 try
                 {
-                    var userSettings = await settings.GetAsync(userId);
-                    model.MapTo(userSettings);
-                    await settings.UpdateAsync(userSettings);
-                    return NoContent();
+                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+
+                    if (userId == currentUserId)
+                    {
+                        var userSettings = await settings.GetAsync(currentUserId);
+
+                        model.MapTo(userSettings);
+                        await settings.UpdateAsync(userSettings);
+
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
                 }
                 catch (Exception e)
                 {
-                    return BadRequest(e.Message);
+                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
             }
-            else
-                return NotFound();
         }
     }
 }

@@ -20,32 +20,16 @@ namespace eduProjectWebGUI.Pages
 
         ProjectInputModel projectInputModel = new ProjectInputModel();
 
-        // input model for collaborator profile the user is currently creating
-        private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-
-        // selected values
-        private string cycleStr;
-        private string yearStr;
-
         private Tag addedTag;
         public Tag AddedTag
         {
             get { return addedTag; }
-            set { addedTag = value; projectInputModel.TagNames.Add(addedTag.Name); Console.WriteLine($"Dodan tag sad ih je {projectInputModel.TagNames.Count()}"); }
+            set { addedTag = value; projectInputModel.TagNames.Add(addedTag.Name); }
         }
 
-        private Faculty faculty;
-        int cycle;
-        private StudyProgram program;
-        private StudyProgramSpecialization specialization;
-
         // combo boxes backing lists
-        private ICollection<StudyField> studyFields = new List<StudyField>();
         private ICollection<Faculty> faculties = new List<Faculty>();
-        private ICollection<string> cycles = new List<string>();
-        private ICollection<StudyProgram> programs = new List<StudyProgram>();
-        private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
-        private ICollection<int> years = new List<int>();
+        private ICollection<StudyField> studyFields = new List<StudyField>();
         private ICollection<Tag> tags = new List<Tag>();
 
         protected override async Task OnInitializedAsync()
@@ -56,15 +40,15 @@ namespace eduProjectWebGUI.Pages
 
             if (Id > 0)
             {
-                // editing project
+                // editing existing project
                 editing = true;
-                var model = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
-                projectInputModel = new ProjectInputModel(model);
+                var displayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
+                projectInputModel = new ProjectInputModel(displayModel);
             }
             else
             {
-                editing = false;
                 // creating new project
+                editing = false;
             }
         }
 
@@ -73,30 +57,30 @@ namespace eduProjectWebGUI.Pages
             if (editing)
             {
                 var parameters = new ModalParameters();
-                string Title = "Potvrda o čuvanju izmjena";
-                parameters.Add(nameof(Title), Title);
-                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+                var title = "Potvrda o čuvanju izmjena";
+                parameters.Add(nameof(title), title);
+                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
                 var result = await messageForm.Result;
 
                 if (!result.Cancelled)
                 {
                     await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
-                    NavigationManager.NavigateTo($"/projects/{Id}", true);
+                    //NavigationManager.NavigateTo($"/projects/{Id}", true);
                 }
-
             }
             else
             {
                 var parameters = new ModalParameters();
-                string Title = "Potvrda o objavljivanju projekta";
-                parameters.Add(nameof(Title), Title);
-                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+                string title = "Potvrda o objavljivanju projekta";
+                parameters.Add(nameof(title), title);
+                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
                 var result = await messageForm.Result;
 
                 if (!result.Cancelled)
                 {
+                    projectInputModel.ProjectStatus = ProjectStatus.Active;
                     await ApiService.PostAsync("/projects", projectInputModel);
-                    NavigationManager.NavigateTo("/homepage", true);
+                    //NavigationManager.NavigateTo("/homepage", true);
                 }
             }
         }
@@ -126,8 +110,6 @@ namespace eduProjectWebGUI.Pages
 
         private async Task<IEnumerable<Tag>> FilterTags(string searchText)
         {
-            Console.WriteLine(tags.Count());
-            Console.WriteLine($"pretrazujemo {searchText}");
             return tags.Where(t => t.Name.StartsWith(searchText));
         }
 
@@ -137,7 +119,6 @@ namespace eduProjectWebGUI.Pages
             parameters.Add("ProjectInputModel", projectInputModel);
             parameters.Add("editingProfile", editing);
             parameters.Add("profileIndex", profileIndex);
-
             parameters.Add("faculties", faculties);
             parameters.Add("studyFields", studyFields);
             parameters.Add("tags", tags);

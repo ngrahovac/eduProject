@@ -28,14 +28,10 @@ namespace eduProjectModel.Input
 
         public ProjectInputModel(ProjectDisplayModel model)
         {
-            // FIX
-            // ProjectDisplayModel ima polje CollaboratorDisplayModel
-            // svakako zatvoren projekat ne mozemo vise praviti tj ne mozemo praviti input model
-            // od njega
-
             Title = model.Title;
+            ProjectStatus = model.ProjectStatus;
             Description = model.Description;
-            StudyFieldName = model.StudyField?.Name;
+            StudyFieldName = model.StudyField.Name;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
             TagNames = model.Tags.Select(t => t.Name).ToHashSet();

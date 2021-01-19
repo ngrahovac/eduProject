@@ -52,7 +52,7 @@ namespace eduProjectWebAPI.Controllers
                     {
                         var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(newUser);
                         var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, token = confirmationToken }, Request.Scheme);
-                        
+
                         MailSender.SendActivationEmail(model.Email, confirmationLink);
                         return Ok("Na Vašu email adresu je poslan link za aktivaciju naloga.");
                     }
@@ -225,7 +225,7 @@ namespace eduProjectWebAPI.Controllers
             var confUser = await userManager.FindByEmailAsync(model.Email);
             if (confUser != null && !confUser.EmailConfirmed && await userManager.CheckPasswordAsync(confUser, model.Password))
                 return BadRequest("Niste aktivirali vas nalog");
-            
+
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 

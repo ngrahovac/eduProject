@@ -21,7 +21,7 @@ namespace eduProjectWebGUI.Services
 
         public ApiService()
         {
-            
+
         }
 
         public ApiService(HttpClient httpClient, ILocalStorageService localStorage)
@@ -30,42 +30,48 @@ namespace eduProjectWebGUI.Services
             this.localStorage = localStorage;
         }
 
-        public async Task<T> GetAsync<T>(string url)
-        {
-            return await httpClient.GetFromJsonAsync<T>(url);
-        }
-
         public async Task PostAsync<T>(string url, T obj)
-        {
-            await httpClient.PostAsJsonAsync(url, obj);
-        }
-
-        public async Task PutAsync<T>(string url, T obj)
-        {
-            await httpClient.PutAsJsonAsync(url, obj);
-        }
-
-        public async Task DeleteAsync(string url)
-        {
-            await httpClient.DeleteAsync(url);
-        }
-
-        public async Task<T> GetJsonAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
 
-            //For testing
-            if (localStorage == null)
-                Console.WriteLine("ApiService: Local Storage is null");
-            else
-                Console.WriteLine("ApiService: Local Storage is not null");
+            var request = new HttpRequestMessage(HttpMethod.Post, url);
+            request.Headers.Authorization = authHeaderValue;
+            request.Content = JsonContent.Create<T>(obj);
 
-            Console.WriteLine("ApiService: TOKEN=" + token);
+            await httpClient.SendAsync(request);
+        }
+
+        public async Task PutAsync<T>(string url, T obj)
+        {
+            var token = await localStorage.GetItemAsStringAsync("authToken");
+            var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
+
+            var request = new HttpRequestMessage(HttpMethod.Put, url);
+            request.Headers.Authorization = authHeaderValue;
+            request.Content = JsonContent.Create<T>(obj);
+
+            await httpClient.SendAsync(request);
+        }
+
+        public async Task DeleteAsync(string url)
+        {
+            var token = await localStorage.GetItemAsStringAsync("authToken");
+            var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
+
+            var request = new HttpRequestMessage(HttpMethod.Delete, url);
+            request.Headers.Authorization = authHeaderValue;
+
+            await httpClient.SendAsync(request);
+        }
+
+        public async Task<T> GetAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
+        {
+            var token = await localStorage.GetItemAsStringAsync("authToken");
+            var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
 
             var request = new HttpRequestMessage(HttpMethod.Get, url);
             request.Headers.Authorization = authHeaderValue;
-            //request.Headers.Authorization = authorization;
 
             var responseMessage = await httpClient.SendAsync(request);
             var result = await responseMessage.Content.ReadAsStringAsync();
@@ -76,11 +82,10 @@ namespace eduProjectWebGUI.Services
             writer.Flush();
             stream.Position = 0;
 
-            //For testing
-            Console.WriteLine("Result from API: " + result);
-
-            var options = new JsonSerializerOptions();
-            options.PropertyNameCaseInsensitive = true;
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
 
             return await JsonSerializer.DeserializeAsync<T>(stream, options);
         }

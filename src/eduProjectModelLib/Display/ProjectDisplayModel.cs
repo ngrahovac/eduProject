@@ -27,11 +27,11 @@ namespace eduProjectModel.Display
 
         public ProjectDisplayModel() { }
 
-        public ProjectDisplayModel(Project project, User author, bool isDisplayForAuthor, bool isProjectActive,
+        public ProjectDisplayModel(Project project, User author, bool isDisplayForAuthor,
                                    ICollection<User> collaborators = null, ICollection<Faculty> faculties = null)
         {
             IsDisplayForAuthor = isDisplayForAuthor;
-            IsProjectActive = isProjectActive;
+            IsProjectActive = project.ProjectStatus == ProjectStatus.Active;
 
             ProjectId = project.ProjectId;
             ProjectStatus = project.ProjectStatus;

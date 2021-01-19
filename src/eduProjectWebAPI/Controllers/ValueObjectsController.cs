@@ -1,5 +1,6 @@
 ﻿using eduProjectModel.Domain;
 using eduProjectWebAPI.Data;
+using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using System;
@@ -24,80 +25,101 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("/tags")]
         public async Task<ActionResult<Dictionary<string, Tag>>> GetTags()
         {
-            Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
-
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            if (HttpContext.Request.ExtractUserId() == null)
             {
-                MySqlCommand command = new MySqlCommand
-                {
-                    Connection = connection,
-                    CommandText = @"SELECT tag_id, name, description FROM tag"
-                };
+                return Unauthorized();
+            }
+            else
+            {
+                Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
 
-                await connection.OpenAsync();
-
-                using (var reader = await command.ExecuteReaderAsync())
+                using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
                 {
-                    if (reader.HasRows)
+                    MySqlCommand command = new MySqlCommand
                     {
-                        while (await reader.ReadAsync())
+                        Connection = connection,
+                        CommandText = @"SELECT tag_id, name, description FROM tag"
+                    };
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
                         {
-                            tags.Add($"{reader.GetInt32(0)}", new Tag
+                            while (await reader.ReadAsync())
                             {
-                                Name = reader.GetString(1),
-                                Description = !reader.IsDBNull(2) ? reader.GetString(2) : null
-                            });
+                                tags.Add($"{reader.GetInt32(0)}", new Tag
+                                {
+                                    Name = reader.GetString(1),
+                                    Description = !reader.IsDBNull(2) ? reader.GetString(2) : null
+                                });
+                            }
                         }
                     }
+
+                    await connection.CloseAsync();
                 }
 
-                await connection.CloseAsync();
+                return tags;
             }
-
-            return tags;
         }
 
         [HttpGet("/fields")]
         public async Task<ActionResult<Dictionary<string, StudyField>>> GetStudyFields()
         {
-            Dictionary<string, StudyField> studyFields = new Dictionary<string, StudyField>();
-
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            if (HttpContext.Request.ExtractUserId() == null)
             {
-                MySqlCommand command = new MySqlCommand
-                {
-                    Connection = connection,
-                    CommandText = @"SELECT study_field_id, name, description FROM study_field"
-                };
+                return Unauthorized();
+            }
+            else
+            {
+                Dictionary<string, StudyField> studyFields = new Dictionary<string, StudyField>();
 
-                await connection.OpenAsync();
-
-                using (var reader = await command.ExecuteReaderAsync())
+                using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
                 {
-                    if (reader.HasRows)
+                    MySqlCommand command = new MySqlCommand
                     {
-                        while (await reader.ReadAsync())
+                        Connection = connection,
+                        CommandText = @"SELECT study_field_id, name, description FROM study_field"
+                    };
+
+                    await connection.OpenAsync();
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        if (reader.HasRows)
                         {
-                            studyFields.Add($"{reader.GetInt32(0)}", new StudyField
+                            while (await reader.ReadAsync())
                             {
-                                Name = reader.GetString(1),
-                                Description = !reader.IsDBNull(2) ? reader.GetString(2) : null
-                            });
+                                studyFields.Add($"{reader.GetInt32(0)}", new StudyField
+                                {
+                                    Name = reader.GetString(1),
+                                    Description = !reader.IsDBNull(2) ? reader.GetString(2) : null
+                                });
+                            }
                         }
                     }
+
+                    await connection.CloseAsync();
                 }
 
-                await connection.CloseAsync();
+                return studyFields;
             }
-
-            return studyFields;
         }
 
 
         [HttpGet("/faculties")]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
         {
-            return (await faculties.GetAllAsync()).ToList(); // jer sa blazor strane nema repoa
+            if (HttpContext.Request.ExtractUserId() == null)
+            {
+                return Unauthorized();
+            }
+            else
+            {
+                return (await faculties.GetAllAsync()).ToList(); // jer sa blazor strane nema repoa
+            }
         }
     }
 }

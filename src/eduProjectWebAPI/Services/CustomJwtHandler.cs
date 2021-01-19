@@ -9,7 +9,7 @@ namespace eduProjectWebAPI.Services
 {
     public static class CustomJwtHandler
     {
-        public static string ExtractUserId(this HttpRequest request)
+        public static int? ExtractUserId(this HttpRequest request)
         {
             string jwt = "";
             var headerValues = request.Headers.Values;
@@ -21,8 +21,11 @@ namespace eduProjectWebAPI.Services
                     break;
                 }
 
+            if (jwt == string.Empty)
+                return null;
+
             var claims = ParseClaimsFromJwt(jwt).ToArray();
-            return claims[1].ToString().Split("nameidentifier:")[1].Replace(" ", ""); //nameidentifier represents user ID
+            return int.Parse(claims[1].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
         }
 
         private static byte[] ParseBase64WithoutPadding(string base64)

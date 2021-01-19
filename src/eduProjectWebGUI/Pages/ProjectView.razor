@@ -35,25 +35,25 @@
                     </div>
 
                     <TagsOverview Editing="false"
-                                  TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToHashSet()"></TagsOverview>
+                                  TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToList()"></TagsOverview>
                 </div>
 
 
                 @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
                 {
-                    <VisitorActiveProjectView VisitorActiveProjectDisplayModel="@ProjectDisplayModel" />
+                    <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" />
                 }
                 else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
                 {
-                    <VisitorClosedProjectView VisitorClosedProjectDisplayModel="@ProjectDisplayModel" />
+                    <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" />
                 }
                 else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
-                    <AuthorActiveProjectView AuthorActiveProjectDisplayModel="@ProjectDisplayModel" />
+                    <AuthorActiveProjectView AuthorActiveProjectDisplayModel="ProjectDisplayModel" />
                 }
                 else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
-                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="@ProjectDisplayModel" />
+                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />
                 }
 
                 @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)

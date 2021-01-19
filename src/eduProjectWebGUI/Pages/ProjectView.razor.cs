@@ -84,18 +84,7 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            //if (localStorage == null)
-                //Console.WriteLine("Local storage is null");
-
-            //var token = await localStorage.GetItemAsStringAsync("authToken");
-
-            //For testing
-            //Console.WriteLine("ProjectView.razor.cs: TOKEN=" + token);
-
-            ProjectDisplayModel = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}");
-
-            //ProjectDisplayModel = await ApiService.GetJsonAsync<ProjectDisplayModel>($"projects/{ProjectId}",
-                //new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token));
+            ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
         }
 
     }
