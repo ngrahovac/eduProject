@@ -65,7 +65,12 @@
         }
 
 .selected-row {
-    background-color: hotpink;
+    background-color: hotpink !important;
+}
+
+.recommended-profile {
+    background-color: lightyellow;
+    font-weight: 300;
 }
 
 

@@ -15,6 +15,7 @@ using System.Security.Claims;
 using System.Text.Json;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -26,12 +27,14 @@ namespace eduProjectWebAPI.Controllers
         private readonly IProjectsRepository projects;
         private readonly IUsersRepository users;
         private readonly IFacultiesRepository faculties;
+        private readonly IUserSettingsRepository settings;
 
-        public ProjectsController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties)
+        public ProjectsController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties, IUserSettingsRepository settings)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
+            this.settings = settings;
         }
 
         [HttpGet("{id}")]
@@ -46,12 +49,13 @@ namespace eduProjectWebAPI.Controllers
                 try
                 {
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    User currentUser = await users.GetAsync(currentUserId);
                     Project project = await projects.GetAsync(id);
 
                     if (project == null)
                         return NotFound();
 
-                    return await GetProjectDisplayModel(project, currentUserId);
+                    return await GetProjectDisplayModel(project, currentUserId, currentUser);
                 }
                 catch (Exception e)
                 {
@@ -72,13 +76,14 @@ namespace eduProjectWebAPI.Controllers
                 try
                 {
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    User currentUser = await users.GetAsync(currentUserId);
                     var projectDisplayModels = new List<ProjectDisplayModel>();
 
                     var projectsList = await projects.GetAllAsync();
 
                     foreach (var project in projectsList)
                     {
-                        var model = await GetProjectDisplayModel(project, currentUserId);
+                        var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
                         projectDisplayModels.Add(model);
                     }
 
@@ -91,10 +96,11 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
-        private async Task<ProjectDisplayModel> GetProjectDisplayModel(Project project, int currentUserId)
+        private async Task<ProjectDisplayModel> GetProjectDisplayModel(Project project, int currentUserId, User visitor)
         {
             User author = await users.GetAsync(project.AuthorId);
             bool isDisplayForAuthor = currentUserId == project.AuthorId;
+            ProjectDisplayModel model;
 
             if (project.ProjectStatus == ProjectStatus.Active)
             {
@@ -103,7 +109,7 @@ namespace eduProjectWebAPI.Controllers
                 foreach (var fid in facultyIds)
                     facultiesList.Add(await faculties.GetAsync((int)fid));
 
-                return new ProjectDisplayModel(project, author, isDisplayForAuthor, null, facultiesList);
+                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, null, facultiesList);
             }
             else
             {
@@ -112,8 +118,24 @@ namespace eduProjectWebAPI.Controllers
                 foreach (int collabId in collaboratorIds)
                     collaborators.Add(await users.GetAsync(collabId));
 
-                return new ProjectDisplayModel(project, author, isDisplayForAuthor, collaborators);
+                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, collaborators);
             }
+
+            if (!model.Recommended)
+            {
+                // if no recommended profiles, check tags
+                var userTags = (await settings.GetAsync(visitor.UserId)).UserTags;
+                foreach (var projectTag in project.Tags)
+                {
+                    if (userTags.Contains(projectTag))
+                    {
+                        model.Recommended = true;
+                        break;
+                    }
+                }
+            }
+
+            return model;
         }
 
         [HttpPost]

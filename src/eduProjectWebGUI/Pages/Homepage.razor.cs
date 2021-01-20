@@ -26,7 +26,7 @@ namespace eduProjectWebGUI.Pages
 
             if (queryString.Count == 0)
             {
-                // recommended projects
+                projectDisplayModels = projectDisplayModels.Where(m => m.Recommended).ToList();
             }
 
             if (queryString["status"] == "active")
@@ -54,7 +54,7 @@ namespace eduProjectWebGUI.Pages
         public async Task Logout()
         {
             await AuthService.Logout();
-            Navigation.NavigateTo("/");
+            NavigationManager.NavigateTo("/");
         }
 
     }

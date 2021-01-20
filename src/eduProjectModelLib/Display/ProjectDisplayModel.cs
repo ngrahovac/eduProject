@@ -23,11 +23,12 @@ namespace eduProjectModel.Display
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
         public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; } = new HashSet<StudentProfileDisplayModel>();
         public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; } = new HashSet<FacultyMemberProfileDisplayModel>();
-        public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = null;
+        public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = new HashSet<CollaboratorDisplayModel>();
+        public bool Recommended { get; set; }
 
         public ProjectDisplayModel() { }
 
-        public ProjectDisplayModel(Project project, User author, bool isDisplayForAuthor,
+        public ProjectDisplayModel(Project project, User author, User visitor, bool isDisplayForAuthor,
                                    ICollection<User> collaborators = null, ICollection<Faculty> faculties = null)
         {
             IsDisplayForAuthor = isDisplayForAuthor;
@@ -50,13 +51,50 @@ namespace eduProjectModel.Display
                 foreach (var profile in project.CollaboratorProfiles)
                 {
                     Faculty faculty = profile.FacultyId == null ? null : faculties.Where(f => f.FacultyId == profile.FacultyId).First();
-                    if (profile is StudentProfile)
+                    if (profile is StudentProfile sp)
                     {
-                        StudentProfileDisplayModels.Add(new StudentProfileDisplayModel((StudentProfile)profile, faculty));
+                        var model = new StudentProfileDisplayModel(sp, faculty);
+
+                        if (visitor is Student s)
+                        {
+                            if (sp.FacultyId == null ||
+                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == null && sp.StudyProgramSpecializationId == null ||
+                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == null ||
+                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == null ||
+                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == s.StudyYear)
+                            {
+                                model.Recommended = true;
+                                Recommended = true;
+                            }
+                        }
+
+                        StudentProfileDisplayModels.Add(model);
                     }
-                    else if (profile is FacultyMemberProfile)
+                    else if (profile is FacultyMemberProfile fmp)
                     {
-                        FacultyMemberProfileDisplayModels.Add(new FacultyMemberProfileDisplayModel((FacultyMemberProfile)profile, faculty));
+                        var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
+
+                        if (visitor is FacultyMember fm)
+                        {
+                            if (fmp.FacultyId == null ||
+                                fmp.FacultyId == fm.FacultyId)
+                            {
+                                model.Recommended = true;
+                                Recommended = true;
+                            }
+                        }
+
+                        FacultyMemberProfileDisplayModels.Add(model);
+                    }
+
+                    if (!Recommended)
+                    {
+                        // TODO: ako nije preporucen preko preporucenih trazenih profila, vidjeti da li ima tagove iste
+                    }
+
+                    if (author.UserId == visitor.UserId) // TODO: obj equality
+                    {
+                        Recommended = false;
                     }
                 }
             }

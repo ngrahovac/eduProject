@@ -4,7 +4,6 @@
 @inject NavigationManager NavigationManager
 
 @inject IAuthService AuthService
-@inject NavigationManager Navigation
 
 <AuthorizeView>
     <Authorized>
@@ -22,14 +21,14 @@
 
     @foreach (var model in projectDisplayModels)
     {
-    <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
-        <h4 class="title">@model.Title</h4>
+        <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
+            <h4 class="title">@model.Title</h4>
 
-        <h5>Opis</h5>
-        <p>@model.Description</p>
+            <h5>Opis</h5>
+            <p>@model.Description</p>
 
-        <h5>Oblast</h5>
-        <p>@model.StudyField.Name</p>
-    </div>
+            <h5>Oblast</h5>
+            <p>@model.StudyField.Name</p>
+        </div>
     }
 </div>

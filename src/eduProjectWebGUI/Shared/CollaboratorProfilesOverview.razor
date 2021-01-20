@@ -18,11 +18,24 @@
                 {
                     int index = i;
                     FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
-                    <tr @onclick="@(() => CollaboratorProfileSelected("faculty-member-profiles","student-profiles", profile.CollaboratorProfileId, index))">
-                        <td>@profile.FacultyName</td>
-                        <td>@profile.StudyFieldName</td>
-                        <td>@profile.Description</td>
-                    </tr>
+
+                    if (IsProjectRecommended && profile.Recommended)
+                    {
+                        <tr class="recommended-profile"
+                            @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
+                            <td>@profile.FacultyName</td>
+                            <td>@profile.StudyFieldName</td>
+                            <td>@profile.Description</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
+                            <td>@profile.FacultyName</td>
+                            <td>@profile.StudyFieldName</td>
+                            <td>@profile.Description</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
@@ -43,14 +56,32 @@
             {
                 int index = i;
                 StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
-                <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-                    <td>@profile.FacultyName</td>
-                    <td>@profile.StudyCycle</td>
-                    <td>@profile.StudyProgramName</td>
-                    <td>@profile.StudyProgramSpecializationName</td>
-                    <td>@profile.StudyYear</td>
-                    <td>@profile.Description</td>
-                </tr>
+
+                @if (IsProjectRecommended && profile.Recommended)
+                {
+                    <tr class="recommended-profile" @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
+                        <td>@profile.FacultyName</td>
+                        <td>@profile.StudyCycle</td>
+                        <td>@profile.StudyProgramName</td>
+                        <td>@profile.StudyProgramSpecializationName</td>
+                        <td>@profile.StudyYear</td>
+                        <td>@profile.Description</td>
+
+
+                    </tr>
+                }
+                else
+                {
+                    <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
+                        <td>@profile.FacultyName</td>
+                        <td>@profile.StudyCycle</td>
+                        <td>@profile.StudyProgramName</td>
+                        <td>@profile.StudyProgramSpecializationName</td>
+                        <td>@profile.StudyYear</td>
+                        <td>@profile.Description</td>
+                    </tr>
+                }
+
             }
         </table>
     </div>
@@ -58,6 +89,9 @@
 
 
 @code {
+
+    [Parameter]
+    public bool IsProjectRecommended { get; set; }
 
     [Parameter]
     public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; }
@@ -69,7 +103,12 @@
     public async Task CollaboratorProfileSelected(string tableToHighlight, string tableToClear, int collaboratorProfileId, int index)
     {
         string[] tablesToClear = { tableToClear };
-        await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
+        js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
         model.CollaboratorProfileId = collaboratorProfileId;
+    }
+
+    public async Task HighlightRecommendedProfile(string tableToHighlight, int index)
+    {
+        await js.InvokeVoidAsync("highlightRecommendedProfile", tableToHighlight, index);
     }
 }
