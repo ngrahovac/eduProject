@@ -55,7 +55,9 @@ namespace eduProjectWebAPI.Controllers
                     if (project == null)
                         return NotFound();
 
-                    return await GetProjectDisplayModel(project, currentUserId, currentUser);
+                    var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
+                    model.Links.Add("author_profile", $"{project.AuthorId}");
+                    return model;
                 }
                 catch (Exception e)
                 {

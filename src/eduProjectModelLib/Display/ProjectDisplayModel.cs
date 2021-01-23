@@ -26,6 +26,8 @@ namespace eduProjectModel.Display
         public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = new HashSet<CollaboratorDisplayModel>();
         public bool Recommended { get; set; }
 
+        public Dictionary<string, string> Links { get; set; } = new Dictionary<string, string>();
+
         public ProjectDisplayModel() { }
 
         public ProjectDisplayModel(Project project, User author, User visitor, bool isDisplayForAuthor,
