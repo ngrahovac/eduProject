@@ -1,4 +1,6 @@
-﻿<div class="section">
+﻿@inject NavigationManager NavigationManager
+
+<div class="section">
     <h4 class="title">Odabrani saradnici</h4>
 
     @if (CollaboratorDisplayModels == null)@* empty? *@
@@ -18,7 +20,7 @@
                     @foreach (var model in CollaboratorDisplayModels)
                     {
                         <tr>
-                            <td>@model.FirstName @model.LastName</td>
+                            <td><a href=@($"{NavigationManager.BaseUri}users/{model.CollaboratorId}")>@model.FirstName @model.LastName</a></td>
                         </tr>
                     }
                 </tbody>

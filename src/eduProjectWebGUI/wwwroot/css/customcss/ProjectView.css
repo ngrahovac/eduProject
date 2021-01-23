@@ -89,3 +89,13 @@
     .blazored-typeahead__controls input:focus {
         border: none;
     }
+
+.status-active {
+    font-weight: 500;
+    color: limegreen;
+}
+
+.status-closed {
+    font-weight: 500;
+    color: red;
+}

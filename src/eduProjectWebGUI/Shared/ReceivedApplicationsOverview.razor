@@ -15,7 +15,8 @@
             <table>
                 <thead>
                     <tr>
-                        <td>Id prijavljenog</td>
+                        <td>Ime prijavljenog</td>
+                        <td>Email</td>
                         <td>Komentar prijavljenog</td>
                         <td>Odabran za saradnju</td>
                         <td>Komentar autora</td>
@@ -25,7 +26,8 @@
                     @foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
                     {
                         <tr>
-                            <td>@applicationDisplayModel.ApplicantId</td>
+                            <td><a href=@($"{NavigationManager.BaseUri}users/{applicationDisplayModel.ApplicantId}")>@applicationDisplayModel.ApplicantFullName</a></td>
+                            <td>@applicationDisplayModel.ApplicantEmail</td>
                             <td>@applicationDisplayModel.ApplicantComment</td>
                             <td>
                                 <input type="checkbox" @onchange="@((e) =>

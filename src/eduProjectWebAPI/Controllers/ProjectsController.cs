@@ -57,6 +57,7 @@ namespace eduProjectWebAPI.Controllers
 
                     var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
                     model.Links.Add("author_profile", $"{project.AuthorId}");
+
                     return model;
                 }
                 catch (Exception e)

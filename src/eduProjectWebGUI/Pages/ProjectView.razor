@@ -16,7 +16,15 @@
             {
                 <h3>@ProjectDisplayModel.Title</h3>
                 <h5>Status projekta</h5>
-                <p>@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+
+                @if (ProjectDisplayModel.ProjectStatus == ProjectStatus.Active)
+                {
+                    <p class="status-active">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+                }
+                else
+                {
+                    <p class="status-closed">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+                }
 
                 <div class="section">
                     <h4 class="title">Osnovne informacije</h4>

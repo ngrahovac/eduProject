@@ -18,7 +18,7 @@ namespace eduProjectModel.Display
 
         }
 
-        public ProjectApplicationsDisplayModel(Project project, ICollection<ProjectApplication> applications)
+        public ProjectApplicationsDisplayModel(Project project, ICollection<ProjectApplication> applications, ICollection<Tuple<int, string, string>> modelData)
         {
             ProjectId = project.ProjectId;
             Title = project.Title;
@@ -26,7 +26,7 @@ namespace eduProjectModel.Display
             foreach (var profile in project.CollaboratorProfiles)
             {
                 CollaboratorProfileApplicationsDisplayModels.Add(new CollaboratorProfileApplicationsDisplayModel
-                                                                (profile, applications.Where(a => a.CollaboratorProfileId == profile.CollaboratorProfileId).ToList()));
+                                                                (profile, applications.Where(a => a.CollaboratorProfileId == profile.CollaboratorProfileId).ToList(), modelData));
             }
         }
     }

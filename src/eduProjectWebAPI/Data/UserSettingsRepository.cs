@@ -64,7 +64,7 @@ namespace eduProjectWebAPI.Data
                                     Website = reader.IsDBNull(5) ? null : reader.GetString(5),
                                     CvLink = reader.IsDBNull(6) ? null : reader.GetString(6),
                                     PhotoLink = reader.IsDBNull(7) ? null : reader.GetString(7),
-                                    Bio = reader.IsDBNull(8) ? null : reader.GetString(8),
+                                    Bio = reader.IsDBNull(8) ? null : reader.GetString(8)
                                 };
                             }
 
