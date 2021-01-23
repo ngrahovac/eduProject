@@ -113,7 +113,7 @@ namespace eduProjectWebAPI.Data
                                     researchgate_profile = @researchgateProfile,
                                     website = @website,
                                     cv_link = @cvLink,
-                                    photoLink = @photoLink,
+                                    photo_link = @photoLink,
                                     bio = @bio
                                     WHERE user_id = @userId";
 
