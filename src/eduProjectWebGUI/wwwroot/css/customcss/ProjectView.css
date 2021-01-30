@@ -13,11 +13,43 @@
 /* vizuelno odvojen dio stranice ili komponente*/
 .section {
     padding: 20px;
-    border: solid thin lightgray;
-    border-radius: 5px;
+    /*border: solid thin lightgray;
+    border-radius: 5px;*/
     margin-bottom: 20px;
     margin-top: 20px;
 }
+
+.section-homepage {
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+/*
+.section .h5 {
+    font-weight: 500;
+}
+*/
+.heading {
+    margin-bottom: 2rem;
+}
+
+    .heading .title {
+        display: inline;
+        margin-left: 2rem;
+        vertical-align: middle;
+    }
+
+
+.divider {
+    margin: 0 0 1rem 0;
+}
+
+i {
+    font-size: 3rem !important;
+}
+
 
 .collaborator-profiles-table {
     min-width: 200px;
@@ -61,15 +93,17 @@
     }
 
         .tags .tag:hover {
-            background-color: lightgray;
+            color: #FFF;
+            background-color: #1EAEDB;
+            border-color: #1EAEDB;
         }
 
 .selected-row {
-    background-color: hotpink !important;
+    background-color: #33C3F0 !important;
 }
 
 .recommended-profile {
-    background-color: lightyellow;
+    background-color: #f6fdff;
     font-weight: 300;
 }
 

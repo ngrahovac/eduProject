@@ -7,6 +7,7 @@ using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +25,15 @@ namespace eduProjectWebAPI.Controllers
         private readonly IProjectApplicationsRepository applications;
         private readonly IUsersRepository users;
         private readonly IUserSettingsRepository settings;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications, IUsersRepository users, IUserSettingsRepository settings)
+        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications, IUsersRepository users, IUserSettingsRepository settings, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.applications = applications;
             this.users = users;
             this.settings = settings;
+            this.userManager = userManager;
         }
 
         [HttpGet("{id}")]
@@ -56,7 +59,9 @@ namespace eduProjectWebAPI.Controllers
                     {
                         var applicant = await users.GetAsync(projectApplication.ApplicantId);
                         var userSettings = await settings.GetAsync(projectApplication.ApplicantId);
-                        return new ApplicationDisplayModel(projectApplication, new Tuple<int, string, string>(applicant.UserId, $"{applicant.FirstName} {applicant.LastName}", ""));
+                        var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
+                        return new ApplicationDisplayModel(projectApplication,
+                            new Tuple<int, string, string>(applicant.UserId, $"{applicant.FirstName} {applicant.LastName}", email));
                     }
                     else
                     {
@@ -130,7 +135,7 @@ namespace eduProjectWebAPI.Controllers
                         foreach (var appl in projectApplications)
                         {
                             var applicant = await users.GetAsync(appl.ApplicantId);
-                            var email = "";//(await settings.GetAsync(appl.ApplicantId)).Email;
+                            var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
                             modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
                                 $"{applicant.FirstName} {applicant.LastName}", email));
                         }
@@ -144,7 +149,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.StackTrace);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
             }
         }
@@ -178,9 +184,9 @@ namespace eduProjectWebAPI.Controllers
                             foreach (var appl in projectApplications)
                             {
                                 var applicant = await users.GetAsync(appl.ApplicantId);
-                                var email = "";//(await settings.GetAsync(appl.ApplicantId)).Email;
+                                var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
                                 modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
-                                    $"{applicant.FirstName} {applicant.LastName}", email));
+                                    $"{applicant.FirstName} {applicant.LastName}", "dada"));
                             }
                             projectApplicationsDisplayModels.Add(new ProjectApplicationsDisplayModel(project, projectApplications, modelData));
                         }
@@ -226,7 +232,7 @@ namespace eduProjectWebAPI.Controllers
                             foreach (var appl in usersApplications.Where(a => a.ProjectId == id))
                             {
                                 var applicant = await users.GetAsync(appl.ApplicantId);
-                                var email = "";//(await settings.GetAsync(appl.ApplicantId)).Email;
+                                var email = (await settings.GetAsync(appl.ApplicantId)).Email;
                                 modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
                                     $"{applicant.FirstName} {applicant.LastName}", email));
                             }
@@ -279,7 +285,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.StackTrace);
                 }
             }
         }

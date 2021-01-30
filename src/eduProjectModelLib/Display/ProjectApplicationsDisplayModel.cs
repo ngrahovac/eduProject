@@ -18,7 +18,8 @@ namespace eduProjectModel.Display
 
         }
 
-        public ProjectApplicationsDisplayModel(Project project, ICollection<ProjectApplication> applications, ICollection<Tuple<int, string, string>> modelData)
+        public ProjectApplicationsDisplayModel(Project project, ICollection<ProjectApplication> applications,
+                                               ICollection<Tuple<int, string, string>> modelData)
         {
             ProjectId = project.ProjectId;
             Title = project.Title;
