@@ -65,7 +65,7 @@ namespace eduProjectWebGUI.Pages
                 if (!result.Cancelled)
                 {
                     await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
-                    //NavigationManager.NavigateTo($"/projects/{Id}", true);
+                    NavigationManager.NavigateTo($"/projects/{Id}", true);
                 }
             }
             else
@@ -80,7 +80,7 @@ namespace eduProjectWebGUI.Pages
                 {
                     projectInputModel.ProjectStatus = ProjectStatus.Active;
                     await ApiService.PostAsync("/projects", projectInputModel);
-                    //NavigationManager.NavigateTo("/homepage", true);
+                    NavigationManager.NavigateTo("/homepage", true);
                 }
             }
         }

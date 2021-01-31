@@ -44,6 +44,7 @@ namespace eduProjectWebGUI.Pages
             if (!result.Cancelled)
             {
                 model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
+                model.ProjectId = ProjectId;
                 await ApiService.PostAsync("/applications", model);
             }
 

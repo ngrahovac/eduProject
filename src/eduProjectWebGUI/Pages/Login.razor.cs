@@ -23,7 +23,7 @@ namespace eduProjectWebGUI.Pages
             var result = await AuthService.Login(loginInputModel);
 
             if (result.Successful)
-                Navigation.NavigateTo("/");
+                Navigation.NavigateTo("/homepage");
             else
                 Console.WriteLine("Error while trying to log in");
         }

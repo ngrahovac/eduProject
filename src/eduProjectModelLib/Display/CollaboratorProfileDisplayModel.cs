@@ -8,6 +8,9 @@ namespace eduProjectModel.Display
 {
     public class CollaboratorProfileDisplayModel
     {
+        public int CollaboratorProfileId { get; set; }
+        public string Description { get; set; }
+        public bool Recommended { get; set; } = false;
         public CollaboratorProfileDisplayModel()
         {
 
@@ -17,8 +20,5 @@ namespace eduProjectModel.Display
         {
             Description = profile.Description;
         }
-
-        public int CollaboratorProfileId { get; set; }
-        public string Description { get; set; }
     }
 }

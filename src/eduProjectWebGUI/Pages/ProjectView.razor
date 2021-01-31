@@ -16,16 +16,28 @@
             {
                 <h3>@ProjectDisplayModel.Title</h3>
                 <h5>Status projekta</h5>
-                <p>@ProjectDisplayModel.ProjectStatus</p>
+
+                @if (ProjectDisplayModel.ProjectStatus == ProjectStatus.Active)
+                {
+                    <p class="status-active">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+                }
+                else
+                {
+                    <p class="status-closed">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+                }
 
                 <div class="section">
-                    <h4 class="title">Osnovne informacije</h4>
+                    <div class="heading">
+                        <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
+                        <h4 class="title">Osnovne informacije</h4>
+                    </div>
+                    <hr class="divider" />
 
                     <h5>Opis projekta</h5>
                     <p>@ProjectDisplayModel.Description</p>
 
                     <h5>Autor</h5>
-                    <p>@ProjectDisplayModel.AuthorFullName</p>
+                    <p><a href="@(NavigationManager.BaseUri.ToString() + $"users/{ProjectDisplayModel.Links["author_profile"]}")">@ProjectDisplayModel.AuthorFullName</a></p>
 
                     <h5>Period realizacije</h5>
                     <div class="time-period">

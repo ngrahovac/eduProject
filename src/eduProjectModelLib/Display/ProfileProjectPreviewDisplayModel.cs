@@ -9,6 +9,8 @@ namespace eduProjectModel.Display
     {
         public string Title { get; set; }
 
+        public int ProjectId { get; set; }
+
         public ProfileProjectPreviewDisplayModel()
         {
 
@@ -17,6 +19,7 @@ namespace eduProjectModel.Display
         public ProfileProjectPreviewDisplayModel(Project project)
         {
             Title = project.Title;
+            ProjectId = project.ProjectId;
         }
     }
 }

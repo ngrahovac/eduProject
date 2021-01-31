@@ -9,6 +9,9 @@ namespace eduProjectModel.Display
     {
         public int ApplicationId { get; set; }
         public int ApplicantId { get; set; }
+        public string ApplicantFullName { get; set; }
+        public string ApplicantEmail { get; set; }
+
         public string ApplicantComment { get; set; }
         public string AuthorComment { get; set; }
 
@@ -18,13 +21,15 @@ namespace eduProjectModel.Display
         {
 
         }
-        public ApplicationDisplayModel(ProjectApplication application)
+        public ApplicationDisplayModel(ProjectApplication application, Tuple<int, string, string> applicantData)
         {
             ApplicationId = application.ProjectApplicationId;
             ApplicantId = application.ApplicantId;
             ApplicantComment = application.ApplicantComment;
             AuthorComment = application.AuthorComment;
             ProjectApplicationStatus = application.ProjectApplicationStatus;
+            ApplicantFullName = applicantData.Item2;
+            ApplicantEmail = applicantData.Item3;
         }
     }
 }

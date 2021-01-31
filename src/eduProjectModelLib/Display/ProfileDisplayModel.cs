@@ -14,7 +14,11 @@ namespace eduProjectModel.Display
 
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public bool EmailVisible { get; set; }
         public string Email { get; set; }
+
+        public bool PhoneNumberVisible { get; set; }
         public string PhoneNumber { get; set; }
         public string Bio { get; set; }
 
@@ -36,6 +40,7 @@ namespace eduProjectModel.Display
 
         public AcademicRank AcademicRank { get; set; }
 
+        public bool ProjectsVisible { get; set; }
         public ICollection<ProfileProjectPreviewDisplayModel> AuthoredProjectDisplayModels { get; set; } = new HashSet<ProfileProjectPreviewDisplayModel>();
         public ICollection<ProfileProjectPreviewDisplayModel> ProjectCollaborationsDisplayModels { get; set; } = new HashSet<ProfileProjectPreviewDisplayModel>();
 
@@ -45,12 +50,18 @@ namespace eduProjectModel.Display
         }
 
         public ProfileDisplayModel(User user, bool isPersonalProfile, Faculty faculty, ICollection<Project> authoredProjects,
-                                    ICollection<Project> projectCollaborations)
+                                    ICollection<Project> projectCollaborations, bool emailVisible, bool phoneVisible, bool projectsVisible)
         {
+            EmailVisible = emailVisible;
+            PhoneNumberVisible = phoneVisible;
+            ProjectsVisible = projectsVisible;
+
             IsDisplayPersonal = isPersonalProfile;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            PhoneNumber = user.PhoneNumber;
+
+            if (phoneVisible)
+                PhoneNumber = user.PhoneNumber;
 
             if (user is Student s)
             {
@@ -81,23 +92,17 @@ namespace eduProjectModel.Display
                 AcademicRank = fm.AcademicRank;
             }
 
-            if (authoredProjects != null)
-            {
-                foreach (var project in authoredProjects)
-                    AuthoredProjectDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
-            }
+            foreach (var project in authoredProjects)
+                AuthoredProjectDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
 
-            if (isPersonalProfile)
+            if (projectsVisible)
             {
                 if (projectCollaborations != null)
                 {
                     foreach (var project in projectCollaborations)
                         ProjectCollaborationsDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
                 }
-                //Dugme za izmjenu?
             }
-            else
-                ProjectCollaborationsDisplayModels = null;
         }
     }
 }

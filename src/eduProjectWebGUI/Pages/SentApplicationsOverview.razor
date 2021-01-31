@@ -1,4 +1,4 @@
-﻿@page "/applications/user/{UserId:int}"
+﻿@page "/users/{UserId:int}/applications"
 @inject ApiService ApiService
 @inject Microsoft.JSInterop.IJSRuntime js
 @inject IModalService Modal
@@ -10,7 +10,7 @@
     @foreach (var projectModel in ProjectApplicationsDisplayModels)
     {
         <div class="section">
-            <h4 class="title">@projectModel.Title</h4>
+            <h4 class="title"><a href="@($"{NavigationManager.BaseUri}projects/{projectModel.ProjectId}")" style="color:black">@projectModel.Title</a></h4>
 
             @foreach (var profileModel in projectModel.CollaboratorProfileApplicationsDisplayModels)
             {
@@ -45,7 +45,7 @@
                                     <td>@applicationModel.ApplicationId</td>
                                     <td>@applicationModel.ApplicantComment</td>
                                     <td>@applicationModel.AuthorComment</td>
-                                    <td>@applicationModel.ProjectApplicationStatus</td>
+                                    <td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
                                 </tr>
                             }
                         </tbody>

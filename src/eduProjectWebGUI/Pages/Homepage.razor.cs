@@ -26,7 +26,7 @@ namespace eduProjectWebGUI.Pages
 
             if (queryString.Count == 0)
             {
-                // recommended projects
+                projectDisplayModels = projectDisplayModels.Where(m => m.Recommended).ToList();
             }
 
             if (queryString["status"] == "active")
@@ -38,24 +38,18 @@ namespace eduProjectWebGUI.Pages
             {
                 projectDisplayModels = projectDisplayModels.Where(m => m.IsDisplayForAuthor == true).ToList();
             }
+
+            if (queryString["query"] != null)
+            {
+                var query = queryString["query"];
+                projectDisplayModels = projectDisplayModels.Where(m => m.Title.Contains(query) || m.Description.Contains(query)
+                 || m.Tags.Where(t => t.Name.Contains(query)).Count() > 0).ToList();
+            }
         }
 
         private async Task LoadProject(int projectId)
         {
             NavigationManager.NavigateTo($"/projects/{projectId}");
         }
-
-        private async void SearchProjects()
-        {
-
-        }
-
-        //Method for testing logout feature. Should be placed somewhere else.
-        public async Task Logout()
-        {
-            await AuthService.Logout();
-            Navigation.NavigateTo("/");
-        }
-
     }
 }

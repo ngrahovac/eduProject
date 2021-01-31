@@ -5,7 +5,9 @@ using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +23,17 @@ namespace eduProjectWebAPI.Controllers
     {
         private readonly IProjectsRepository projects;
         private readonly IProjectApplicationsRepository applications;
+        private readonly IUsersRepository users;
+        private readonly IUserSettingsRepository settings;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications)
+        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications, IUsersRepository users, IUserSettingsRepository settings, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.applications = applications;
+            this.users = users;
+            this.settings = settings;
+            this.userManager = userManager;
         }
 
         [HttpGet("{id}")]
@@ -49,7 +57,11 @@ namespace eduProjectWebAPI.Controllers
 
                     if (projectApplication.ApplicantId == currentUserId || authorId == currentUserId)
                     {
-                        return new ApplicationDisplayModel(projectApplication);
+                        var applicant = await users.GetAsync(projectApplication.ApplicantId);
+                        var userSettings = await settings.GetAsync(projectApplication.ApplicantId);
+                        var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
+                        return new ApplicationDisplayModel(projectApplication,
+                            new Tuple<int, string, string>(applicant.UserId, $"{applicant.FirstName} {applicant.LastName}", email));
                     }
                     else
                     {
@@ -118,7 +130,17 @@ namespace eduProjectWebAPI.Controllers
                     if (project.AuthorId == currentUserId)
                     {
                         var projectApplications = await applications.GetByProjectIdAsync(projectId);
-                        return new ProjectApplicationsDisplayModel(project, projectApplications);
+
+                        List<Tuple<int, string, string>> modelData = new List<Tuple<int, string, string>>();
+                        foreach (var appl in projectApplications)
+                        {
+                            var applicant = await users.GetAsync(appl.ApplicantId);
+                            var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
+                            modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
+                                $"{applicant.FirstName} {applicant.LastName}", email));
+                        }
+
+                        return new ProjectApplicationsDisplayModel(project, projectApplications, modelData);
                     }
                     else
                     {
@@ -127,7 +149,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.StackTrace);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 }
             }
         }
@@ -156,7 +179,16 @@ namespace eduProjectWebAPI.Controllers
                         {
                             var project = authoredProjects.Where(p => p.ProjectId == id).First();
                             var projectApplications = await applications.GetByProjectIdAsync(id);
-                            projectApplicationsDisplayModels.Add(new ProjectApplicationsDisplayModel(project, projectApplications));
+
+                            List<Tuple<int, string, string>> modelData = new List<Tuple<int, string, string>>();
+                            foreach (var appl in projectApplications)
+                            {
+                                var applicant = await users.GetAsync(appl.ApplicantId);
+                                var email = (await userManager.FindByIdAsync($"{applicant.UserId}")).Email;
+                                modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
+                                    $"{applicant.FirstName} {applicant.LastName}", "dada"));
+                            }
+                            projectApplicationsDisplayModels.Add(new ProjectApplicationsDisplayModel(project, projectApplications, modelData));
                         }
 
                         return projectApplicationsDisplayModels;
@@ -195,7 +227,18 @@ namespace eduProjectWebAPI.Controllers
                         foreach (var id in projectIds)
                         {
                             var project = await projects.GetAsync(id);
-                            models.Add(new ProjectApplicationsDisplayModel(project, usersApplications.Where(a => a.ProjectId == id).ToList()));
+
+                            List<Tuple<int, string, string>> modelData = new List<Tuple<int, string, string>>();
+                            foreach (var appl in usersApplications.Where(a => a.ProjectId == id))
+                            {
+                                var applicant = await users.GetAsync(appl.ApplicantId);
+                                var email = (await settings.GetAsync(appl.ApplicantId)).Email;
+                                modelData.Add(new Tuple<int, string, string>(appl.ApplicantId,
+                                    $"{applicant.FirstName} {applicant.LastName}", email));
+                            }
+
+
+                            models.Add(new ProjectApplicationsDisplayModel(project, usersApplications.Where(a => a.ProjectId == id).ToList(), modelData));
                         }
 
                         return models;
@@ -242,7 +285,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.StackTrace);
                 }
             }
         }

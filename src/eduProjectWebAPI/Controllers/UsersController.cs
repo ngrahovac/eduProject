@@ -9,6 +9,7 @@ using eduProjectModel.Domain;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace eduProjectWebAPI.Controllers
@@ -20,12 +21,16 @@ namespace eduProjectWebAPI.Controllers
         private readonly IProjectsRepository projects;
         private readonly IUsersRepository users;
         private readonly IFacultiesRepository faculties;
+        private readonly IUserSettingsRepository settings;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public UsersController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties)
+        public UsersController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties, IUserSettingsRepository settings, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
+            this.settings = settings;
+            this.userManager = userManager;
         }
 
         [HttpGet("{id}")]
@@ -42,6 +47,7 @@ namespace eduProjectWebAPI.Controllers
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
 
                     User user = await users.GetAsync(id);
+                    var userSettings = await settings.GetAsync(user.UserId);
 
                     if (user == null)
                         return NotFound();
@@ -49,14 +55,11 @@ namespace eduProjectWebAPI.Controllers
                     var authoredProjects = new List<Project>();
                     var projectCollaborations = new List<Project>();
 
-                    if (user.AuthoredProjectIds != null)
+                    if (userSettings.ProjectsVisible)
                     {
                         foreach (int projectId in user.AuthoredProjectIds)
                             authoredProjects.Add(await projects.GetAsync(projectId));
-                    }
 
-                    if (user.ProjectCollaborationIds != null)
-                    {
                         foreach (int projectId in user.ProjectCollaborationIds)
                             projectCollaborations.Add(await projects.GetAsync(projectId));
                     }
@@ -64,7 +67,19 @@ namespace eduProjectWebAPI.Controllers
                     var faculty = await faculties.GetAsync(user.FacultyId);
                     bool isPersonal = currentUserId == id;
 
-                    return new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations);
+                    var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings.EmailVisible, userSettings.PhoneVisible, userSettings.ProjectsVisible);
+
+                    if (userSettings.EmailVisible)
+                    {
+                        model.Email = (await userManager.FindByIdAsync($"{user.UserId}")).Email;
+                    }
+
+                    if (userSettings.PhoneVisible)
+                    {
+                        model.PhoneNumber = (await userManager.FindByIdAsync($"{user.UserId}")).PhoneNumber;
+                    }
+
+                    return model;
                 }
                 catch (Exception e)
                 {
