@@ -4,11 +4,12 @@ namespace eduProjectModel.Input
 {
     public class LoginInputModel
     {
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
+        [EmailAddress(ErrorMessage = "Email adresa nije ispravnog oblika.")]
         public string Email { get; set; }
 
-        [Required]
+        //Password check happens on the API side. How to display wrong password error message on the GUI?
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
