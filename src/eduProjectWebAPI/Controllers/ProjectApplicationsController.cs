@@ -26,14 +26,17 @@ namespace eduProjectWebAPI.Controllers
         private readonly IUsersRepository users;
         private readonly IUserSettingsRepository settings;
         private readonly UserManager<ApplicationUser> userManager;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications, IUsersRepository users, IUserSettingsRepository settings, UserManager<ApplicationUser> userManager)
+        public ProjectApplicationsController(IProjectsRepository projects, IProjectApplicationsRepository applications,
+            IUsersRepository users, IUserSettingsRepository settings, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
         {
             this.projects = projects;
             this.applications = applications;
             this.users = users;
             this.settings = settings;
             this.userManager = userManager;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("{id}")]
@@ -276,7 +279,7 @@ namespace eduProjectWebAPI.Controllers
                         model.MapTo(application);
 
                         await applications.AddAsync(application);
-                        return Ok();
+                        return Created(httpContextAccessor.HttpContext.GetEndpoint().DisplayName, application);
                     }
                     else
                     {
@@ -308,7 +311,7 @@ namespace eduProjectWebAPI.Controllers
                     if (application.ApplicantId == currentUserId)
                     {
                         await applications.DeleteAsync(application);
-                        return Ok();
+                        return NoContent();
                     }
                     else
                     {

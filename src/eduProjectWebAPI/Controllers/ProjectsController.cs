@@ -28,13 +28,16 @@ namespace eduProjectWebAPI.Controllers
         private readonly IUsersRepository users;
         private readonly IFacultiesRepository faculties;
         private readonly IUserSettingsRepository settings;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public ProjectsController(IProjectsRepository projects, IUsersRepository users, IFacultiesRepository faculties, IUserSettingsRepository settings)
+        public ProjectsController(IProjectsRepository projects, IUsersRepository users,
+            IFacultiesRepository faculties, IUserSettingsRepository settings, IHttpContextAccessor httpContextAccessor)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
             this.settings = settings;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("{id}")]
@@ -167,7 +170,7 @@ namespace eduProjectWebAPI.Controllers
                     model.MapTo(project, facultiesList);
 
                     await projects.AddAsync(project);
-                    return NoContent(); // FIX: 201 with link to the resource
+                    return Created(httpContextAccessor.HttpContext.GetEndpoint().DisplayName, project);
                 }
                 catch (Exception e)
                 {
@@ -234,7 +237,7 @@ namespace eduProjectWebAPI.Controllers
                     if (project.AuthorId == HttpContext.Request.ExtractUserId())
                     {
                         await projects.DeleteAsync(project);
-                        return Ok();
+                        return NoContent();
                     }
                     else
                     {

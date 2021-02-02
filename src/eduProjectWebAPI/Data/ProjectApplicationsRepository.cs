@@ -63,6 +63,7 @@ namespace eduProjectWebAPI.Data
                 await connection.OpenAsync();
 
                 await command.ExecuteNonQueryAsync();
+                application.ProjectApplicationId = (int)command.LastInsertedId;
 
                 await connection.CloseAsync();
             }

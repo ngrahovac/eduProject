@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace eduProjectWebAPI
 {
@@ -107,6 +108,7 @@ namespace eduProjectWebAPI
             services.AddTransient<IProjectApplicationsRepository, ProjectApplicationsRepository>();
             services.AddTransient<IUserSettingsRepository, UserSettingsRepository>();
             services.AddTransient<DbConnectionParameters, TestDbConnectionParameters>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionParameters dbConnection)
