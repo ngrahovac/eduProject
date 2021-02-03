@@ -56,7 +56,9 @@ namespace eduProjectWebGUI.Pages
             }
             else
             {
-                Console.WriteLine("NIJE ODABRAN PROFIL");
+                var param = new ModalParameters();
+                param.Add("Message", "Neophodno je odabrati profil na koji se prijavljujete");
+                Modal.Show<InfoPopup>("Greška pri prijavljivanju", param);
             }
         }
 

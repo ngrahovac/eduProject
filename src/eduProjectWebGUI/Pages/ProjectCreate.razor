@@ -87,7 +87,7 @@
                         @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
                         {
                             <tr>
-                                <td>@p.CollaboratorProfileType</td>
+                                <td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
                                 <td>@p.FacultyName</td>
                                 <td>@p.Cycle</td>
                                 <td>@p.StudyProgramName</td>
