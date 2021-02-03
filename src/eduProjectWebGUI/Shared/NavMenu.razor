@@ -1,45 +1,94 @@
 ﻿@inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
+@inject IAuthService AuthService
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="font-size:1.6rem">
+<AuthorizeView>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top" style="font-size:1.6rem">
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
 
-            <li class="nav-item my-1 mx-2">
-                <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">Početna</a>
-            </li>
-            <li class="nav-item my-1 mx-2">
-                <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?status=active", true))">Aktivni projekti</a>
-            </li>
-            <li class="nav-item my-1 mx-2">
-                <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?authored=true", true))">Moji projekti</a>
-            </li>
-            <li class="nav-item my-1 mx-2 disabled">
-                <a class="nav-link" href="#">Moje prijave</a>
-            </li>
-        </ul>
+                <li class="nav-item my-1 mx-2">
+                    <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">Početna</a>
+                </li>
+                <li class="nav-item my-1 mx-2">
+                    <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?status=active", true))">Aktivni projekti</a>
+                </li>
+                <li class="nav-item my-1 mx-2">
+                    <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?authored=true", true))">Moji projekti</a>
+                </li>
+            </ul>
 
-        <div class="nav-item my-1 mx-2">
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control m-sm-2" type="search" placeholder="Unesite pojam za pretragu" aria-label="Search">
-                <button class="button my-2 my-sm-0 disabled" type="submit">Pretraži</button>
-            </form>
-        </div>
+            <div class="nav-item my-1 mx-2">
+                <form class="form-inline my-2 my-lg-0" @onsubmit="@(()=> { })">
+                    <input class="form-control m-sm-2" type="search" placeholder="Unesite pojam za pretragu" aria-label="Search"
+                           @bind-value="queryString">
+                    <button class="button my-2 my-sm-0" type="button" @onclick="Search">Pretraži</button>
+                </form>
+            </div>
 
-        <div class="nav-item dropdown my-1">
-            <a class="nav-link dropdown-toggle disabled" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Podešavanja
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Podešavanja profila</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">O aplikaciji</a>
+            <div class="nav-item dropdown my-1">
+                <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Podešavanja
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item nav-link" @onclick="@(async () =>
+                                                              {
+                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/settings", true);
+                                                              })">Podešavanja profila</a>
+                    <a class="dropdown-item nav-link" @onclick="@(async () =>
+                                                              {
+                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})">Moje prijave</a>
+
+                    <div class=" dropdown-divider">
+                    </div>
+                    <a class="dropdown-item nav-link" @onclick="@(async () =>
+                                                              {
+                                                                  await AuthService.Logout();
+                                                                  NavigationManager.NavigateTo("/account/login");
+                                                              })">Odjavi se</a>
+                </div>
             </div>
         </div>
+    </nav>
+</AuthorizeView>
 
-    </div>
-</nav>
+
+@code
+{
+    private string queryString;
+
+    private async Task Search()
+    {
+        if (queryString != null && queryString != string.Empty)
+        {
+            string current = NavigationManager.Uri.ToString();
+            string baseString;
+
+            if (current.Contains("?query"))
+            {
+                baseString = current.Substring(0, current.IndexOf("?query")) + "?";
+            }
+            else if (current.Contains("&query"))
+            {
+                baseString = current.Substring(0, current.IndexOf("&query")) + "&";
+            }
+            else if (current == NavigationManager.BaseUri + "homepage")
+            {
+                baseString = current + "?";
+            }
+            else
+            {
+                baseString = current + "&";
+            }
+
+            NavigationManager.NavigateTo(baseString + $"query={queryString}", true);
+
+            queryString = null;
+        }
+    }
+}

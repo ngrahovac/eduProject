@@ -1,4 +1,5 @@
 ﻿@page "/users/{UserId:int}"
+@inject NavigationManager NavigationManager
 
 <div class="content">
     @if (ProfileDisplayModel == null)
@@ -7,18 +8,24 @@
     }
     else
     {
-        <h3>@($"{ProfileDisplayModel.FirstName} {ProfileDisplayModel.LastName}")</h3>
+        <img src="/img/default-user-avatar.png" width="300" height="300" />
+        <h3 style="margin-top:2rem">@($"{ProfileDisplayModel.FirstName} {ProfileDisplayModel.LastName}")</h3>
         @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
         {
             <h4>@($"Student, {ProfileDisplayModel.FacultyName}")</h4>
         }
         else
         {
-            <h4>@($"{ProfileDisplayModel.AcademicRank}, {ProfileDisplayModel.FacultyName}")</h4>
+            <h4>@($"{ProfileDisplayModel.AcademicRank.GetAttribute<DisplayAttribute>().Name}, {ProfileDisplayModel.FacultyName}")</h4>
         }
+        <br />
 
         <div class="section">
-            <h4 class="title">Osnovne informacije</h4>
+            <div class="heading">
+                <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
+                <h4 class="title">Osnovne informacije</h4>
+            </div>
+            <hr class="divider" />
 
             <h5>Biografija</h5>
             <p>@ProfileDisplayModel.Bio</p>
@@ -27,7 +34,11 @@
         <div class="section">
             @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
             {
-                <h4 class="title">Institucija studiranja</h4>
+                <div class="heading">
+                    <img src="/css/bootstrap/building.svg" width="30" height="30" />
+                    <h4 class="title">Institucija studiranja</h4>
+                </div>
+                <hr class="divider" />
 
                 <h5>Fakultet</h5>
                 <p>@ProfileDisplayModel.FacultyName</p>
@@ -46,7 +57,11 @@
             }
             else
             {
-                <h4 class="title">Institucija djelovanja</h4>
+                <div class="heading">
+                    <img src="/css/bootstrap/building.svg" width="30" height="30" />
+                    <h4 class="title">Institucija djelovanja</h4>
+                </div>
+                <hr class="divider" />
 
                 <h5>Fakultet</h5>
                 <p>@ProfileDisplayModel.FacultyName</p>
@@ -57,13 +72,23 @@
         </div>
 
         <div class="section">
-            <h4 class="title">Kontakt</h4>
+            <div class="heading">
+                <img src="/css/bootstrap/envelope.svg" width="30" height="30" />
+                <h4 class="title">Kontakt</h4>
+            </div>
+            <hr class="divider" />
 
-            <h5>Email</h5>
-            <p>@ProfileDisplayModel.Email</p>
+            @if (ProfileDisplayModel.EmailVisible)
+            {
+                <h5>Email</h5>
+                <p>@ProfileDisplayModel.Email</p>
+            }
 
-            <h5>Broj telefona</h5>
-            <p>@ProfileDisplayModel.PhoneNumber</p>
+            @if (ProfileDisplayModel.PhoneNumberVisible)
+            {
+                <h5>Broj telefona</h5>
+                <p>@ProfileDisplayModel.PhoneNumber</p>
+            }
 
             <h5>Website</h5>
             <p>@ProfileDisplayModel.Website</p>
@@ -76,18 +101,25 @@
         </div>
 
         <div class="section">
-            <h4 class="title">Projekti</h4>
+            <div class="heading">
+                <img src="/css/bootstrap/kanban.svg" width="30" height="30" />
+                <h4 class="title">Projekti</h4>
+            </div>
+            <hr class="divider" />
 
             <h5>Oglašeni projekti</h5>
             @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
             {
-                <p>@(p.Title)</p>
+                <p><a href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title)</a></p>
             }
 
-            <h5>Saradnje na projektima</h5>
-            @foreach (var p in ProfileDisplayModel.ProjectCollaborationsDisplayModels)
+            @if (ProfileDisplayModel.ProjectsVisible)
             {
-                <p>@(p.Title)</p>
+                <h5>Saradnje na projektima</h5>
+                @foreach (var p in ProfileDisplayModel.ProjectCollaborationsDisplayModels)
+                {
+                    <p><a href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title)</a></p>
+                }
             }
         </div>
     }

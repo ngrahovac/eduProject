@@ -4,11 +4,11 @@
 
     // clear highlight from selected table
     for (var j = 0; j < rows.length; j++) {
-        rows[j].className -= " selected-row";
+        rows[j].className = rows[j].className.replace(" selected-row", "");
     }
 
     // highlight selected row
-    var row = rows.item(i + 1);
+    var row = rows.item(i + 1);             // rows[0] is header
     row.className += " selected-row"
 
 
@@ -18,7 +18,18 @@
         var otherRows = otherTable.getElementsByTagName("tr");
 
         for (var j = 0; j < otherRows.length; j++) {
-            otherRows[j].className -= " selected-row";
+            otherRows[j].className = otherRows[j].className.replace(" selected-row", "");
         }
     }
+}
+
+
+function highlightRecommendedProfile(tableToHighlight, i) {
+    var table = document.getElementById(tableToHighlight);
+    var rows = table.getElementsByTagName("tr");
+    /*
+    if (rows[i + i].className.includes("selected-row"))    // if row is selected, the table will reload and remove highlight
+        rows[i + 1].className = rows[i + 1].className.replace(" recommended-profile", "");
+    else if (!rows[i + 1].contains("recommended-profile"))*/
+    rows[i + 1].className += " recommended-profile";
 }

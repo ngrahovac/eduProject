@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Blazored.Modal;
 using eduProjectWebGUI.Services;
 using eduProjectModel.Input;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace eduProjectWebGUI
 {
@@ -30,6 +32,15 @@ namespace eduProjectWebGUI
             builder.Services.AddSingleton<ProjectApplicationInputModel>();
 
             builder.Services.AddSingleton<ProjectInputModel>();
+
+
+            builder.Services.AddBlazoredLocalStorage();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddScoped<AuthenticationStateProvider, ApiAuthenticationStateProvider>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
+            //TEST
+            builder.Services.AddScoped<ApiAuthenticationStateProvider>();
 
             await builder.Build().RunAsync();
         }

@@ -1,5 +1,6 @@
 ﻿@page "/users/{UserId:int}/settings"
 @inject ApiService ApiService
+@inject NavigationManager NavigationManager
 
 <div class="content">
     @if (displayModel == null)
@@ -56,7 +57,7 @@
         </EditForm>
 
         <div class="buttons">
-            <button class="button">Odustani</button>
+            <button class="button" @onclick="@CancelUpdateSettings">Odustani</button>
             <button class="button button-primary" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
         </div>
     }

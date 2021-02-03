@@ -2,7 +2,6 @@
 @page "/projects/{id:int}/edit"
 @inject ApiService ApiService
 @inject IModalService Modal
-
 @inject NavigationManager NavigationManager
 
 
@@ -17,15 +16,16 @@
     }
 
     <EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
+        <DataAnnotationsValidator />
         <div class="section">
             <h4 class="title">Osnovne informacije</h4>
 
             <h5>Naziv projekta</h5>
             <InputText @bind-Value="@projectInputModel.Title"></InputText>
+            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Title)" /></p>
 
             <h5>Oblast projekta</h5>
-            <InputSelect TValue="string"
-                         @bind-Value="@projectInputModel.StudyFieldName">
+            <InputSelect TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
                 <option value=null></option>
                 @foreach (var sf in studyFields)
                 {
@@ -39,6 +39,7 @@
                     }
                 }
             </InputSelect>
+            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.StudyFieldName)" /></p>
 
             <h5>Početak realizacije</h5>
             <InputDate @bind-Value="@projectInputModel.StartDate"></InputDate>
@@ -48,13 +49,10 @@
 
             <h5>Opis projekta</h5>
             <InputTextArea @bind-Value="@projectInputModel.Description"></InputTextArea>
+            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Description)" /></p>
 
-            <TagsOverview Editing="true"
-                          ProjectInputModel="projectInputModel"
-                          TagNames="projectInputModel.TagNames"></TagsOverview>
-            <BlazoredTypeahead SearchMethod="FilterTags"
-                               @bind-Value="AddedTag"
-                               Context="tag">
+            <TagsOverview Editing="true" ProjectInputModel="projectInputModel" TagNames="projectInputModel.TagNames"></TagsOverview>
+            <BlazoredTypeahead SearchMethod="FilterTags" @bind-Value="AddedTag" Context="tag">
                 <SelectedTemplate>
                     @tag.Name
                 </SelectedTemplate>
@@ -70,7 +68,6 @@
         <div class="section">
             <h4 class="title">Dodani profili saradnika</h4>
 
-            @*FIX: Add sticky header*@
             <div class="collaborator-profiles-table scrollable">
                 <table>
                     <thead>
@@ -90,7 +87,7 @@
                         @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
                         {
                             <tr>
-                                <td>@p.CollaboratorProfileType</td>
+                                <td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
                                 <td>@p.FacultyName</td>
                                 <td>@p.Cycle</td>
                                 <td>@p.StudyProgramName</td>
@@ -109,6 +106,7 @@
                         }
                     </tbody>
                 </table>
+                <p style="color:red"><ValidationMessage For="@(() => projectInputModel.CollaboratorProfileInputModels)" /></p>
             </div>
         </div>
 
@@ -117,7 +115,7 @@
             <div class="buttons">
                 <button class="button button-primary" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
                 <button class="button button-primary" type="submit">Sačuvaj izmjene</button>
-                <button class="button button-primary" type="button" @onclick="@CancelEditing">Odustani</button>
+                <button class="button" type="button" @onclick="@CancelEditing">Odustani</button>
             </div>
         }
         else
@@ -127,9 +125,5 @@
                 <button class="button button-primary" type="submit">Oglasi projekat</button>
             </div>
         }
-
-
     </EditForm>
-
-
 </div>

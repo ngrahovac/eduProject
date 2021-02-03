@@ -1,0 +1,27 @@
+﻿@page "/account/register"
+@inject ApiService ApiService
+@inject NavigationManager Navigation
+
+<EditForm Model="@model" OnValidSubmit="RegisterUser">
+    <DataAnnotationsValidator />
+    <div class="register-box">
+
+        <img src="../img/logo.JPG" />
+
+        <label>Email:</label>
+        <InputText type="text" placeholder="Email" @bind-Value="@model.Email"></InputText>
+        <p style="color:red"><ValidationMessage For="@(() => model.Email)" /></p>
+
+        <label>Lozinka:</label>
+        <InputText type="password" placeholder="Lozinka" @bind-Value="@model.Password"></InputText>
+        <p style="color:red"><ValidationMessage For="@(() => model.Password)" /></p>
+
+        <label>Ponovite lozinku:</label>
+        <InputText type="password" placeholder="Ponovite lozinku" @bind-Value="@model.ConfirmPassword"></InputText>
+        <p style="color:red"><ValidationMessage For="@(() => model.Password)" /></p>
+
+        <div>
+            <input type="submit" class="btn btn-primary" value="Registruj se" />
+        </div>
+    </div>
+</EditForm>

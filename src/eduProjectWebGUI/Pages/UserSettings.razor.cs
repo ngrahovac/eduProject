@@ -41,8 +41,13 @@ namespace eduProjectWebGUI.Pages
         private async Task UpdateSettings()
         {
             await ApiService.PutAsync($"/users/{UserId}/settings", inputModel);
+            NavigationManager.NavigateTo($"/users/{UserId}/settings", true);
         }
 
+        private async Task CancelUpdateSettings()
+        {
+            NavigationManager.NavigateTo($"/homepage", true);
+        }
 
     }
 }

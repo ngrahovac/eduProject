@@ -3,20 +3,41 @@
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 
+@inject IAuthService AuthService
+
 <div class="content">
     <h3>Pregled projekata</h3>
 
     @foreach (var model in projectDisplayModels)
     {
-        <div class="section" @onclick="@(() => LoadProject(model.ProjectId))">
-            <h4 class="title">@model.Title</h4>
+        <div class="section-homepage">
+            <div class="heading">
+                <img src="/css/bootstrap/kanban.svg" width="30" height="30" />
+                <h4 class="title"><a href="@($"{NavigationManager.BaseUri}projects/{model.ProjectId}")" style="color:black">@model.Title</a></h4>
+            </div>
+
+            <h5>Status projekta</h5>
+            @if (model.ProjectStatus == ProjectStatus.Active)
+            {
+                <p class="status-active">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+            }
+            else
+            {
+                <p class="status-closed">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
+            }
 
             <h5>Opis</h5>
             <p>@model.Description</p>
 
             <h5>Oblast</h5>
             <p>@model.StudyField.Name</p>
+
+            <h5>Period realizacije</h5>
+            <div class="time-period">
+                <p class="date">@model.StartDate</p>
+                <p class="date"> - </p>
+                <p class="date">@model.EndDate</p>
+            </div>
         </div>
     }
 </div>
-

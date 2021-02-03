@@ -37,6 +37,7 @@ namespace eduProjectTests.RepositoryTests
         public async Task GetById_IdExists_ReturnUser()
         {
             var result = await users.GetAsync(1);
+            Assert.Equal("Nikolina", result.FirstName);
             Assert.IsAssignableFrom<User>(result);
         }
     }

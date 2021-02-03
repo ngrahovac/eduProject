@@ -5,21 +5,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel.DataAnnotations;
 
 namespace eduProjectModel.Input
 {
     public class ProjectInputModel
     {
         public int AuthorId { get; set; }
+
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string Title { get; set; }
+
         public ProjectStatus ProjectStatus { get; set; }
+
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string Description { get; set; }
+
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string StudyFieldName { get; set; }
+
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public List<CollaboratorProfileInputModel> CollaboratorProfileInputModels { get; set; } = new List<CollaboratorProfileInputModel>();
+
         public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
+
         public ICollection<string> TagNames { get; set; } = new HashSet<string>();
+
+        [MinLength(1, ErrorMessage = "Nije naveden niti jedan profil traženog saradnika.")]
+        public List<CollaboratorProfileInputModel> CollaboratorProfileInputModels { get; set; } = new List<CollaboratorProfileInputModel>();
 
         public ProjectInputModel()
         {
@@ -28,14 +41,10 @@ namespace eduProjectModel.Input
 
         public ProjectInputModel(ProjectDisplayModel model)
         {
-            // FIX
-            // ProjectDisplayModel ima polje CollaboratorDisplayModel
-            // svakako zatvoren projekat ne mozemo vise praviti tj ne mozemo praviti input model
-            // od njega
-
             Title = model.Title;
+            ProjectStatus = model.ProjectStatus;
             Description = model.Description;
-            StudyFieldName = model.StudyField?.Name;
+            StudyFieldName = model.StudyField.Name;
             StartDate = model.StartDate;
             EndDate = model.EndDate;
             TagNames = model.Tags.Select(t => t.Name).ToHashSet();

@@ -307,7 +307,7 @@ namespace eduProjectWebAPI.Data
 
                 await connection.OpenAsync();
 
-                await AddBasicProjectInfo(command, project);
+                await AddBasicProjectInfo(command, project); // sets project id
                 await AddCollaboratorProfilesInfo(command, project);
                 await AddTagsInfo(command, project);
 
@@ -469,6 +469,7 @@ namespace eduProjectWebAPI.Data
                     });
 
                     await command.ExecuteNonQueryAsync();
+                    sp.CollaboratorProfileId = (int)command.LastInsertedId;
                 }
                 else if (profile is FacultyMemberProfile fp)
                 {
@@ -501,6 +502,7 @@ namespace eduProjectWebAPI.Data
                     });
 
                     await command.ExecuteNonQueryAsync();
+                    fp.CollaboratorProfileId = (int)command.LastInsertedId;
                 }
             }
         }

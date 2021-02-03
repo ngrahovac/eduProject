@@ -1,21 +1,31 @@
-﻿using Blazored.Modal;
+﻿using Blazored.LocalStorage;
+using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
     public partial class ProjectView
     {
+        //private ILocalStorageService localStorage; //bilo je readonly
+        //public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
+
+        public ProjectView() { }
+
         [Parameter]
         public int ProjectId { get; set; }
 
@@ -29,17 +39,27 @@ namespace eduProjectWebGUI.Pages
         // Kada korisnik gleda tudji projekat na koji se moze prijaviti, a nije prethodno prijavljen.
         async Task ShowApplicationSubmitPopup()
         {
-            var messageForm = Modal.Show<LeaveComment>();
-            var result = await messageForm.Result;
-
-            // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
-            if (!result.Cancelled)
+            if (model.CollaboratorProfileId != 0)
             {
-                model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
-                await ApiService.PostAsync("/applications", model);
-            }
+                var messageForm = Modal.Show<LeaveComment>();
+                var result = await messageForm.Result;
 
-            messageForm.Close();
+                // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
+                if (!result.Cancelled)
+                {
+                    model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
+                    model.ProjectId = ProjectId;
+                    await ApiService.PostAsync("/applications", model);
+                }
+
+                messageForm.Close();
+            }
+            else
+            {
+                var param = new ModalParameters();
+                param.Add("Message", "Neophodno je odabrati profil na koji se prijavljujete");
+                Modal.Show<InfoPopup>("Greška pri prijavljivanju", param);
+            }
         }
 
         // Metoda koja bi sa klikom na button IZMIJENI dala mogucnost da autor mijenja nesto na AKTIVNOM projektu.
