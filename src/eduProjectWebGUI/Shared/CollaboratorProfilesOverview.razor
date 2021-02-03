@@ -115,4 +115,13 @@
     {
         await js.InvokeVoidAsync("highlightRecommendedProfile", tableToHighlight, index);
     }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            model.CollaboratorProfileId = 0;
+        }
+    }
 }

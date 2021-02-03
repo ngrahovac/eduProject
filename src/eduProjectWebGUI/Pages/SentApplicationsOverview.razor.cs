@@ -31,6 +31,15 @@ namespace eduProjectWebGUI.Pages
             }
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            base.OnAfterRender(firstRender);
+            if (firstRender)
+            {
+                selectedApplicationId = 0;
+            }
+        }
+
         public async Task RevokeApplication()
         {
             if (selectedApplicationId != 0)
@@ -44,7 +53,7 @@ namespace eduProjectWebGUI.Pages
                 if (!result.Cancelled)
                 {
                     await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
-                    NavigationManager.NavigateTo($"/applications/user/{UserId}", true);
+                    NavigationManager.NavigateTo($"/users/{UserId}/applications", true);
                 }
             }
         }

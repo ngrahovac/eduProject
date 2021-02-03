@@ -9,6 +9,9 @@ namespace eduProjectWebGUI.Shared
 {
     public partial class InfoPopup
     {
+        public static readonly string messageSuccess = "Akcija uspiješno izvršena.";
+        public static readonly string messageFailure = "Akcija nije uspiješno izvršena. Molimo pokušajte kasnije.";
+
         [CascadingParameter]
         BlazoredModalInstance BlazoredModal { get; set; }
 

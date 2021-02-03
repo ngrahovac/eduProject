@@ -2,6 +2,7 @@
 using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
 using Microsoft.AspNetCore.Components;
@@ -22,6 +23,7 @@ namespace eduProjectWebGUI.Pages
     {
         //private ILocalStorageService localStorage; //bilo je readonly
         //public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
+
         public ProjectView() { }
 
         [Parameter]
@@ -37,18 +39,25 @@ namespace eduProjectWebGUI.Pages
         // Kada korisnik gleda tudji projekat na koji se moze prijaviti, a nije prethodno prijavljen.
         async Task ShowApplicationSubmitPopup()
         {
-            var messageForm = Modal.Show<LeaveComment>();
-            var result = await messageForm.Result;
-
-            // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
-            if (!result.Cancelled)
+            if (model.CollaboratorProfileId != 0)
             {
-                model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
-                model.ProjectId = ProjectId;
-                await ApiService.PostAsync("/applications", model);
-            }
+                var messageForm = Modal.Show<LeaveComment>();
+                var result = await messageForm.Result;
 
-            messageForm.Close();
+                // Ako je korisnik kliknuo button PRIHVATI, ulazi se u if.
+                if (!result.Cancelled)
+                {
+                    model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
+                    model.ProjectId = ProjectId;
+                    await ApiService.PostAsync("/applications", model);
+                }
+
+                messageForm.Close();
+            }
+            else
+            {
+                Console.WriteLine("NIJE ODABRAN PROFIL");
+            }
         }
 
         // Metoda koja bi sa klikom na button IZMIJENI dala mogucnost da autor mijenja nesto na AKTIVNOM projektu.
