@@ -3,6 +3,7 @@
 @inject ApiService ApiService
 @inject IModalService Modal
 @inject NavigationManager NavigationManager
+@inject ILocalStorageService LocalStorage
 
 
 <div class="content">
@@ -94,11 +95,11 @@
                                 <td>@p.StudyProgramSpecializationName</td>
                                 <td>@p.StudyYear</td>
                                 <td>@p.StudyFieldName</td>
-                                @if (!p.AddedOnCreate)
+                                @if (!p.ExistingProfile)
                                 {
                                     <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
                                 }
-                                @if (!p.AddedOnCreate)
+                                @if (!p.ExistingProfile)
                                 {
                                     <td><button class="button" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
                                 }

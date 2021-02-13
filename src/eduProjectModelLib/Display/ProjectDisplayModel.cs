@@ -89,12 +89,7 @@ namespace eduProjectModel.Display
                         FacultyMemberProfileDisplayModels.Add(model);
                     }
 
-                    if (!Recommended)
-                    {
-                        // TODO: ako nije preporucen preko preporucenih trazenih profila, vidjeti da li ima tagove iste
-                    }
-
-                    if (author.UserId == visitor.UserId) // TODO: obj equality
+                    if (author.UserId == visitor.UserId)
                     {
                         Recommended = false;
                     }

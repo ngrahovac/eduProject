@@ -7,6 +7,7 @@ using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
@@ -44,6 +45,7 @@ namespace eduProjectWebGUI.Pages
                 editing = true;
                 var displayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
                 projectInputModel = new ProjectInputModel(displayModel);
+                projectInputModel.AuthorId = (int)await LocalStorage.ExtractUserId();
             }
             else
             {

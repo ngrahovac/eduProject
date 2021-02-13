@@ -2,6 +2,7 @@
 using eduProjectModel.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -9,8 +10,11 @@ namespace eduProjectModel.Input
 {
     public class CollaboratorProfileInputModel
     {
+        [Required(ErrorMessage = "Tip saradnika se mora odabrati.")]
         public CollaboratorProfileType CollaboratorProfileType { get; set; }
-        public bool AddedOnCreate { get; set; }
+        public bool ExistingProfile { get; set; }
+
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string ActivityDescription { get; set; }
         public string FacultyName { get; set; }
         public int? Cycle { get; set; }
@@ -30,16 +34,24 @@ namespace eduProjectModel.Input
             profile.StudyCycle = Cycle;
             profile.StudyYear = StudyYear;
 
-            foreach (var program in faculty.StudyPrograms)
+            if (FacultyName != null)
             {
-                if (program.Name.Equals(StudyProgramName))
+                profile.FacultyId = faculty.FacultyId;
+                if (StudyProgramName != null)
                 {
-                    profile.StudyProgramId = program.ProgramId;
-
-                    foreach (var specialization in program.StudyProgramSpecializations)
+                    foreach (var program in faculty.StudyPrograms)
                     {
-                        if (specialization.Name.Equals(StudyProgramSpecializationName))
-                            profile.StudyProgramSpecializationId = specialization.SpecializationId;
+                        if (program.Name.Equals(StudyProgramName))
+                        {
+                            profile.StudyProgramId = program.ProgramId;
+
+                            if (StudyProgramSpecializationName != null)
+                            {
+                                profile.StudyProgramSpecializationId = program.StudyProgramSpecializations
+                                                                              .Where(sp => sp.Name == StudyProgramSpecializationName)
+                                                                              .First().SpecializationId;
+                            }
+                        }
                     }
                 }
             }
@@ -48,7 +60,8 @@ namespace eduProjectModel.Input
         public void MapTo(FacultyMemberProfile profile)
         {
             profile.Description = ActivityDescription;
-            profile.StudyField = StudyField.fields.Where(sf => sf.Value.Name == StudyFieldName).First().Value;
+            if (StudyFieldName != null)
+                profile.StudyField = StudyField.fields.Where(sf => sf.Value.Name == StudyFieldName).First().Value;
         }
 
         public static CollaboratorProfileInputModel FromCollaboratorProfileDisplayModel(CollaboratorProfileDisplayModel profile)

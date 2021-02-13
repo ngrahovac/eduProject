@@ -219,7 +219,7 @@ namespace eduProjectWebAPI.Data
                 {
                     CollaboratorProfileId = reader.GetInt32(0),
                     Description = reader.GetString(1),
-                    StudyCycle = reader.GetInt32(3),
+                    StudyCycle = !reader.IsDBNull(3) ? (int?)reader.GetInt32(3) : null,
                     StudyYear = !reader.IsDBNull(4) ? (int?)reader.GetInt32(4) : null,
                     FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
                     StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
@@ -469,7 +469,7 @@ namespace eduProjectWebAPI.Data
                     });
 
                     await command.ExecuteNonQueryAsync();
-                    sp.CollaboratorProfileId = (int)command.LastInsertedId;
+                    //sp.CollaboratorProfileId = (int)command.LastInsertedId;
                 }
                 else if (profile is FacultyMemberProfile fp)
                 {
@@ -502,7 +502,7 @@ namespace eduProjectWebAPI.Data
                     });
 
                     await command.ExecuteNonQueryAsync();
-                    fp.CollaboratorProfileId = (int)command.LastInsertedId;
+                    //fp.CollaboratorProfileId = (int)command.LastInsertedId;
                 }
             }
         }
@@ -559,7 +559,7 @@ namespace eduProjectWebAPI.Data
                     await UpdateBasicProjectInfo(command, updatedProject);
                 }
 
-                if (project.CollaboratorProfiles.Count != updatedProject.CollaboratorProfiles.Count) // profiles can only be added
+                if (project.CollaboratorProfiles.Count != 0) // contains only new profiles
                 {
                     await UpdateCollaboratorProfilesInfo(command, updatedProject);
                 }
@@ -645,130 +645,125 @@ namespace eduProjectWebAPI.Data
         {
             var oldProject = await GetAsync(project.ProjectId);
 
-            foreach (var profile in project.CollaboratorProfiles)
+            foreach (var profile in project.CollaboratorProfiles) // contains only added profiles
             {
-                if (!oldProject.CollaboratorProfiles.Select(p => p.CollaboratorProfileId).Contains(profile.CollaboratorProfileId))
-                {
-                    // insert new profile into database
-
-                    command.CommandText = @"INSERT INTO collaborator_profile
+                command.CommandText = @"INSERT INTO collaborator_profile
                                         (description, project_id, user_account_type_id)
                                         VALUES
                                         (@description, @projectId, @profileTypeId)";
 
-                    command.Parameters.Clear();
+                command.Parameters.Clear();
 
-                    command.Parameters.Add(new MySqlParameter
-                    {
-                        ParameterName = "@description",
-                        DbType = DbType.String,
-                        Value = profile.Description
-                    });
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@description",
+                    DbType = DbType.String,
+                    Value = profile.Description
+                });
 
-                    command.Parameters.Add(new MySqlParameter
-                    {
-                        ParameterName = "@projectId",
-                        DbType = DbType.Int32,
-                        Value = project.ProjectId
-                    });
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@projectId",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
 
-                    command.Parameters.Add(new MySqlParameter
-                    {
-                        ParameterName = "@profileTypeId",
-                        DbType = DbType.Int32,
-                        Value = profile is StudentProfile ? (int)CollaboratorProfileType.Student : (int)CollaboratorProfileType.FacultyMember
-                    });
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@profileTypeId",
+                    DbType = DbType.Int32,
+                    Value = profile is StudentProfile ? (int)CollaboratorProfileType.Student : (int)CollaboratorProfileType.FacultyMember
+                });
 
-                    await command.ExecuteNonQueryAsync();
-                    profile.CollaboratorProfileId = (int)command.LastInsertedId;
+                await command.ExecuteNonQueryAsync();
+                profile.CollaboratorProfileId = (int)command.LastInsertedId;
 
-                    if (profile is StudentProfile sp)
-                    {
-                        command.CommandText = @"INSERT INTO student_profile
+                if (profile is StudentProfile sp)
+                {
+                    command.CommandText = @"INSERT INTO student_profile
                                             (collaborator_profile_id, cycle, study_year,
                                             faculty_id, study_program_id, study_program_specialization_id)
                                             VALUES
                                             (@profileId, @cycle, @year,
                                             @facultyId, @programId, @specializationId)";
 
-                        command.Parameters.Clear();
+                    command.Parameters.Clear();
 
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@profileId",
-                            DbType = DbType.Int32,
-                            Value = sp.CollaboratorProfileId
-                        });
-
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@cycle",
-                            DbType = DbType.Int32,
-                            Value = sp.StudyCycle
-                        });
-
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@year",
-                            DbType = DbType.Int32,
-                            Value = sp.StudyYear
-                        });
-
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@facultyId",
-                            DbType = DbType.Int32,
-                            Value = sp.FacultyId
-                        });
-
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@programId",
-                            DbType = DbType.Int32,
-                            Value = sp.StudyProgramId
-                        });
-
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@specializationId",
-                            DbType = DbType.Int32,
-                            Value = sp.StudyProgramSpecializationId
-                        });
-
-                        await command.ExecuteNonQueryAsync();
-                    }
-                    else if (profile is FacultyMemberProfile fp)
+                    command.Parameters.Add(new MySqlParameter
                     {
-                        command.CommandText = @"INSERT INTO faculty_member_profile
+                        ParameterName = "@profileId",
+                        DbType = DbType.Int32,
+                        Value = sp.CollaboratorProfileId
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@cycle",
+                        DbType = DbType.Int32,
+                        Value = sp.StudyCycle
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@year",
+                        DbType = DbType.Int32,
+                        Value = sp.StudyYear
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@facultyId",
+                        DbType = DbType.Int32,
+                        Value = sp.FacultyId
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@programId",
+                        DbType = DbType.Int32,
+                        Value = sp.StudyProgramId
+                    });
+
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@specializationId",
+                        DbType = DbType.Int32,
+                        Value = sp.StudyProgramSpecializationId
+                    });
+
+                    await command.ExecuteNonQueryAsync();
+                }
+                else if (profile is FacultyMemberProfile fp)
+                {
+                    command.CommandText = @"INSERT INTO faculty_member_profile
                                             (collaborator_profile_id, faculty_id, study_field_id)
                                             VALUES
                                             (@profileId, @facultyId, @fieldId)";
 
-                        command.Parameters.Clear();
+                    command.Parameters.Clear();
 
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@profileId",
-                            DbType = DbType.Int32,
-                            Value = fp.CollaboratorProfileId
-                        });
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@profileId",
+                        DbType = DbType.Int32,
+                        Value = fp.CollaboratorProfileId
+                    });
 
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@facultyId",
-                            DbType = DbType.Int32,
-                            Value = fp.FacultyId
-                        });
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@facultyId",
+                        DbType = DbType.Int32,
+                        Value = fp.FacultyId
+                    });
 
-                        command.Parameters.Add(new MySqlParameter
-                        {
-                            ParameterName = "@fieldId",
-                            DbType = DbType.Int32,
-                            Value = StudyField.fields.Where(p => p.Value == fp.StudyField).First().Key
-                        });
+                    command.Parameters.Add(new MySqlParameter
+                    {
+                        ParameterName = "@fieldId",
+                        DbType = DbType.Int32,
+                        Value = fp.StudyField == null ? null : (int?)StudyField.fields.Where(p => p.Value == fp.StudyField).First().Key
+                    });
 
-                        await command.ExecuteNonQueryAsync();
-                    }
+                    await command.ExecuteNonQueryAsync();
                 }
             }
 

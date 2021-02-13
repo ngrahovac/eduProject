@@ -65,7 +65,9 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //VRATI KOD
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
         }
@@ -97,7 +99,9 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    // VRATI KOD
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
         }
@@ -107,13 +111,16 @@ namespace eduProjectWebAPI.Controllers
             User author = await users.GetAsync(project.AuthorId);
             bool isDisplayForAuthor = currentUserId == project.AuthorId;
             ProjectDisplayModel model;
+            ICollection<Tag> userTags = (await settings.GetAsync(visitor.UserId)).UserTags;
 
             if (project.ProjectStatus == ProjectStatus.Active)
             {
-                var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Distinct();
+                var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Where(v => v != null).Distinct();
                 var facultiesList = new List<Faculty>();
                 foreach (var fid in facultyIds)
+                {
                     facultiesList.Add(await faculties.GetAsync((int)fid));
+                }
 
                 model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, null, facultiesList);
             }
@@ -130,7 +137,6 @@ namespace eduProjectWebAPI.Controllers
             if (!model.Recommended)
             {
                 // if no recommended profiles, check tags
-                var userTags = (await settings.GetAsync(visitor.UserId)).UserTags;
                 foreach (var projectTag in project.Tags)
                 {
                     if (userTags.Contains(projectTag))
@@ -216,7 +222,9 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    // VRATI KOD
+                    // return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
         }

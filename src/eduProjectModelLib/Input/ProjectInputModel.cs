@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace eduProjectModel.Input
 {
@@ -63,7 +64,7 @@ namespace eduProjectModel.Input
             foreach (var profileDisplayModel in collaboratorProfileDisplayModels)
             {
                 var collaboratorProfileInputModel = CollaboratorProfileInputModel.FromCollaboratorProfileDisplayModel(profileDisplayModel);
-                collaboratorProfileInputModel.AddedOnCreate = true;
+                collaboratorProfileInputModel.ExistingProfile = true;
                 CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
             }
         }
@@ -78,16 +79,21 @@ namespace eduProjectModel.Input
             project.EndDate = EndDate;
             project.StudyField = StudyField.fields.Values.ToList().Where(sf => sf.Name == StudyFieldName).First();
 
-            foreach (var model in CollaboratorProfileInputModels)
+            project.CollaboratorProfiles.Clear();
+
+            foreach (var model in CollaboratorProfileInputModels.Where(m => m.ExistingProfile == false))
             {
                 if (model.CollaboratorProfileType == CollaboratorProfileType.Student)
                 {
                     StudentProfile studentProfile = new StudentProfile();
 
-                    foreach (var faculty in faculties)
+                    if (model.FacultyName != null)
                     {
-                        if (faculty.Name.Equals(model.FacultyName)) //assumption: unique faculty names
-                            model.MapTo(studentProfile, faculty);
+                        model.MapTo(studentProfile, faculties.Where(f => f.Name == model.FacultyName).First());
+                    }
+                    else
+                    {
+                        model.MapTo(studentProfile, null);
                     }
 
                     project.CollaboratorProfiles.Add(studentProfile);
@@ -101,6 +107,7 @@ namespace eduProjectModel.Input
                 }
             }
 
+            project.Tags.Clear();
             foreach (var tagName in TagNames)
                 project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).First());
 

@@ -2,7 +2,7 @@
 {
     public class FacultyMemberProfile : CollaboratorProfile
     {
-        public StudyField StudyField { get; set; }
+        public StudyField? StudyField { get; set; }
 
         public FacultyMemberProfile()
         {

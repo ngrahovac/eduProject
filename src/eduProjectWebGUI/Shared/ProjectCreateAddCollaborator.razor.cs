@@ -203,7 +203,7 @@ namespace eduProjectWebGUI.Shared
             if (!editingProfile)
             {
                 Console.WriteLine($"Adding {collaboratorProfileInputModel.CollaboratorProfileType}");
-                collaboratorProfileInputModel.AddedOnCreate = false;
+                collaboratorProfileInputModel.ExistingProfile = false;
                 ProjectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
                 collaboratorProfileInputModel = new CollaboratorProfileInputModel();
 
@@ -215,7 +215,7 @@ namespace eduProjectWebGUI.Shared
             else
             {
                 Console.WriteLine($"Editing {collaboratorProfileInputModel.CollaboratorProfileType}");
-                collaboratorProfileInputModel.AddedOnCreate = false;
+                collaboratorProfileInputModel.ExistingProfile = false;
                 ProjectInputModel.CollaboratorProfileInputModels.RemoveAt(profileIndex);
                 ProjectInputModel.CollaboratorProfileInputModels.Insert(profileIndex, collaboratorProfileInputModel);
 

@@ -34,9 +34,23 @@
 
             <h5>Period realizacije</h5>
             <div class="time-period">
-                <p class="date">@model.StartDate</p>
+                @if (model.StartDate == null)
+                {
+                    <p class="date">N/A</p>
+                }
+                else
+                {
+                    <p class="date">@model.StartDate</p>
+                }
                 <p class="date"> - </p>
-                <p class="date">@model.EndDate</p>
+                @if (model.EndDate == null)
+                {
+                    <p class="date">N/A</p>
+                }
+                else
+                {
+                    <p class="date">@model.EndDate</p>
+                }
             </div>
         </div>
     }
