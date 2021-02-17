@@ -19,12 +19,12 @@
                 }
             }
         </InputSelect>
-        <p><ValidationMessage For="@(() => collaboratorProfileInputModel.CollaboratorProfileType)" /></p>
+        <p style="color:red"><ValidationMessage For="@(() => collaboratorProfileInputModel.CollaboratorProfileType)" /></p>
 
         <h5>Opis aktivnosti</h5>
         <InputText @bind-Value="@collaboratorProfileInputModel.ActivityDescription">
         </InputText>
-        <p><ValidationMessage For="@(() => collaboratorProfileInputModel.ActivityDescription)" /></p>
+        <p style="color:red"><ValidationMessage For="@(() => collaboratorProfileInputModel.ActivityDescription)" /></p>
 
         <h5>Fakultet</h5>
         <InputSelect TValue="@string"

@@ -19,7 +19,11 @@
     <EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
         <DataAnnotationsValidator />
         <div class="section">
-            <h4 class="title">Osnovne informacije</h4>
+            <div class="heading">
+                <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
+                <h4 class="title">Osnovne informacije</h4>
+            </div>
+            <hr class="divider" />
 
             <h5>Naziv projekta</h5>
             <InputText @bind-Value="@projectInputModel.Title"></InputText>
@@ -67,13 +71,18 @@
         </div>
 
         <div class="section">
-            <h4 class="title">Dodani profili saradnika</h4>
+            <div class="heading">
+                <img src="/css/bootstrap/list-check.svg" width="30" height="30" />
+                <h4 class="title">Dodani profili saradnika</h4>
+            </div>
+            <hr class="divider" />
 
             <div class="collaborator-profiles-table scrollable">
                 <table>
                     <thead>
                         <tr>
                             <th>Tip</th>
+                            <th>Opis aktivnosti</th>
                             <th>Fakultet</th>
                             <th>Ciklus</th>
                             <th>Program</th>
@@ -89,6 +98,7 @@
                         {
                             <tr>
                                 <td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
+                                <td>@p.ActivityDescription</td>
                                 <td>@p.FacultyName</td>
                                 <td>@p.Cycle</td>
                                 <td>@p.StudyProgramName</td>

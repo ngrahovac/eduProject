@@ -50,17 +50,23 @@ namespace eduProjectModel.Display
         }
 
         public ProfileDisplayModel(User user, bool isPersonalProfile, Faculty faculty, ICollection<Project> authoredProjects,
-                                    ICollection<Project> projectCollaborations, bool emailVisible, bool phoneVisible, bool projectsVisible)
+                                    ICollection<Project> projectCollaborations, UserSettings userSettings)
         {
-            EmailVisible = emailVisible;
-            PhoneNumberVisible = phoneVisible;
-            ProjectsVisible = projectsVisible;
+            EmailVisible = userSettings.EmailVisible;
+            PhoneNumberVisible = userSettings.PhoneVisible;
+            ProjectsVisible = userSettings.ProjectsVisible;
 
             IsDisplayPersonal = isPersonalProfile;
             FirstName = user.FirstName;
             LastName = user.LastName;
 
-            if (phoneVisible)
+            LinkedinProfile = userSettings.LinkedinProfile;
+            ResearchgateProfile = userSettings.ResearchgateProfile;
+            Website = userSettings.Website;
+            Cv = userSettings.CvLink;
+            Bio = userSettings.Bio;
+
+            if (userSettings.PhoneVisible)
                 PhoneNumber = user.PhoneNumber;
 
             if (user is Student s)
@@ -95,7 +101,7 @@ namespace eduProjectModel.Display
             foreach (var project in authoredProjects)
                 AuthoredProjectDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
 
-            if (projectsVisible)
+            if (userSettings.ProjectsVisible)
             {
                 if (projectCollaborations != null)
                 {

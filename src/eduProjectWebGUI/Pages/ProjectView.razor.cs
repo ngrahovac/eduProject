@@ -83,7 +83,7 @@ namespace eduProjectWebGUI.Pages
             if (!result.Cancelled)
             {
                 await ApiService.DeleteAsync($"projects/{ProjectId}");
-                NavigationManager.NavigateTo("/homepage");
+                NavigationManager.NavigateTo("/homepage?authored=true");
             }
         }
 

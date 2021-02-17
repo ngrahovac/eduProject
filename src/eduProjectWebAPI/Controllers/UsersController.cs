@@ -67,7 +67,7 @@ namespace eduProjectWebAPI.Controllers
                     var faculty = await faculties.GetAsync(user.FacultyId);
                     bool isPersonal = currentUserId == id;
 
-                    var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings.EmailVisible, userSettings.PhoneVisible, userSettings.ProjectsVisible);
+                    var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings);
 
                     if (userSettings.EmailVisible)
                     {

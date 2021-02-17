@@ -6,7 +6,12 @@
 @inject IAuthService AuthService
 
 <div class="content">
-    <h3>Pregled projekata</h3>
+    <h3>@Title</h3>
+
+    @if (projectDisplayModels.Count() == 0)
+    {
+        <h4>Nema rezultata.</h4>
+    }
 
     @foreach (var model in projectDisplayModels)
     {

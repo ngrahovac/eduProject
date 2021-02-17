@@ -31,6 +31,10 @@ namespace eduProjectTests.RepositoryTests
         {
             var result = await settings.GetAsync(1);
             Assert.IsType<UserSettings>(result);
+            var bio = result.Bio;
+            Assert.NotNull(bio);
+
+
         }
 
         [Fact]
