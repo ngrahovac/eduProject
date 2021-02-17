@@ -74,21 +74,18 @@ namespace eduProjectModel.Display
                 UserAccountType = UserAccountType.Student;
                 FacultyName = faculty.Name;
 
-                if (s.StudyProgramId != 0)
+                var program = faculty.StudyPrograms.Where(sp => sp.ProgramId == s.StudyProgramId).First();
+                StudyProgramName = program.Name;
+
+                Cycle = program.Cycle;
+
+                if (s.StudyProgramSpecializationId != null)
                 {
-                    var program = faculty.StudyPrograms.Where(sp => sp.ProgramId == s.StudyProgramId).First();
-                    StudyProgramName = program.Name;
-
-                    Cycle = program.Cycle;
-
-                    if (s.StudyProgramSpecializationId != 0)
-                    {
-                        StudyProgramSpecializationName = program.StudyProgramSpecializations.Where(sps => sps.SpecializationId == s.StudyProgramSpecializationId)
-                                                                                            .First().Name;
-                    }
-
-                    StudyYear = s.StudyYear;
+                    StudyProgramSpecializationName = program.StudyProgramSpecializations.Where(sps => sps.SpecializationId == s.StudyProgramSpecializationId)
+                                                                                        .First().Name;
                 }
+
+                StudyYear = s.StudyYear;
             }
             else if (user is FacultyMember fm)
             {

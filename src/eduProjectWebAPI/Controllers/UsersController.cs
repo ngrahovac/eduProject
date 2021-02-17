@@ -83,7 +83,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
         }
