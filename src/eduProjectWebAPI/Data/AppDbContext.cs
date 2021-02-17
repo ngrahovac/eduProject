@@ -17,7 +17,7 @@ namespace eduProjectWebAPI.Data
             base.OnModelCreating(builder);
 
             /*Passwords: Nina - nikolina, Maxa - nikolina, Bane - branislav, Zoran - zoran*/
-
+            /*
             builder.Entity<ApplicationUser>().HasData(
                 new ApplicationUser
                 {
@@ -80,6 +80,7 @@ namespace eduProjectWebAPI.Data
                     LockoutEnabled = true
                 }
                 );
+            */
         }
     }
 }
