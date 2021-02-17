@@ -33,9 +33,7 @@ namespace eduProjectWebGUI.Pages
             }
             catch (Exception ex)
             {
-                var param = new ModalParameters();
-                param.Add("Message", InfoPopup.messageFailure);
-                Modal.Show<InfoPopup>("Akcija neuspiješna", param);
+                NavigationManager.NavigateTo("/404");
             }
 
         }

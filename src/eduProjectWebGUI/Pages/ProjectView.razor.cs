@@ -96,7 +96,14 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            try
+            {
+                ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+            }
+            catch (Exception ex)
+            {
+                NavigationManager.NavigateTo("/404");
+            }
         }
 
     }

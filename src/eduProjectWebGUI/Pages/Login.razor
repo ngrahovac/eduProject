@@ -1,8 +1,9 @@
 ﻿@page "/account/login"
+@page "/"
 @inject NavigationManager Navigation
 @inject ApiService ApiService
-
 @inject IAuthService AuthService
+@inject ILocalStorageService LocalStorage
 
 <EditForm Model="@loginInputModel" OnValidSubmit="Login2">
     <DataAnnotationsValidator />
@@ -16,7 +17,7 @@
 
         <label>Lozinka:</label>
         <InputText type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
-        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)"/></p>
+        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
 
         <div>
             <label>Da li želite da zapamtite nalog?</label>
@@ -24,6 +25,5 @@
         </div>
 
         <button class="button button-primary" @onclick="Login2">Prijavi se</button>
-        <button class="button" value="Registruj se" @onclick="RegisterToSystem">Registruj se</button>
     </div>
 </EditForm>

@@ -28,9 +28,16 @@ namespace eduProjectWebGUI.Pages
 
         protected async override Task OnInitializedAsync()
         {
-            tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
-            displayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
-            inputModel = new UserSettingsInputModel(displayModel);
+            try
+            {
+                tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
+                displayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
+                inputModel = new UserSettingsInputModel(displayModel);
+            }
+            catch (Exception ex)
+            {
+                NavigationManager.NavigateTo("/404");
+            }
         }
 
         private async Task<IEnumerable<Tag>> FilterTags(string searchText)

@@ -22,12 +22,19 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            ProjectApplicationsDisplayModels = (await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}")).ToList();
-
-            foreach (var model in ProjectApplicationsDisplayModels)
+            try
             {
-                model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
-                                                                          .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId).Contains(UserId)).ToList();
+                ProjectApplicationsDisplayModels = (await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}")).ToList();
+
+                foreach (var model in ProjectApplicationsDisplayModels)
+                {
+                    model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
+                                                                              .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId).Contains(UserId)).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                NavigationManager.NavigateTo("/404");
             }
         }
 

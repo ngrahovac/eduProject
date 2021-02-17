@@ -1,21 +1,12 @@
-﻿@page "/"
-@inject IJSRuntime js
+﻿@inject IJSRuntime js
 @inject ApiService ApiService
 
 <AuthorizeView>
     <Authorized>
         <h2>Welcome</h2>
-
-        <b>User info from GUI project:</b>
-
-        @foreach (var claim in context.User.Claims)
-        {
-            <p>@claim.Type : @claim.Value</p>
-        }
-
     </Authorized>
 
     <NotAuthorized>
-        <h1 style="text-align:center">Not Allowed</h1>
+        <h2>Not Allowed</h2>
     </NotAuthorized>
 </AuthorizeView>

@@ -1,4 +1,5 @@
 ﻿using eduProjectModel.Input;
+using eduProjectWebGUI.Utils;
 using System;
 using System.Threading.Tasks;
 
@@ -7,6 +8,13 @@ namespace eduProjectWebGUI.Pages
     public partial class Login
     {
         LoginInputModel loginInputModel = new LoginInputModel();
+
+        protected override async Task OnInitializedAsync()
+        {
+            var result = await LocalStorage.ExtractUserId();
+            if (result != null)
+                Navigation.NavigateTo("/homepage");
+        }
 
         public async Task LoginToSystemAsync()
         {
