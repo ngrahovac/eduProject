@@ -29,7 +29,8 @@ namespace eduProjectWebGUI.Pages
                 foreach (var model in ProjectApplicationsDisplayModels)
                 {
                     model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
-                                                                              .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId).Contains(UserId)).ToList();
+                                                                              .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId)
+                                                                              .Contains(UserId)).ToList();
                 }
             }
             catch (Exception ex)

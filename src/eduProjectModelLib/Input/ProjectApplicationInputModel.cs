@@ -11,7 +11,7 @@ namespace eduProjectModel.Input
     {
         public int ApplicantId { get; set; }
 
-        public int ApplicationId { get; set; } // samo kod promjene statusa se koristi
+        public int ApplicationId { get; set; } // used in status change
 
         public ProjectApplicationStatus ProjectApplicationStatus { get; set; }
 

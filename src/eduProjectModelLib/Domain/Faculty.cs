@@ -17,7 +17,7 @@ namespace eduProjectModel.Domain
         {
             Name = name;
             Address = address;
-            StudyPrograms = new HashSet<StudyProgram>(); // TODO: provjera da ima bar jedan studijski program
+            StudyPrograms = new HashSet<StudyProgram>();
         }
 
         public void AddStudyProgram(StudyProgram program)

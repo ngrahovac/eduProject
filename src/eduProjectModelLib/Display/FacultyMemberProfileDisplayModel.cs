@@ -18,7 +18,7 @@ namespace eduProjectModel.Display
         {
             CollaboratorProfileId = profile.CollaboratorProfileId;
             FacultyName = profile.FacultyId != null ? faculty.Name : null;
-            StudyFieldName = profile.StudyField != null ? profile.StudyField.Name : null;
+            StudyFieldName = profile.StudyField?.Name;
         }
     }
 }

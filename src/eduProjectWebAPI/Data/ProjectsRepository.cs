@@ -376,7 +376,7 @@ namespace eduProjectWebAPI.Data
             });
 
             await command.ExecuteNonQueryAsync();
-            project.ProjectId = (int)command.LastInsertedId; //TODO: make ID long
+            project.ProjectId = (int)command.LastInsertedId;
 
         }
 
@@ -549,7 +549,6 @@ namespace eduProjectWebAPI.Data
 
                 var project = await GetAsync(updatedProject.ProjectId);
 
-                // TODO: equals to
                 if (project.Title != updatedProject.Title ||
                     project.Description != updatedProject.Description ||
                     project.StartDate != updatedProject.StartDate ||

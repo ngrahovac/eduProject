@@ -118,7 +118,7 @@ namespace eduProjectWebAPI.Controllers
             }
             else
             {
-                return (await faculties.GetAllAsync()).ToList(); // jer sa blazor strane nema repoa
+                return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
             }
         }
     }

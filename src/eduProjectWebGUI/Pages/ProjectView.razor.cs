@@ -21,9 +21,6 @@ namespace eduProjectWebGUI.Pages
 {
     public partial class ProjectView
     {
-        //private ILocalStorageService localStorage; //bilo je readonly
-        //public ProjectView(ILocalStorageService localStorage) => this.localStorage = localStorage;
-
         public ProjectView() { }
 
         [Parameter]

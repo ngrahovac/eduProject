@@ -9,7 +9,7 @@
         <div class="tags">
             @foreach (var name in TagNames)
             {
-                <div class="tag" @onclick="@(e => { if (Editing)TagNames.Remove(name);  Console.WriteLine($"Dodan tag sad ih je {TagNames.Count()}"); })">
+                <div class="tag" @onclick="@(e => { if (Editing)TagNames.Remove(name);})">
                     @name
                 </div>
             }

@@ -65,7 +65,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    //VRATI KOD
                     //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
@@ -99,7 +98,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    // VRATI KOD
                     //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
@@ -222,7 +220,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    // VRATI KOD
                     // return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
