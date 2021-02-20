@@ -39,19 +39,14 @@ namespace eduProjectModel.Input
                 profile.FacultyId = faculty.FacultyId;
                 if (StudyProgramName != null)
                 {
-                    foreach (var program in faculty.StudyPrograms)
-                    {
-                        if (program.Name.Equals(StudyProgramName))
-                        {
-                            profile.StudyProgramId = program.ProgramId;
+                    var program = faculty.StudyPrograms.Where(sp => sp.Name == StudyProgramName).First();
+                    profile.StudyProgramId = program.ProgramId;
 
-                            if (StudyProgramSpecializationName != null)
-                            {
-                                profile.StudyProgramSpecializationId = program.StudyProgramSpecializations
-                                                                              .Where(sp => sp.Name == StudyProgramSpecializationName)
-                                                                              .First().SpecializationId;
-                            }
-                        }
+                    if (StudyProgramSpecializationName != null)
+                    {
+                        profile.StudyProgramSpecializationId = program.StudyProgramSpecializations.Where(sps => sps.Name == StudyProgramSpecializationName)
+                                                                                                  .First()
+                                                                                                  .SpecializationId;
                     }
                 }
             }

@@ -2,7 +2,7 @@
 
 namespace eduProjectModel.Domain
 {
-    public class StudyProgram : IEntity
+    public class StudyProgram
     {
         public int ProgramId { get; set; }
         public string Name { get; set; }

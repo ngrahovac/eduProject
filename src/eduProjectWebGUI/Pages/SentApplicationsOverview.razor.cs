@@ -48,7 +48,7 @@ namespace eduProjectWebGUI.Pages
             }
         }
 
-        public async Task RevokeApplication()
+        private async Task RevokeApplication()
         {
             if (selectedApplicationId != 0)
             {

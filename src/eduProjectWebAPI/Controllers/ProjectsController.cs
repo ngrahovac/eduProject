@@ -167,7 +167,7 @@ namespace eduProjectWebAPI.Controllers
 
                     foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
                     {
-                        var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
+                        var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).First();
                         facultiesList.Add(faculty);
                     }
 
@@ -178,7 +178,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
         }

@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="eduProjectModel.Display.ApplicantProfileDisplayModel">
+    <Position X="1" Y="11.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAgAAEAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Display\ApplicantProfileDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.ApplicationDisplayModel">
+    <Position X="10.5" Y="6.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIQAAAAAAQQAAAAAAAAAQAAAAAAgABAAAAA=</HashCode>
+      <FileName>Display\ApplicationDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.CollaboratorDisplayModel">
+    <Position X="1" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAg=</HashCode>
+      <FileName>Display\CollaboratorDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.CollaboratorProfileApplicationsDisplayModel">
+    <Position X="5.25" Y="6.75" Width="5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAI=</HashCode>
+      <FileName>Display\CollaboratorProfileApplicationsDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.CollaboratorProfileDisplayModel">
+    <Position X="3" Y="0.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAEAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Display\CollaboratorProfileDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.FacultyMemberProfileDisplayModel">
+    <Position X="5" Y="3.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAACAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Display\FacultyMemberProfileDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.ProfileDisplayModel">
+    <Position X="14.25" Y="0.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAEAEYCCEgAAwGAAARECDAQAAQAAQAAAACAAAAAg=</HashCode>
+      <FileName>Display\ProfileDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.ProfileProjectPreviewDisplayModel">
+    <Position X="10.5" Y="9.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Display\ProfileProjectPreviewDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.ProjectApplicationsDisplayModel">
+    <Position X="1" Y="6.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAEAAAAAAAAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Display\ProjectApplicationsDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.ProjectDisplayModel">
+    <Position X="10.25" Y="0.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAgAEAAAAAAAAAgBAAEBMAAKQABAEAABAA=</HashCode>
+      <FileName>Display\ProjectDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.StudentProfileDisplayModel">
+    <Position X="1.25" Y="3.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAMAAABACAAAAAAAAQAAAAAAIAAAA=</HashCode>
+      <FileName>Display\StudentProfileDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Display.UserSettingsDisplayModel">
+    <Position X="4.75" Y="9.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAEAAQAgAAQCAAAAAkCAAAAAAAgEAAAAAAAAAA=</HashCode>
+      <FileName>Display\UserSettingsDisplayModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.CollaboratorProfileInputModel">
+    <Position X="6.75" Y="15" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAEAAEAAABACAAQAAAAhQgAAAAAAAAEA=</HashCode>
+      <FileName>Input\CollaboratorProfileInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.LoginInputModel">
+    <Position X="1" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAgAAA=</HashCode>
+      <FileName>Input\LoginInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.LoginResult">
+    <Position X="16.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQQAAAAAAAAAAAAAAAAAAAAIAAAABAAA=</HashCode>
+      <FileName>Input\LoginResult.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.ProjectApplicationInputModel">
+    <Position X="3.5" Y="15" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIQAAEAAAQAAAAAABAAAQAgAAAAgAAAAAAA=</HashCode>
+      <FileName>Input\ProjectApplicationInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.ProjectInputModel">
+    <Position X="14" Y="15" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAQAAAAgAEAAAAAAAAAgAQAAAAgAABAAAUAABAA=</HashCode>
+      <FileName>Input\ProjectInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.RegisterInputModel">
+    <Position X="1" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAACAAAAAAAAIAA=</HashCode>
+      <FileName>Input\RegisterInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Input.UserSettingsInputModel">
+    <Position X="10.25" Y="15" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAMAAAAgAAQCAAAAAkCAAAAAAggEAAAAAAAAAA=</HashCode>
+      <FileName>Input\UserSettingsInputModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
-    public partial class Profile
+    public partial class ProfileView
     {
         [Parameter]
         public int UserId { get; set; }

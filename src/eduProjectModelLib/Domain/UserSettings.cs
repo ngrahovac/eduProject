@@ -2,7 +2,7 @@
 
 namespace eduProjectModel.Domain
 {
-    public class UserSettings : IValueObject
+    public class UserSettings
     {
         public int UserId { get; set; }
         public bool EmailVisible { get; set; } = false;

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
 {
-    public partial class UserSettings
+    public partial class UserSettingsView
     {
         [Parameter]
         public int UserId { get; set; }

@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="eduProjectModel.Domain.ApplicationUser">
+    <Position X="13" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\ApplicationUser.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.CollaboratorProfile">
+    <Position X="2.25" Y="6.25" Width="4.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\CollaboratorProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.Faculty">
+    <Position X="12.5" Y="8.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAgAAAAAAQAAIAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\Faculty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.FacultyMember">
+    <Position X="5" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\FacultyMember.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.FacultyMemberProfile">
+    <Position X="4.75" Y="9" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\FacultyMemberProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.Project">
+    <Position X="10" Y="4.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAEgAEAAAAAAAAAgBAAAAEAAARAAAEAABAA=</HashCode>
+      <FileName>Domain\Project.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.ProjectApplication">
+    <Position X="13.5" Y="4.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAIQAAEAAAAAAAAAABAAAQAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Domain\ProjectApplication.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.Student">
+    <Position X="1" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\Student.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.StudentProfile">
+    <Position X="1.5" Y="9" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAMAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Domain\StudentProfile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.StudyField">
+    <Position X="16.5" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\StudyField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.StudyProgram">
+    <Position X="16" Y="11.25" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAQAAABAAQACAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\StudyProgram.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.StudyProgramSpecialization">
+    <Position X="16" Y="8.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\StudyProgramSpecialization.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.Tag">
+    <Position X="16.5" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAAQAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Domain\Tag.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.User">
+    <Position X="3" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AABAAEAQAAAAAAAAAAAAQAgEAAAAAAAAAAAAACAAAAg=</HashCode>
+      <FileName>Domain\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="eduProjectModel.Domain.UserSettings">
+    <Position X="10" Y="0.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAEACQAgAAQCAAAAAkCAAAAAAAgEAAAAAAAAAA=</HashCode>
+      <FileName>Domain\UserSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="eduProjectModel.Domain.AcademicRank">
+    <Position X="1.5" Y="11.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAAAAAAgAAAQAAAAAAEAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Domain\AcademicRank.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eduProjectModel.Domain.CollaboratorProfileType">
+    <Position X="4.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Domain\CollaboratorProfileType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eduProjectModel.Domain.ProjectApplicationStatus">
+    <Position X="6.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAQAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Domain\ProjectApplicationStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eduProjectModel.Domain.ProjectStatus">
+    <Position X="8" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAACAAAA=</HashCode>
+      <FileName>Domain\ProjectStatus.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="eduProjectModel.Domain.UserAccountType">
+    <Position X="9.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Domain\UserAccountType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

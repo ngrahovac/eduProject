@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace eduProjectModel.Domain
 {
-    public class Project : IAggregateRoot
+    public class Project
     {
         public int ProjectId { get; set; }
         public int AuthorId { get; set; }

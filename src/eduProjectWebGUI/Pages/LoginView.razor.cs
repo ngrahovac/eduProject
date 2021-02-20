@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace eduProjectWebGUI.Pages
 {
-    public partial class Login
+    public partial class LoginView
     {
         LoginInputModel loginInputModel = new LoginInputModel();
 

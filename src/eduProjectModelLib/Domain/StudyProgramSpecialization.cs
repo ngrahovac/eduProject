@@ -1,6 +1,6 @@
 ﻿namespace eduProjectModel.Domain
 {
-    public class StudyProgramSpecialization : IEntity
+    public class StudyProgramSpecialization
     {
         public int SpecializationId { get; set; }
         public string Name { get; set; }

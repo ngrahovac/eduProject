@@ -82,7 +82,7 @@ namespace eduProjectWebGUI.Pages
                 {
                     projectInputModel.ProjectStatus = ProjectStatus.Active;
                     await ApiService.PostAsync("/projects", projectInputModel);
-                    NavigationManager.NavigateTo("/homepage", true);
+                    //NavigationManager.NavigateTo("/homepage", true);
                 }
             }
         }

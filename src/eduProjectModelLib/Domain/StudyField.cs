@@ -2,7 +2,7 @@
 
 namespace eduProjectModel.Domain
 {
-    public class StudyField : IValueObject
+    public class StudyField
     {
         public static Dictionary<int, StudyField> fields = new Dictionary<int, StudyField>();
         public string Name { get; set; }

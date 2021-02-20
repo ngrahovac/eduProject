@@ -1,6 +1,6 @@
 ﻿namespace eduProjectModel.Domain
 {
-    public class CollaboratorProfile : IEntity
+    public class CollaboratorProfile
     {
         public int CollaboratorProfileId { get; set; }
         public string Description { get; set; }

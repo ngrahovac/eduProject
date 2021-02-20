@@ -111,15 +111,15 @@ namespace eduProjectWebAPI.Controllers
 
         [HttpGet("/faculties")]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
-        {
+        {/*
             if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
-            {
-                return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
-            }
+            {*/
+            return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
+                                                             // }
         }
     }
 }

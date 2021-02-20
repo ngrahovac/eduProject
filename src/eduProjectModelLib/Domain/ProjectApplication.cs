@@ -1,6 +1,6 @@
 ﻿namespace eduProjectModel.Domain
 {
-    public class ProjectApplication : IAggregateRoot
+    public class ProjectApplication
     {
         public int ProjectApplicationId { get; set; }
 
