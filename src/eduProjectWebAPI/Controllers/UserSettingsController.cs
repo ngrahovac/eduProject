@@ -27,65 +27,65 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<UserSettingsDisplayModel>> Get(int userId)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
-                {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
 
-                    if (userId == currentUserId)
-                    {
-                        var userSettings = await settings.GetAsync(currentUserId);
-                        return new UserSettingsDisplayModel(userSettings);
-                    }
-                    else
-                    {
-                        return Forbid();
-                    }
-                }
-                catch (Exception e)
+                //if (userId == currentUserId)
+                //{
+                var userSettings = await settings.GetAsync(currentUserId);
+                return new UserSettingsDisplayModel(userSettings);
+                /*}
+                else
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                }
+                    return Forbid();
+                }*/
             }
+            catch (Exception e)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            //}
         }
 
         [HttpPut]
         public async Task<ActionResult> Update(int userId, UserSettingsInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
+
+                //if (userId == currentUserId)
+                //{
+                var userSettings = await settings.GetAsync(currentUserId);
+
+                model.MapTo(userSettings);
+                await settings.UpdateAsync(userSettings);
+
+                return NoContent();
+                /*}
+                else
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
-
-                    if (userId == currentUserId)
-                    {
-                        var userSettings = await settings.GetAsync(currentUserId);
-
-                        model.MapTo(userSettings);
-                        await settings.UpdateAsync(userSettings);
-
-                        return NoContent();
-                    }
-                    else
-                    {
-                        return Forbid();
-                    }
-                }
-                catch (Exception e)
-                {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                }
+                    return Forbid();
+                }*/
             }
+            catch (Exception e)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            //}
         }
     }
 }

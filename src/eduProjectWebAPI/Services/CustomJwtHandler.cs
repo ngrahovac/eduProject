@@ -11,6 +11,9 @@ namespace eduProjectWebAPI.Services
     {
         public static int? ExtractUserId(this HttpRequest request)
         {
+            // TEST ONLY
+            return 1;
+            /*
             string jwt = "";
             var headerValues = request.Headers.Values;
 
@@ -26,6 +29,7 @@ namespace eduProjectWebAPI.Services
 
             var claims = ParseClaimsFromJwt(jwt).ToArray();
             return int.Parse(claims[1].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
+            */
         }
 
         private static byte[] ParseBase64WithoutPadding(string base64)

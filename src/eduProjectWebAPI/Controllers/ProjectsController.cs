@@ -43,65 +43,65 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectDisplayModel>> GetById(int id)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
-                {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
-                    User currentUser = await users.GetAsync(currentUserId);
-                    Project project = await projects.GetAsync(id);
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                User currentUser = await users.GetAsync(currentUserId);
+                Project project = await projects.GetAsync(id);
 
-                    if (project == null)
-                        return NotFound();
+                if (project == null)
+                    return NotFound();
 
-                    var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
-                    model.Links.Add("author_profile", $"{project.AuthorId}");
+                var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
+                model.Links.Add("author_profile", $"{project.AuthorId}");
 
-                    return model;
-                }
-                catch (Exception e)
-                {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
-                }
+                return model;
             }
+            catch (Exception e)
+            {
+                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+            //}
         }
 
         [HttpGet]
         public async Task<ActionResult<ICollection<ProjectDisplayModel>>> GetAll()
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                User currentUser = await users.GetAsync(currentUserId);
+                var projectDisplayModels = new List<ProjectDisplayModel>();
+
+                var projectsList = await projects.GetAllAsync();
+
+                foreach (var project in projectsList)
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
-                    User currentUser = await users.GetAsync(currentUserId);
-                    var projectDisplayModels = new List<ProjectDisplayModel>();
-
-                    var projectsList = await projects.GetAllAsync();
-
-                    foreach (var project in projectsList)
-                    {
-                        var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
-                        projectDisplayModels.Add(model);
-                    }
-
-                    return projectDisplayModels;
+                    var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
+                    projectDisplayModels.Add(model);
                 }
-                catch (Exception e)
-                {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
-                }
+
+                return projectDisplayModels;
             }
+            catch (Exception e)
+            {
+                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+            //}
         }
 
         private async Task<ProjectDisplayModel> GetProjectDisplayModel(Project project, int currentUserId, User visitor)
@@ -154,111 +154,112 @@ namespace eduProjectWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProjectInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
+                model.AuthorId = (int)HttpContext.Request.ExtractUserId();
+                Project project = new Project();
+
+                ICollection<Faculty> facultiesList = new List<Faculty>();
+                ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
+
+                foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
                 {
-                    model.AuthorId = (int)HttpContext.Request.ExtractUserId();
-                    Project project = new Project();
-
-                    ICollection<Faculty> facultiesList = new List<Faculty>();
-                    ICollection<Faculty> allFaculties = await faculties.GetAllAsync();
-
-                    foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
-                    {
-                        var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).First();
-                        facultiesList.Add(faculty);
-                    }
-
-                    model.MapTo(project, facultiesList);
-
-                    await projects.AddAsync(project);
-                    return Created(httpContextAccessor.HttpContext.GetEndpoint().DisplayName, project);
+                    var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).First();
+                    facultiesList.Add(faculty);
                 }
-                catch (Exception e)
-                {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
-                }
+
+                model.MapTo(project, facultiesList);
+
+                await projects.AddAsync(project);
+                return Created(httpContextAccessor.HttpContext.GetEndpoint().DisplayName, project);
             }
+            catch (Exception e)
+            {
+                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+            //}
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, ProjectInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
-                {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
-                    Project project = await projects.GetAsync(id);
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                Project project = await projects.GetAsync(id);
 
+                /*
                     if (project.AuthorId != currentUserId)
                     {
                         return Forbid();
                     }
                     else
-                    {
-                        var facultiesList = new List<Faculty>();
-                        var allFaculties = await faculties.GetAllAsync();
+                    {*/
+                var facultiesList = new List<Faculty>();
+                var allFaculties = await faculties.GetAllAsync();
 
-                        foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
-                        {
-                            var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
-                            facultiesList.Add(faculty);
-                        }
-
-                        model.MapTo(project, facultiesList);
-                        await projects.UpdateAsync(project);
-
-                        return NoContent();
-                    }
-                }
-                catch (Exception e)
+                foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
                 {
-                    // return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
+                    var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).FirstOrDefault();
+                    facultiesList.Add(faculty);
                 }
+
+                model.MapTo(project, facultiesList);
+                await projects.UpdateAsync(project);
+
+                return NoContent();
+                //}
             }
+            catch (Exception e)
+            {
+                // return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+            //}
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
-                {
-                    var project = await projects.GetAsync(id);
+                var project = await projects.GetAsync(id);
 
-                    if (project.AuthorId == HttpContext.Request.ExtractUserId())
-                    {
-                        await projects.DeleteAsync(project);
-                        return NoContent();
-                    }
-                    else
-                    {
-                        return Forbid();
-                    }
-
-                }
-                catch (Exception e)
+                //if (project.AuthorId == HttpContext.Request.ExtractUserId())
+                //{
+                await projects.DeleteAsync(project);
+                return NoContent();
+                //}
+                /*else
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                }
+                    return Forbid();
+                }*/
+
             }
+            catch (Exception e)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+            //}
         }
     }
 }

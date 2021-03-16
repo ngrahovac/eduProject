@@ -36,57 +36,57 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProfileDisplayModel>> GetById(int id)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
+            /*if (HttpContext.Request.ExtractUserId() == null)
             {
                 return Unauthorized();
             }
             else
+            {*/
+            try
             {
-                try
+                int currentUserId = (int)HttpContext.Request.ExtractUserId();
+
+                User user = await users.GetAsync(id);
+                var userSettings = await settings.GetAsync(user.UserId);
+
+                if (user == null)
+                    return NotFound();
+
+                var authoredProjects = new List<Project>();
+                var projectCollaborations = new List<Project>();
+
+                if (userSettings.ProjectsVisible)
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    foreach (int projectId in user.AuthoredProjectIds)
+                        authoredProjects.Add(await projects.GetAsync(projectId));
 
-                    User user = await users.GetAsync(id);
-                    var userSettings = await settings.GetAsync(user.UserId);
-
-                    if (user == null)
-                        return NotFound();
-
-                    var authoredProjects = new List<Project>();
-                    var projectCollaborations = new List<Project>();
-
-                    if (userSettings.ProjectsVisible)
-                    {
-                        foreach (int projectId in user.AuthoredProjectIds)
-                            authoredProjects.Add(await projects.GetAsync(projectId));
-
-                        foreach (int projectId in user.ProjectCollaborationIds)
-                            projectCollaborations.Add(await projects.GetAsync(projectId));
-                    }
-
-                    var faculty = await faculties.GetAsync(user.FacultyId);
-                    bool isPersonal = currentUserId == id;
-
-                    var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings);
-
-                    if (userSettings.EmailVisible)
-                    {
-                        model.Email = (await userManager.FindByIdAsync($"{user.UserId}")).Email;
-                    }
-
-                    if (userSettings.PhoneVisible)
-                    {
-                        model.PhoneNumber = (await userManager.FindByIdAsync($"{user.UserId}")).PhoneNumber;
-                    }
-
-                    return model;
+                    foreach (int projectId in user.ProjectCollaborationIds)
+                        projectCollaborations.Add(await projects.GetAsync(projectId));
                 }
-                catch (Exception e)
+
+                var faculty = await faculties.GetAsync(user.FacultyId);
+                bool isPersonal = currentUserId == id;
+
+                var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings);
+
+                if (userSettings.EmailVisible)
                 {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
+                    model.Email = (await userManager.FindByIdAsync($"{user.UserId}")).Email;
                 }
+
+                if (userSettings.PhoneVisible)
+                {
+                    model.PhoneNumber = (await userManager.FindByIdAsync($"{user.UserId}")).PhoneNumber;
+                }
+
+                return model;
             }
+            catch (Exception e)
+            {
+                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+            //}
         }
     }
 }
