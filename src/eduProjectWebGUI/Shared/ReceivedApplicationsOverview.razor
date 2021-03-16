@@ -113,11 +113,6 @@
             foreach (var model in ProjectApplicationInputModels)
             {
                 await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
-
-                if (model.ProjectApplicationStatus == ProjectApplicationStatus.Accepted)
-                {
-                    projectInputModel.CollaboratorIds.Add(model.ApplicantId);
-                }
             }
 
             projectInputModel.ProjectStatus = ProjectStatus.Closed;

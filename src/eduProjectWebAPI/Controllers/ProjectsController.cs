@@ -122,16 +122,11 @@ namespace eduProjectWebAPI.Controllers
                     facultiesList.Add(await faculties.GetAsync((int)fid));
                 }
 
-                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, null, facultiesList);
+                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, facultiesList);
             }
             else
             {
-                var collaboratorIds = project.CollaboratorIds;
-                List<User> collaborators = new List<User>();
-                foreach (int collabId in collaboratorIds)
-                    collaborators.Add(await users.GetAsync(collabId));
-
-                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, collaborators);
+                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor);
             }
 
             if (!model.Recommended)

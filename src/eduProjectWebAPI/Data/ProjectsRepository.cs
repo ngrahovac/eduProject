@@ -38,7 +38,6 @@ namespace eduProjectWebAPI.Data
                 {
                     await ReadCollaboratorProfilesInfo(command, id, project);
                     await ReadTagsInfo(command, id, project);
-                    await ReadCollaboratorIds(command, id, project);
                 }
 
                 await connection.CloseAsync();
@@ -264,32 +263,6 @@ namespace eduProjectWebAPI.Data
                     {
                         int tagId = reader.GetInt32(0);
                         project.Tags.Add(Tag.tags[tagId]);
-                    }
-                }
-            }
-        }
-
-        private async Task ReadCollaboratorIds(MySqlCommand command, int id, Project project)
-        {
-            command.CommandText = @"SELECT user_id
-                                    FROM project_collaborator
-                                    WHERE project_collaborator.project_id = @id";
-
-            command.Parameters.Clear();
-            command.Parameters.Add(new MySqlParameter
-            {
-                DbType = DbType.Int32,
-                ParameterName = "@id",
-                Value = id
-            });
-
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                if (reader.HasRows)
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        project.CollaboratorIds.Add(reader.GetInt32(0));
                     }
                 }
             }
@@ -555,11 +528,6 @@ namespace eduProjectWebAPI.Data
                     await UpdateCollaboratorProfilesInfo(command, updatedProject);
                 }
 
-                if (updatedProject.CollaboratorIds.Count > 0)
-                {
-                    await UpdateCollaboratorsInfo(command, updatedProject);
-                }
-
                 await UpdateTagsInfo(command, updatedProject);
 
                 await connection.CloseAsync();
@@ -816,34 +784,6 @@ namespace eduProjectWebAPI.Data
             }
         }
 
-        private async Task UpdateCollaboratorsInfo(MySqlCommand command, Project project)
-        {
-            command.CommandText = @"INSERT INTO project_collaborator
-                                    (project_id, user_id)
-                                    VALUES
-                                    (@projectId, @userId)";
-
-            foreach (var id in project.CollaboratorIds)
-            {
-                command.Parameters.Clear();
-
-                command.Parameters.Add(new MySqlParameter
-                {
-                    ParameterName = "@projectId",
-                    DbType = DbType.Int32,
-                    Value = project.ProjectId
-                });
-
-                command.Parameters.Add(new MySqlParameter
-                {
-                    ParameterName = "@userId",
-                    DbType = DbType.Int32,
-                    Value = id
-                });
-
-                await command.ExecuteNonQueryAsync();
-            }
-        }
 
         public async Task DeleteAsync(Project project)
         {

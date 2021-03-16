@@ -23,7 +23,6 @@ namespace eduProjectModel.Display
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
         public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; } = new HashSet<StudentProfileDisplayModel>();
         public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; } = new HashSet<FacultyMemberProfileDisplayModel>();
-        public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = new HashSet<CollaboratorDisplayModel>();
         public bool Recommended { get; set; }
 
         public Dictionary<string, string> Links { get; set; } = new Dictionary<string, string>();
@@ -31,7 +30,7 @@ namespace eduProjectModel.Display
         public ProjectDisplayModel() { }
 
         public ProjectDisplayModel(Project project, User author, User visitor, bool isDisplayForAuthor,
-                                   ICollection<User> collaborators = null, ICollection<Faculty> faculties = null)
+                                   ICollection<Faculty> faculties = null)
         {
             IsDisplayForAuthor = isDisplayForAuthor;
             IsProjectActive = project.ProjectStatus == ProjectStatus.Active;
@@ -96,7 +95,6 @@ namespace eduProjectModel.Display
             }
             else
             {
-                CollaboratorDisplayModels = collaborators.Select(u => new CollaboratorDisplayModel(u)).ToList();
                 StudentProfileDisplayModels = null;
                 FacultyMemberProfileDisplayModels = null;
             }

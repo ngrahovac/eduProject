@@ -14,8 +14,6 @@ namespace eduProjectModel.Domain
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public ICollection<CollaboratorProfile> CollaboratorProfiles { get; set; } = new HashSet<CollaboratorProfile>();
-
-        public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
 
         public Project()
