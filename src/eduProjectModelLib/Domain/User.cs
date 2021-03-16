@@ -9,7 +9,6 @@ namespace eduProjectModel.Domain
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
         public string PhoneFormat { get; set; }
-        public int FacultyId { get; set; }
         public ICollection<int> AuthoredProjectIds { get; set; } = new List<int>();
         public ICollection<int> ProjectCollaborationIds { get; set; } = new List<int>();
     }

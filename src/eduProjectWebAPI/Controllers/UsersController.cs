@@ -64,7 +64,13 @@ namespace eduProjectWebAPI.Controllers
                         projectCollaborations.Add(await projects.GetAsync(projectId));
                 }
 
-                var faculty = await faculties.GetAsync(user.FacultyId);
+                int facultyId = 0;
+                if (user is Student s)
+                    facultyId = s.FacultyId;
+                if (user is FacultyMember fm)
+                    facultyId = fm.FacultyId;
+
+                var faculty = await faculties.GetAsync(facultyId);
                 bool isPersonal = currentUserId == id;
 
                 var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings);

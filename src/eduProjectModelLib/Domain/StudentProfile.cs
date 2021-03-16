@@ -5,7 +5,7 @@
         public int? FacultyId { get; set; }
         public int? StudyProgramId { get; set; }
         public int? StudyProgramSpecializationId { get; set; }
-        public int? StudyCycle { get; set; }
+        public int? StudyCycle { get; set; } // edu2: REMOVE
         public int? StudyYear { get; set; }
 
         public StudentProfile()
