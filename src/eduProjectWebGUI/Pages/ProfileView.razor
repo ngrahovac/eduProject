@@ -148,34 +148,6 @@
             </div>
             <hr class="divider" />
 
-            <h5>Oglašeni projekti</h5>
-            @if (ProfileDisplayModel.AuthoredProjectDisplayModels.Count() > 0)
-            {
-                @foreach (var p in ProfileDisplayModel.AuthoredProjectDisplayModels)
-                {
-                    <p><a href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title)</a></p>
-                }
-            }
-            else
-            {
-                <p>Nema projekata.</p>
-            }
-
-            @if (ProfileDisplayModel.ProjectsVisible)
-            {
-                <h5>Saradnje na projektima</h5>
-                @if (ProfileDisplayModel.ProjectCollaborationsDisplayModels.Count() > 0)
-                {
-                    @foreach (var p in ProfileDisplayModel.ProjectCollaborationsDisplayModels)
-                    {
-                        <p><a href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title)</a></p>
-                    }
-                }
-                else
-                {
-                    <p>Nema projekata.</p>
-                }
-            }
         </div>
     }
 </div>

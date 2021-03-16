@@ -41,16 +41,13 @@ namespace eduProjectModel.Display
         public AcademicRank AcademicRank { get; set; }
 
         public bool ProjectsVisible { get; set; }
-        public ICollection<ProfileProjectPreviewDisplayModel> AuthoredProjectDisplayModels { get; set; } = new HashSet<ProfileProjectPreviewDisplayModel>();
-        public ICollection<ProfileProjectPreviewDisplayModel> ProjectCollaborationsDisplayModels { get; set; } = new HashSet<ProfileProjectPreviewDisplayModel>();
 
         public ProfileDisplayModel()
         {
 
         }
 
-        public ProfileDisplayModel(User user, bool isPersonalProfile, Faculty faculty, ICollection<Project> authoredProjects,
-                                    ICollection<Project> projectCollaborations, UserSettings userSettings)
+        public ProfileDisplayModel(User user, bool isPersonalProfile, Faculty faculty, UserSettings userSettings)
         {
             EmailVisible = userSettings.EmailVisible;
             PhoneNumberVisible = userSettings.PhoneVisible;
@@ -93,18 +90,6 @@ namespace eduProjectModel.Display
                 FacultyName = faculty.Name;
                 StudyFieldName = fm.StudyField.Name;
                 AcademicRank = fm.AcademicRank;
-            }
-
-            foreach (var project in authoredProjects)
-                AuthoredProjectDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
-
-            if (userSettings.ProjectsVisible)
-            {
-                if (projectCollaborations != null)
-                {
-                    foreach (var project in projectCollaborations)
-                        ProjectCollaborationsDisplayModels.Add(new ProfileProjectPreviewDisplayModel(project));
-                }
             }
         }
     }

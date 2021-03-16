@@ -52,18 +52,6 @@ namespace eduProjectWebAPI.Controllers
                 if (user == null)
                     return NotFound();
 
-                var authoredProjects = new List<Project>();
-                var projectCollaborations = new List<Project>();
-
-                if (userSettings.ProjectsVisible)
-                {
-                    foreach (int projectId in user.AuthoredProjectIds)
-                        authoredProjects.Add(await projects.GetAsync(projectId));
-
-                    foreach (int projectId in user.ProjectCollaborationIds)
-                        projectCollaborations.Add(await projects.GetAsync(projectId));
-                }
-
                 int facultyId = 0;
                 if (user is Student s)
                     facultyId = s.FacultyId;
@@ -73,7 +61,7 @@ namespace eduProjectWebAPI.Controllers
                 var faculty = await faculties.GetAsync(facultyId);
                 bool isPersonal = currentUserId == id;
 
-                var model = new ProfileDisplayModel(user, isPersonal, faculty, authoredProjects, projectCollaborations, userSettings);
+                var model = new ProfileDisplayModel(user, isPersonal, faculty, userSettings);
 
                 if (userSettings.EmailVisible)
                 {

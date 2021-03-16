@@ -32,71 +32,10 @@ namespace eduProjectWebAPI.Data
 
                 user = await ReadBasicUserInfo(command, id);
 
-                if (user != null)
-                {
-                    await ReadAuthoredProjectIds(command, id, user);
-
-                    await ReadProjectCollaborationIds(command, id, user);
-                }
-
                 await connection.CloseAsync();
             }
 
             return user;
-        }
-
-        private async Task ReadProjectCollaborationIds(MySqlCommand command, int id, User user)
-        {
-            command.CommandText = @"SELECT project_id 
-                                    FROM project_collaborator
-                                    WHERE user_id = @userId";
-
-            command.Parameters.Clear();
-
-            command.Parameters.Add(new MySqlParameter
-            {
-                DbType = DbType.Int32,
-                ParameterName = "@userId",
-                Value = user.UserId
-            });
-
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                if (reader.HasRows)
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        user.ProjectCollaborationIds.Add(reader.GetInt32(0));
-                    }
-                }
-            }
-        }
-
-        private async Task ReadAuthoredProjectIds(MySqlCommand command, int id, User user)
-        {
-            command.CommandText = @"SELECT project_id 
-                                    FROM project
-                                    WHERE user_id = @userId";
-
-            command.Parameters.Clear();
-
-            command.Parameters.Add(new MySqlParameter
-            {
-                DbType = DbType.Int32,
-                ParameterName = "@userId",
-                Value = user.UserId
-            });
-
-            using (var reader = await command.ExecuteReaderAsync())
-            {
-                if (reader.HasRows)
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        user.AuthoredProjectIds.Add(reader.GetInt32(0));
-                    }
-                }
-            }
         }
 
         private async Task<User> ReadBasicUserInfo(MySqlCommand command, int id)
