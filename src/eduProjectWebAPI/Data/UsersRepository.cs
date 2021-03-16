@@ -82,8 +82,6 @@ namespace eduProjectWebAPI.Data
                     UserId = reader.GetInt32(0),
                     FirstName = reader.GetString(2),
                     LastName = reader.GetString(3),
-                    PhoneNumber = !reader.IsDBNull(4) ? reader.GetString(4) : null,
-                    PhoneFormat = !reader.IsDBNull(5) ? reader.GetString(5) : null,
                     FacultyId = reader.GetInt32(6),
                     StudyYear = reader.GetInt32(7),
                     StudyProgramId = reader.GetInt32(8),
@@ -100,8 +98,6 @@ namespace eduProjectWebAPI.Data
                     UserId = reader.GetInt32(0),
                     FirstName = reader.GetString(2),
                     LastName = reader.GetString(3),
-                    PhoneNumber = !reader.IsDBNull(4) ? reader.GetString(4) : null,
-                    PhoneFormat = !reader.IsDBNull(5) ? reader.GetString(5) : null,
                     FacultyId = reader.GetInt32(10),
                     StudyField = StudyField.fields[reader.GetInt32(11)],
                     AcademicRank = (AcademicRank)Enum.ToObject(typeof(AcademicRank), reader.GetInt32(12))

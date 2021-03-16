@@ -13,8 +13,8 @@ namespace eduProjectModel.Domain
         public StudyField StudyField { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public ICollection<CollaboratorProfile> CollaboratorProfiles { get; set; } = new HashSet<CollaboratorProfile>();
         public ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+        public ICollection<CollaboratorProfile> CollaboratorProfiles { get; set; } = new HashSet<CollaboratorProfile>();
 
         public Project()
         {

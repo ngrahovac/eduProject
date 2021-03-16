@@ -63,9 +63,6 @@ namespace eduProjectModel.Display
             Cv = userSettings.CvLink;
             Bio = userSettings.Bio;
 
-            if (userSettings.PhoneVisible)
-                PhoneNumber = user.PhoneNumber;
-
             if (user is Student s)
             {
                 UserAccountType = UserAccountType.Student;

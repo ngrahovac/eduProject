@@ -3,7 +3,6 @@
     public class ProjectApplication
     {
         public int ProjectApplicationId { get; set; }
-
         public int ProjectId { get; set; }
         public int CollaboratorProfileId { get; set; }
         public int ApplicantId { get; set; }
