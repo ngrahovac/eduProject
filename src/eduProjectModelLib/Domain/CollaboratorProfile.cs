@@ -4,15 +4,13 @@
     {
         public int CollaboratorProfileId { get; set; }
         public string Description { get; set; }
-        public int? FacultyId { get; set; }
         public CollaboratorProfile()
         {
 
         }
-        public CollaboratorProfile(string description, int? facultyId)
+        public CollaboratorProfile(string description)
         {
             Description = description;
-            FacultyId = facultyId;
         }
     }
 }

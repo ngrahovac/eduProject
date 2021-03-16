@@ -52,9 +52,9 @@ namespace eduProjectModel.Display
             {
                 foreach (var profile in project.CollaboratorProfiles)
                 {
-                    Faculty faculty = profile.FacultyId == null ? null : faculties.Where(f => f.FacultyId == profile.FacultyId).First();
                     if (profile is StudentProfile sp)
                     {
+                        Faculty faculty = sp.FacultyId == null ? null : faculties.Where(f => f.FacultyId == sp.FacultyId).First();
                         var model = new StudentProfileDisplayModel(sp, faculty);
 
                         if (visitor is Student s)
@@ -74,6 +74,7 @@ namespace eduProjectModel.Display
                     }
                     else if (profile is FacultyMemberProfile fmp)
                     {
+                        Faculty faculty = fmp.FacultyId == null ? null : faculties.Where(f => f.FacultyId == fmp.FacultyId).First();
                         var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
 
                         if (visitor is FacultyMember fm)

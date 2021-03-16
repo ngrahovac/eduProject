@@ -113,7 +113,10 @@ namespace eduProjectWebAPI.Controllers
 
             if (project.ProjectStatus == ProjectStatus.Active)
             {
-                var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Where(v => v != null).Distinct();
+                var spFacultyIds = project.CollaboratorProfiles.Where(p => p is StudentProfile).Select(p => (StudentProfile)p).Select(p => p.FacultyId).Where(v => v != null).Distinct();
+                var fpFacultyIds = project.CollaboratorProfiles.Where(p => p is FacultyMemberProfile).Select(p => (FacultyMemberProfile)p).Select(p => p.FacultyId).Where(v => v != null).Distinct();
+                var facultyIds = spFacultyIds.Union(fpFacultyIds);
+
                 var facultiesList = new List<Faculty>();
                 foreach (var fid in facultyIds)
                 {

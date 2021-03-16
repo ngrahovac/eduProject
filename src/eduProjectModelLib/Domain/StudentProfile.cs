@@ -2,6 +2,7 @@
 {
     public class StudentProfile : CollaboratorProfile
     {
+        public int? FacultyId { get; set; }
         public int? StudyProgramId { get; set; }
         public int? StudyProgramSpecializationId { get; set; }
         public int? StudyCycle { get; set; }
@@ -15,8 +16,9 @@
         public StudentProfile(Project project, string description,
                               int? facultyId, int? studyProgramId, int? studyProgramSpecializationId,
                               int? cycle, int? studyYear)
-                              : base(description, facultyId)
+                              : base(description)
         {
+            FacultyId = facultyId;
             StudyProgramId = studyProgramId;
             StudyProgramSpecializationId = studyProgramSpecializationId;
             StudyCycle = cycle;
