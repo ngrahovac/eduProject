@@ -9,15 +9,13 @@ namespace eduProjectModel.Display
 {
     public class FacultyMemberProfileDisplayModel : CollaboratorProfileDisplayModel
     {
-        public string FacultyName { get; set; }
         public string StudyFieldName { get; set; }
 
         public FacultyMemberProfileDisplayModel() { }
 
-        public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile, Faculty faculty) : base(profile)
+        public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile) : base(profile)
         {
             CollaboratorProfileId = profile.CollaboratorProfileId;
-            FacultyName = profile.FacultyId != null ? faculty.Name : null;
             StudyFieldName = profile.StudyField?.Name;
         }
     }

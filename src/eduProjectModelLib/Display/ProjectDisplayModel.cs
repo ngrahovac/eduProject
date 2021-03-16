@@ -74,13 +74,11 @@ namespace eduProjectModel.Display
                     }
                     else if (profile is FacultyMemberProfile fmp)
                     {
-                        Faculty faculty = fmp.FacultyId == null ? null : faculties.Where(f => f.FacultyId == fmp.FacultyId).First();
-                        var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
+                        var model = new FacultyMemberProfileDisplayModel(fmp);
 
                         if (visitor is FacultyMember fm)
                         {
-                            if (fmp.FacultyId == null ||
-                                fmp.FacultyId == fm.FacultyId)
+                            if (fm.StudyField == fmp.StudyField)
                             {
                                 model.Recommended = true;
                                 Recommended = true;

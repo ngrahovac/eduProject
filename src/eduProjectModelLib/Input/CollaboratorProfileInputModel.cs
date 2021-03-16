@@ -83,7 +83,6 @@ namespace eduProjectModel.Input
                 {
                     CollaboratorProfileType = CollaboratorProfileType.FacultyMember,
                     ActivityDescription = profile.Description,
-                    FacultyName = fp.FacultyName,
                     StudyFieldName = fp.StudyFieldName
                 };
             }

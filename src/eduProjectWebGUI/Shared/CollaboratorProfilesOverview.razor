@@ -12,7 +12,6 @@
         <table id="faculty-member-profiles">
             <thead>
                 <tr>
-                    <th>Fakultet</th>
                     <th>Naučna oblast</th>
                     <th>Opis aktivnosti</th>
                 </tr>
@@ -27,7 +26,6 @@
                     {
                         <tr class="recommended-profile"
                             @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-                            <td>@profile.FacultyName</td>
                             <td>@profile.StudyFieldName</td>
                             <td>@profile.Description</td>
                         </tr>
@@ -35,7 +33,6 @@
                     else
                     {
                         <tr @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-                            <td>@profile.FacultyName</td>
                             <td>@profile.StudyFieldName</td>
                             <td>@profile.Description</td>
                         </tr>

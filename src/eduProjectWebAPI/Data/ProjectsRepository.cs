@@ -168,7 +168,7 @@ namespace eduProjectWebAPI.Data
         {
             command.CommandText = @"SELECT collaborator_profile_id, collaborator_profile.description, user_account_type_id, 
 	                                       cycle, study_year, student_profile.faculty_id, study_program_id, study_program_specialization_id,
-	                                       faculty_member_profile.faculty_id, study_field_id
+	                                       study_field_id
                                            FROM collaborator_profile
                                            LEFT OUTER JOIN student_profile USING(collaborator_profile_id)
                                            LEFT OUTER JOIN faculty_member_profile USING(collaborator_profile_id)                                                           
@@ -235,8 +235,7 @@ namespace eduProjectWebAPI.Data
                 {
                     CollaboratorProfileId = reader.GetInt32(0),
                     Description = reader.GetString(1),
-                    FacultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null,
-                    StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null
+                    StudyField = !reader.IsDBNull(8) ? StudyField.fields[reader.GetInt32(8)] : null
                 };
 
                 project.CollaboratorProfiles.Add(profile);
@@ -474,9 +473,9 @@ namespace eduProjectWebAPI.Data
                 else if (profile is FacultyMemberProfile fp)
                 {
                     command.CommandText = @"INSERT INTO faculty_member_profile
-                                            (collaborator_profile_id, faculty_id, study_field_id)
+                                            (collaborator_profile_id, study_field_id)
                                             VALUES
-                                            (@profileId, @facultyId, @fieldId)";
+                                            (@profileId, @fieldId)";
 
                     command.Parameters.Clear();
 
@@ -485,13 +484,6 @@ namespace eduProjectWebAPI.Data
                         ParameterName = "@profileId",
                         DbType = DbType.Int32,
                         Value = fp.CollaboratorProfileId
-                    });
-
-                    command.Parameters.Add(new MySqlParameter
-                    {
-                        ParameterName = "@facultyId",
-                        DbType = DbType.Int32,
-                        Value = fp.FacultyId
                     });
 
                     command.Parameters.Add(new MySqlParameter
@@ -735,9 +727,9 @@ namespace eduProjectWebAPI.Data
                 else if (profile is FacultyMemberProfile fp)
                 {
                     command.CommandText = @"INSERT INTO faculty_member_profile
-                                            (collaborator_profile_id, faculty_id, study_field_id)
+                                            (collaborator_profile_id, study_field_id)
                                             VALUES
-                                            (@profileId, @facultyId, @fieldId)";
+                                            (@profileId, @fieldId)";
 
                     command.Parameters.Clear();
 
@@ -746,13 +738,6 @@ namespace eduProjectWebAPI.Data
                         ParameterName = "@profileId",
                         DbType = DbType.Int32,
                         Value = fp.CollaboratorProfileId
-                    });
-
-                    command.Parameters.Add(new MySqlParameter
-                    {
-                        ParameterName = "@facultyId",
-                        DbType = DbType.Int32,
-                        Value = fp.FacultyId
                     });
 
                     command.Parameters.Add(new MySqlParameter
