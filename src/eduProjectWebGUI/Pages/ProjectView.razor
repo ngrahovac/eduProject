@@ -5,105 +5,191 @@
 @inject IModalService Modal
 @inject ILocalStorageService localStorage
 
+<style>
+    body {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+        margin: auto;
+    }
+
+    .time-period {
+        display: flex;
+        position: absolute;
+        right: 0;
+        margin-right: 10px;
+        margin-bottom: 0;
+    }
+
+        .time-period .date {
+            margin-right: 10px;
+            margin-bottom: 0;
+        }
+
+
+
+    .buttons {
+        margin-top: 0;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    .projectStatus {
+        display: flex;
+        text-align: left;
+        margin: 0;
+    }
+
+    #buttonTags {
+        margin-top: 12px;
+        display: flex;
+    }
+
+    .table {
+        margin-top: 2rem;
+    }
+</style>
+
 <AuthorizeView>
     <Authorized>
-        <div class="content">
+
+
+
+        <div class="container">
             @if (ProjectDisplayModel == null)
-            {
-                <h3>Loading...</h3>
-            }
+            {<h3>Loading...</h3> }
             else
             {
-                <h3>@ProjectDisplayModel.Title</h3>
-                <h5>Status projekta</h5>
+        <div class="card">
+            <div class="card-header" style="display:flex">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M13.468 12.37C12.758 11.226 11.195 10 8 10s-4.757 1.225-5.468 2.37A6.987 6.987 0 0 0 8 15a6.987 6.987 0 0 0 5.468-2.63z" />
+                    <path fill-rule="evenodd" d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                    <path fill-rule="evenodd" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z" />
+                </svg>
 
-                @if (ProjectDisplayModel.ProjectStatus == ProjectStatus.Active)
-                {
-                    <p class="status-active">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
-                }
-                else
-                {
-                    <p class="status-closed">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
-                }
+                <h5 style="margin-left:10px; margin-top:4px;"><a href="@(NavigationManager.BaseUri.ToString() + $"users/{ProjectDisplayModel.Links["author_profile"]}")" class="text-reset">@ProjectDisplayModel.AuthorFullName</a></h5>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">@ProjectDisplayModel.Title</h3>
+                <p class="card-text">
+                    @ProjectDisplayModel.Description
+                </p>
 
-                <div class="section">
-                    <div class="heading">
-                        <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
-                        <h4 class="title">Osnovne informacije</h4>
-                    </div>
-                    <hr class="divider" />
+                <TagsOverview Editing="false"
+                              TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToList()"></TagsOverview>
+            </div>
+            <div class="card-footer text-muted" style="display:flex">
+                <div class="projectStatus">
+                    <p class="text-muted">Status: </p>
+                    @if (ProjectDisplayModel.ProjectStatus == ProjectStatus.Active)
+                    {<p class="text-success" style="margin-left:8px;">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p> }
+                    else
+                    {<p class="text-primary" style="margin-left:8px;">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>}
+                </div>
+                <div class="time-period">
+                    @if (ProjectDisplayModel.StartDate == null)
+                    {<p class="date">N/A</p>}
+                    else
+                    {<p class="date">@ProjectDisplayModel.StartDate</p>}
+                    <p class="date"> - </p>
+                    @if (ProjectDisplayModel.EndDate == null)
+                    {<p class="date">N/A</p> }
+                    else
+                    {<p class="date">@ProjectDisplayModel.EndDate</p>}
+                </div>
+            </div>
+        </div>
 
-                    <h5>Opis projekta</h5>
-                    <p>@ProjectDisplayModel.Description</p>
+          
 
-                    <h5>Autor</h5>
-                    <p><a href="@(NavigationManager.BaseUri.ToString() + $"users/{ProjectDisplayModel.Links["author_profile"]}")">@ProjectDisplayModel.AuthorFullName</a></p>
 
-                    <h5>Period realizacije</h5>
-                    <div class="time-period">
-                        @if (ProjectDisplayModel.StartDate == null)
-                        {
-                            <p class="date">N/A</p>
-                        }
-                        else
-                        {
-                            <p class="date">@ProjectDisplayModel.StartDate</p>
-                        }
-                        <p class="date"> - </p>
-                        @if (ProjectDisplayModel.EndDate == null)
-                        {
-                            <p class="date">N/A</p>
-                        }
-                        else
-                        {
-                            <p class="date">@ProjectDisplayModel.EndDate</p>
-                        }
-                    </div>
 
-                    <TagsOverview Editing="false"
-                                  TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToList()"></TagsOverview>
+
+
+                              
+
+
+
+
+
+
+            <h3>@ProjectDisplayModel.Title</h3>
+            <h5>Status projekta</h5>
+            @if (ProjectDisplayModel.ProjectStatus == ProjectStatus.Active)
+            {
+        <p class="status-active">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p> }
+    else
+    {
+        <p class="status-closed">@(ProjectDisplayModel.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>}
+
+            <div class="section">
+                <div class="heading">
+                    <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
+                    <h4 class="title">Osnovne informacije</h4>
+                </div>
+                <hr class="divider" />
+
+                <h5>Opis projekta</h5>
+                <p>@ProjectDisplayModel.Description</p>
+
+                <h5>Autor</h5>
+                <p><a href="@(NavigationManager.BaseUri.ToString() + $"users/{ProjectDisplayModel.Links["author_profile"]}")">@ProjectDisplayModel.AuthorFullName</a></p>
+
+                <h5>Period realizacije</h5>
+                <div class="time-period">
+                    @if (ProjectDisplayModel.StartDate == null)
+                    {
+        <p class="date">N/A</p> }
+    else
+    {
+        <p class="date">@ProjectDisplayModel.StartDate</p>}
+                    <p class="date"> - </p>
+                    @if (ProjectDisplayModel.EndDate == null)
+                    {
+        <p class="date">N/A</p> }
+    else
+    {
+        <p class="date">@ProjectDisplayModel.EndDate</p>}
                 </div>
 
+                <TagsOverview Editing="false"
+                              TagNames="ProjectDisplayModel.Tags.Select(t => t.Name).ToList()"></TagsOverview>
+            </div>
 
-                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" />
-                }
-                else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" />
-                }
-                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <AuthorActiveProjectView AuthorActiveProjectDisplayModel="ProjectDisplayModel" />
-                }
-                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />
-                }
 
-                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <div class="buttons">
-                        <button class="button button-primary" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
-                    </div>
-                }
-                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <div class="buttons">
-                        <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
-                        <button class="button button-primary" @onclick="EditProject">Izmijeni</button>
-                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
-                    </div>
-                }
-                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <div class="buttons">
-                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
-                    </div>
-                }
-            }
+            @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+            {
+        <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" /> }
+    else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" /> }
+    else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <AuthorActiveProjectView AuthorActiveProjectDisplayModel="ProjectDisplayModel" /> }
+    else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />}
+            @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+            {
+        <div class="buttons">
+            <button class="button button-primary" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
+        </div> }
+    else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <div class="buttons">
+            <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
+            <button class="button button-primary" @onclick="EditProject">Izmijeni</button>
+            <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+        </div> }
+    else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+    {
+        <div class="buttons">
+            <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+        </div>}}
         </div>
+
+        <button class="btn btn-primary" style="margin-left: 3px" type="button">Odaberi saradnike</button>
     </Authorized>
 
     <NotAuthorized>
