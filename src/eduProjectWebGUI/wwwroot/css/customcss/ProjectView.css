@@ -86,7 +86,8 @@ i {
 }
 
     .tags .tag {
-        margin-right: 10px;
+        margin-right: 4px;
+        margin-bottom: 4px;
         padding: 5px 10px 5px 10px;
         border: solid thin lightgray;
         border-radius: 5px;
@@ -94,8 +95,8 @@ i {
 
         .tags .tag:hover {
             color: #FFF;
-            background-color: #1EAEDB;
-            border-color: #1EAEDB;
+            background-color: #d9230f;
+            border-color: #d9230f;
         }
 
 .selected-row {

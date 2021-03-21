@@ -553,6 +553,7 @@ pre {
     flex-wrap: wrap;
     margin-right: -15px;
     margin-left: -15px
+    
 }
 
 .no-gutters {
@@ -1809,6 +1810,7 @@ pre {
 .table {
     width: 100%;
     margin-bottom: 1rem;
+    cursor: pointer;
     color: #212529
 }
 
@@ -1852,7 +1854,7 @@ pre {
 }
 
 .table-hover tbody tr:hover {
-    color: #212529;
+    color: #212529;  
     background-color: rgba(0,0,0,.075)
 }
 
@@ -4791,7 +4793,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 .card-header {
     padding: .75rem 1.25rem;
     margin-bottom: 0;
-    background-color: rgba(0,0,0,.03);
+    background-color: rgba(0,0,0,.05);
     border-bottom: 1px solid #eee
 }
 
@@ -4801,7 +4803,7 @@ input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].bt
 
 .card-footer {
     padding: .75rem 1.25rem;
-    background-color: rgba(0,0,0,.03);
+    background-color: rgba(0,0,0,.05);
     border-top: 1px solid #eee
 }
 
@@ -6951,7 +6953,9 @@ a.bg-dark:focus, a.bg-dark:hover, button.bg-dark:focus, button.bg-dark:hover {
 }
 
 .d-table-row {
+    
     display: table-row !important
+     
 }
 
 .d-table-cell {

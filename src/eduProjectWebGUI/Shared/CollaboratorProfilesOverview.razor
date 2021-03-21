@@ -9,8 +9,8 @@
     <hr class="divider" />
     <h5> Profili nastavnog osoblja </h5>
     <div class="collaborator-profiles-table">
-        <table id="faculty-member-profiles">
-            <thead>
+        <table class="table table-hover table-bordered" id="faculty-member-profiles">
+            <thead class="thead-dark">
                 <tr>
                     <th>Fakultet</th>
                     <th>Naučna oblast</th>
@@ -47,15 +47,18 @@
 
     <h5>Profili studenata</h5>
     <div class="collaborator-profiles-table">
-        <table id="student-profiles">
-            <tr>
-                <th>Fakultet</th>
-                <th>Ciklus</th>
-                <th>Studijski program</th>
-                <th>Studijski smjer</th>
-                <th>Godina</th>
-                <th>Opis aktivnosti</th>
-            </tr>
+        <table class="table table-hover table-bordered" id="student-profiles">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Fakultet</th>
+                    <th>Ciklus</th>
+                    <th>Studijski program</th>
+                    <th>Studijski smjer</th>
+                    <th>Godina</th>
+                    <th>Opis aktivnosti</th>
+                </tr>
+            </thead>
+            
             @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
             {
                 int index = i;
