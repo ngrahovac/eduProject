@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
 
 <div class="section">
-    <h4 class="title">Odabrani saradnici</h4>
+    
 
     @if (CollaboratorDisplayModels == null)@* empty? *@
     {
@@ -10,8 +10,9 @@
     else
     {
         <div class="collaborator-profiles-table">
-            <table>
-                <thead>
+            <table class="table table-hover table-bordered">
+                <caption class="title">Odabrani saradnici</caption>
+                <thead  class="thead-dark">
                     <tr>
                         <th>Ime i prezime</th>
                     </tr>

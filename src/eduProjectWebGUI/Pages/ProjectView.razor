@@ -38,6 +38,7 @@
         display: flex;
         text-align: left;
         margin: 0;
+        margin-bottom:-10px;
     }
 
     #buttonTags {
@@ -47,13 +48,16 @@
 
     .table {
         margin-top: 2rem;
-        cursor: pointer;
+        
     }
-   
+        .table tr:hover {
+            cursor: pointer;
+            background:black;
+        }
 
 
     .selected-row {
-        background-color: #33C3F0 !important;
+        background-color: #d9230f !important;
     }
 
     .tags {
@@ -70,8 +74,9 @@
 
             .tags .tag:hover {
                 color: #FFF;
-                background-color: #1EAEDB;
-                border-color: #1EAEDB;
+                background-color: #d9230f;
+                border-color: #d9230f;
+                cursor:none;
             }
 </style>
 
@@ -149,14 +154,14 @@
                 else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
                     <div class="buttons">
-                        <button class="button button-primary" type="button" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
-                        <button class="button button-primary" @onclick="EditProject">Izmijeni</button>
-                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+                        <button class="btn btn-primary" style="margin-left:4px;" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
+                        <button class="btn btn-primary" style="margin-left:4px;" @onclick="EditProject">Izmijeni</button>
+                        <button class="btn btn-outline-primary" style="margin-left:4px;" @onclick="ShowProjectDeleteWarning">Izbriši</button>
                     </div> }
                 else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
                     <div class="buttons">
-                        <button class="button" @onclick="ShowProjectDeleteWarning">Izbriši</button>
+                        <button class="btn btn-outline-primary" @onclick="ShowProjectDeleteWarning">Izbriši</button>
                     </div>
                 }
 
