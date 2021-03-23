@@ -315,5 +315,143 @@ namespace eduProjectWebAPI.Data
 
             await command.ExecuteNonQueryAsync();
         }
+
+        public async Task UpdateAsync(User user)
+        {
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                await UpdateUserData(command, user);
+
+                await connection.CloseAsync();
+            }
+        }
+
+        private async Task UpdateUserData(MySqlCommand command, User user)
+        {
+            command.CommandText = @"UPDATE user
+                                    SET 
+                                    first_name = @firstName,
+                                    last_name = @lastName
+                                    WHERE user_id = @userId";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.String,
+                ParameterName = "@fistName",
+                Value = user.FirstName
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
+
+            await command.ExecuteNonQueryAsync();
+
+            if (user is Student s)
+            {
+                await UpdateStudentData(command, s);
+            }
+            else if (user is FacultyMember fm)
+            {
+                await UpdateFacultyMemberData(command, fm);
+            }
+        }
+
+        private async Task UpdateStudentData(MySqlCommand command, Student s)
+        {
+            command.CommandText = @"UPDATE student
+                                    SET
+                                    study_program_id = @programId,
+                                    study_program_specialization_id = @specializationId,
+                                    study_year = @studyYear
+                                    WHERE user_id = @userId";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = s.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@programId",
+                Value = s.StudyProgramId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@specialiationId",
+                Value = s.StudyProgramSpecializationId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@studyYear",
+                Value = s.StudyYear
+            });
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task UpdateFacultyMemberData(MySqlCommand command, FacultyMember fm)
+        {
+            command.CommandText = @"UPDATE faculty_member
+                                    SET
+                                    faculty_id = @facultyId,
+                                    study_field_id = @fieldId,
+                                    academic_rank_id = @rankId  
+                                    WHERE user_id = @userId";
+
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = fm.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@facultyId",
+                Value = fm.FacultyId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@fieldId",
+                Value = StudyField.fields.Where(f => f.Value.Name == fm.StudyField.Name).First().Key
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@rankId",
+                Value = (int)fm.AcademicRank
+            });
+
+            await command.ExecuteNonQueryAsync();
+        }
     }
 }
