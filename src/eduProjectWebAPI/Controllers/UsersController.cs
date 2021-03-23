@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
@@ -87,6 +88,29 @@ namespace eduProjectWebAPI.Controllers
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             }
+        }
+
+        public async Task<ActionResult> Create(UserProfileInputModel model)
+        {
+            var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
+
+            User user = null;
+
+            if (model.UserAccountType is UserAccountType.Student)
+            {
+                Student s = new Student();
+                model.MapTo(s, faculty);
+                user = s;
+            }
+            else if (model.UserAccountType is UserAccountType.FacultyMember)
+            {
+                FacultyMember fm = new FacultyMember();
+                model.MapTo(fm, faculty);
+                user = fm;
+            }
+
+            await users.AddAsync(user);
+            return NoContent(); // TODO: Change to 201
         }
     }
 }

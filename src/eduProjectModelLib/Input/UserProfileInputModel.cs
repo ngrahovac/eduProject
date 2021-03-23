@@ -20,6 +20,15 @@ namespace eduProjectModel.Input
         public string StudyFieldName { get; set; }
         public AcademicRank AcademicRank { get; set; }
 
+        public void Clear()
+        {
+            UserId = 0;
+            UserAccountType = 0;
+            AcademicRank = 0;
+            FirstName = LastName = FacultyName = StudyProgramName = StudyProgramSpecializationName = StudyFieldName = String.Empty;
+            Cycle = StudyYear = null;
+        }
+
         public void MapTo(Student student, Faculty faculty)
         {
             student.FirstName = FirstName;
