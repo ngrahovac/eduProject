@@ -11,5 +11,7 @@ namespace eduProjectWebAPI.Data
         public Task<User> GetAsync(int id);
 
         public Task AddAsync(User user);
+        public Task UpdateAsync(User user);
+
     }
 }

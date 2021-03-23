@@ -90,6 +90,7 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
+        [HttpPost]
         public async Task<ActionResult> Create(UserProfileInputModel model)
         {
             var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
@@ -112,5 +113,25 @@ namespace eduProjectWebAPI.Controllers
             await users.AddAsync(user);
             return NoContent(); // TODO: Change to 201
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, UserProfileInputModel model)
+        {
+            var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
+            var existingUser = await users.GetAsync(id);
+
+            if (existingUser is Student s)
+            {
+                model.MapTo(s, faculty);
+            }
+            else if (existingUser is FacultyMember fm)
+            {
+                model.MapTo(fm, faculty);
+            }
+
+            await users.UpdateAsync(existingUser);
+            return NoContent(); // TODO: Change to 201
+        }
+
     }
 }
