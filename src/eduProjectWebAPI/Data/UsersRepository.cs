@@ -4,24 +4,25 @@ using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly DbConnectionParameters dbConnectionString;
+        private readonly DbConnectionParameters dbConnectionParameters;
 
-        public UsersRepository(DbConnectionParameters dbConnectionString)
+        public UsersRepository(DbConnectionParameters dbConnectionParameters)
         {
-            this.dbConnectionString = dbConnectionString;
+            this.dbConnectionParameters = dbConnectionParameters;
         }
 
         public async Task<User> GetAsync(int id)
         {
             User user = null;
 
-            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
             {
                 MySqlCommand command = new MySqlCommand
                 {
@@ -172,6 +173,147 @@ namespace eduProjectWebAPI.Data
             }
 
             return null;
+        }
+
+        public async Task AddAsync(User user)
+        {
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                await AddUserData(command, user);
+
+                await connection.CloseAsync();
+            }
+        }
+
+        private async Task AddUserData(MySqlCommand command, User user)
+        {
+            command.CommandText = @"INSERT INTO user
+                                    (first_name, last_name)
+                                    VALUES
+                                    (@firstName, @lastName)";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.String,
+                ParameterName = "@fistName",
+                Value = user.FirstName
+            });
+
+            await command.ExecuteNonQueryAsync();
+
+            if (user is Student s)
+            {
+                await AddStudentData(command, s);
+            }
+            else if (user is FacultyMember fm)
+            {
+                await AddFacultyMemberData(command, fm);
+            }
+
+            command.CommandText = @"INSERT INTO user_settings
+                                    (user_id)
+                                    VALUES
+                                    (@userId)";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task AddStudentData(MySqlCommand command, Student s)
+        {
+            command.CommandText = @"INSERT INTO student
+                                    (user_id, study_program_id, study_program_specialization_id, study_year)
+                                    VALUES
+                                    (@userId, @programId, @specializationId, @studyYear)";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = s.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@programId",
+                Value = s.StudyProgramId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@specialiationId",
+                Value = s.StudyProgramSpecializationId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@studyYear",
+                Value = s.StudyYear
+            });
+
+            await command.ExecuteNonQueryAsync();
+        }
+
+        private async Task AddFacultyMemberData(MySqlCommand command, FacultyMember fm)
+        {
+            command.CommandText = @"INSERT INTO faculty_member
+                                    (user_id, faculty_id, study_field_id, academic_rank_id)
+                                    VALUES
+                                    (@userId, @facultyId, @fieldId, @rankId)";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = fm.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@facultyId",
+                Value = fm.FacultyId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@fieldId",
+                Value = StudyField.fields.Where(f => f.Value.Name == fm.StudyField.Name).First().Key
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@rankId",
+                Value = (int)fm.AcademicRank
+            });
+
+            await command.ExecuteNonQueryAsync();
         }
     }
 }
