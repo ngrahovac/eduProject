@@ -3,7 +3,9 @@
 
 <div class="section">
     
-    <div class="collaborator-profiles-table">
+    @if(FacultyMemberProfileDisplayModels.Count() > 0)
+    {
+        <div class="collaborator-profiles-table">
         <table class="table table-hover table-bordered" id="faculty-member-profiles">
             <caption>Profili nastavnog osoblja</caption>
             <thead class="thead-dark">
@@ -40,9 +42,12 @@
             </tbody>
         </table>
     </div>
+    }
 
     
-    <div class="collaborator-profiles-table">
+    @if(StudentProfileDisplayModels.Count() > 0)
+    {
+        <div class="collaborator-profiles-table">
         <table class="table table-hover table-bordered" id="student-profiles">
             <caption>Profili studenata</caption>
             <thead class="thead-dark">
@@ -89,6 +94,9 @@
             }
         </table>
     </div>
+    }
+
+    
 </div>
 
 

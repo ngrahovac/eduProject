@@ -5,58 +5,91 @@
 
 @inject IAuthService AuthService
 
-<div class="content">
-    <h3>@Title</h3>
-
-    @if (projectDisplayModels.Count() == 0)
-    {
-        <h4>Nema rezultata.</h4>
+<style>
+    body {
+        padding-top: 7rem;
+    }
+    .container{
+        margin-bottom:60px;
+    }
+    .time-period {
+        display: flex;
+        flex-wrap: wrap;
+        color: #d9831f;
+        position: absolute;
+        right: 10px;
+        bottom: 5px;
+    }
+    .dash {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+    .mb-1{
+        margin-bottom:1rem !important;
+    }
+    .spinner-border {
+        width: 80px;
+        height: 80px;
+        top: 40%;
+        left: 46%;
+        position: absolute;
     }
 
-    @foreach (var model in projectDisplayModels)
+</style>
+
+<div class="container"> 
+     @if (projectDisplayModels.Count() == 0)
     {
-        <div class="section-homepage">
-            <div class="heading">
-                <img src="/css/bootstrap/kanban.svg" width="30" height="30" />
-                <h4 class="title"><a href="@($"{NavigationManager.BaseUri}projects/{model.ProjectId}")" style="color:black">@model.Title</a></h4>
-            </div>
-
-            <h5>Status projekta</h5>
-            @if (model.ProjectStatus == ProjectStatus.Active)
-            {
-                <p class="status-active">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
-            }
-            else
-            {
-                <p class="status-closed">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</p>
-            }
-
-            <h5>Opis</h5>
-            <p>@model.Description</p>
-
-            <h5>Oblast</h5>
-            <p>@model.StudyField.Name</p>
-
-            <h5>Period realizacije</h5>
-            <div class="time-period">
-                @if (model.StartDate == null)
-                {
-                    <p class="date">N/A</p>
-                }
-                else
-                {
-                    <p class="date">@model.StartDate</p>
-                }
-                <p class="date"> - </p>
-                @if (model.EndDate == null)
-                {
-                    <p class="date">N/A</p>
-                }
-                else
-                {
-                    <p class="date">@model.EndDate</p>
-                }
-            </div>
-        </div>
+         <div class="d-flex justify-content-center">
+              <div class="spinner-border text-primary" role="status">
+                <span class="sr-only"></span>
+              </div>      
+         </div>
     }
+
+    <div class="list-group">  
+        @foreach (var model in projectDisplayModels)
+         {
+            <a href="@($"{NavigationManager.BaseUri}projects/{model.ProjectId}")" class="list-group-item list-group-item-action">
+
+                <div class="d-flex w-100 justify-content-between">
+                    <h4 class="mb-1" style="font-weight:bold;">@model.Title</h4>
+                     @if (model.ProjectStatus == ProjectStatus.Active)
+                    {<small class="text-success">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>}
+                    else
+                    {<small class="text-primary">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>}                   
+                </div>
+                <p class="mb-1">@model.Description</p>
+
+
+                <div class="time-period">
+
+                    @if (model.StartDate == null)
+                    {
+                        <h7 >N/A</h7>
+                    }
+                    else
+                    {
+                        <h7 >@model.StartDate</h7>
+                    }
+                    <h7 class="dash">-</h7>
+                    @if (model.EndDate == null)
+                    {
+                        <h7 >N/A</h7>
+                    }
+                    else
+                    {
+                        <h7 >@model.EndDate</h7>
+                    }
+                </div>
+            </a>
+         }
+    
+    </div>
+  
 </div>
+
+
+
+
+
