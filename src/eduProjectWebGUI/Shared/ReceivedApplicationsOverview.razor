@@ -2,8 +2,34 @@
 @inject NavigationManager NavigationManager
 @inject IModalService Modal
 
-<div class="section scrollable">
-    <h4 class="title">@ProjectApplicationsDisplayModel.Title</h4>
+<style>
+    .blazored-modal-content {
+        height: 300px;        
+        overflow-y: auto;
+    }
+    .form-control{
+        width:98%;
+        margin-left:4px;
+    }
+  
+    
+</style>
+
+@if (ProjectApplicationsDisplayModel == null)
+{
+     <div class="d-flex justify-content-center">
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="sr-only"></span>
+                  </div>      
+                </div>
+}
+else
+{
+
+
+
+<div class="container">
+    <h4 >@ProjectApplicationsDisplayModel.Title</h4>
 
     @for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
     {
@@ -12,14 +38,14 @@
         <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
 
         <div class="collaborator-profiles-table">
-            <table>
-                <thead>
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
                     <tr>
-                        <td>Ime prijavljenog</td>
-                        <td>Email</td>
-                        <td>Komentar prijavljenog</td>
-                        <td>Odabran za saradnju</td>
-                        <td>Komentar autora</td>
+                        <th>Ime prijavljenog</th>
+                        <th>Email</th>
+                        <th>Komentar prijavljenog</th>
+                        <th>Odabran za saradnju</th>
+                        <th>Komentar autora</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,7 +56,7 @@
                             <td>@applicationDisplayModel.ApplicantEmail</td>
                             <td>@applicationDisplayModel.ApplicantComment</td>
                             <td>
-                                <input type="checkbox" @onchange="@((e) =>
+                                <input  class="form-control" type="checkbox" @onchange="@((e) =>
                                                                     {
                                                                         var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
                                                                         ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
@@ -40,7 +66,7 @@
                                                                     })" />
                             </td>
                             <td>
-                                <input type="text" @onchange="@((e) =>
+                                <input  class="form-control" type="text" @onchange="@((e) =>
                                                                 {
                                                                     var comment = (string)e.Value;
                                                                     ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
@@ -56,9 +82,10 @@
     }
 
     <div class="buttons">
-        <button class="btn btn-primary" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
+        <button class="btn btn-primary" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
     </div>
 </div>
+}
 
 @code {
 
@@ -100,7 +127,7 @@
     private async Task SelectCollaboratorsAndCloseProject()
     {
         var parameters = new ModalParameters();
-        string Title = "Potvrda o odabiru saradnika i brisanju projekta";
+        string Title = "Da li ste sigurni?";
         parameters.Add(nameof(Title), Title);
         var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
         var result = await messageForm.Result;

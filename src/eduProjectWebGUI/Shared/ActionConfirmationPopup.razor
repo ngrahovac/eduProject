@@ -3,10 +3,17 @@
     Kroz parametar Title se posalje poruka koja se postavlja kao naslov prozorcica koja definise onda o cemu se radi,
     sta je korisnik siguran da hoce da uradi ili da odustane od toga.*@
 
-<div class="section">
-    <p>Da li ste sigurni?</p>
-    <button @onclick="CancelConfirm" class="btn btn-primary">Prihvati</button>
-    <button @onclick="CancelDeny" class="btn btn-outline-dark">Odustani</button>
+<style>
+    .blazored-modal {
+        height: 170px;
+        width: 330px;
+        
+    }    
+</style>
+
+<div class="container">
+    <button @onclick="CancelConfirm" class="btn btn-primary float-right" style="margin-right: 4px;margin-left: 15px; margin-top:4px;">Prihvati</button>
+    <button @onclick="CancelDeny" class="btn btn-outline-dark float-right" style="margin-top: 4px;">Odustani</button>
 </div>
 
 @code {

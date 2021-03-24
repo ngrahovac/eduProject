@@ -20,6 +20,9 @@
         color:gray;
         text-align:center;
     }
+    .selected-row {
+        background-color: rgba(0,0,0,.3) !important;
+    }
    
 </style>
 
@@ -121,9 +124,9 @@
                 <div class="mb-2">
                     <row>
                         
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right">Dodaj saradnika</button>
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Izmjeni</button>
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Izbriši</button>
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Sačuvaj izmjene</button>
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right" @onclick="@CancelEditing">Odustani</button>
                        
                         
                     </row>
