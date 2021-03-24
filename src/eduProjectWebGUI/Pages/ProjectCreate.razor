@@ -5,32 +5,45 @@
 @inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 
+<style>
+    body {
+        padding-top: 7rem;
+        padding-bottom: 7rem;
+    }
+    .container {
+        margin-bottom: 60px;
+    }
+    .tags-margin-right {
+        margin-right: 5px;
+    }
+    .h3-title{
+        color:gray;
+        text-align:center;
+    }
+   
+</style>
 
-<div class="content">
+<div class="container">
     @if (editing)
     {
-        <h3>@projectInputModel.Title</h3>
+        <h3 class="h3-title">@projectInputModel.Title</h3>
     }
     else
     {
-        <h3>Novi projekat</h3>
+        <h3 class="h3-title">Novi projekat</h3>
     }
 
     <EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
         <DataAnnotationsValidator />
-        <div class="section">
-            <div class="heading">
-                <img src="/css/bootstrap/info-square.svg" width="30" height="30" />
-                <h4 class="title">Osnovne informacije</h4>
-            </div>
-            <hr class="divider" />
 
-            <h5>Naziv projekta</h5>
-            <InputText @bind-Value="@projectInputModel.Title"></InputText>
+         <div class="mb-3">
+            <label>Naziv projekta</label>
+            <InputText class="form-control" @bind-Value="@projectInputModel.Title"></InputText>
             <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Title)" /></p>
-
-            <h5>Oblast projekta</h5>
-            <InputSelect TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
+         </div>
+         <div class="mb-3">
+            <label>Oblast projekta</label>
+             <InputSelect class="form-control" TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
                 <option value=null></option>
                 @foreach (var sf in studyFields)
                 {
@@ -45,41 +58,25 @@
                 }
             </InputSelect>
             <p style="color:red"><ValidationMessage For="@(() => projectInputModel.StudyFieldName)" /></p>
-
-            <h5>Početak realizacije</h5>
-            <InputDate @bind-Value="@projectInputModel.StartDate"></InputDate>
-
-            <h5>Kraj realizacije</h5>
-            <InputDate @bind-Value="@projectInputModel.EndDate"></InputDate>
-
-            <h5>Opis projekta</h5>
-            <InputTextArea @bind-Value="@projectInputModel.Description"></InputTextArea>
-            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Description)" /></p>
-
-            <TagsOverview Editing="true" ProjectInputModel="projectInputModel" TagNames="projectInputModel.TagNames"></TagsOverview>
-            <BlazoredTypeahead SearchMethod="FilterTags" @bind-Value="AddedTag" Context="tag">
-                <SelectedTemplate>
-                    @tag.Name
-                </SelectedTemplate>
-                <ResultTemplate>
-                    @tag.Name
-                </ResultTemplate>
-                <NotFoundTemplate>
-                    Nema rezultata.
-                </NotFoundTemplate>
-            </BlazoredTypeahead>
+         </div>
+        <div class="mb-3">
+            <label>Početak realizacije</label>
+            <InputDate class="form-control" @bind-Value="@projectInputModel.StartDate"></InputDate>
         </div>
+         <div class="mb-3">
+             <label>Kraj realizacije</label>
+             <InputDate class="form-control" @bind-Value="@projectInputModel.EndDate"></InputDate>
+        </div>
+          <div class="mb-3">
+                <label>Opis projekta</label>
+               <InputTextArea class="form-control" @bind-Value="@projectInputModel.Description"></InputTextArea>
+            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Description)" /></p>
+          </div>
 
-        <div class="section">
-            <div class="heading">
-                <img src="/css/bootstrap/list-check.svg" width="30" height="30" />
-                <h4 class="title">Dodani profili saradnika</h4>
-            </div>
-            <hr class="divider" />
-
+        <div class="mb-3">
             <div class="collaborator-profiles-table scrollable">
-                <table>
-                    <thead>
+                <table class="table table-hover table-bordered">
+                     <thead class="thead-dark">
                         <tr>
                             <th>Tip</th>
                             <th>Opis aktivnosti</th>
@@ -107,11 +104,11 @@
                                 <td>@p.StudyFieldName</td>
                                 @if (!p.ExistingProfile)
                                 {
-                                    <td><button class="button" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+                                    <td><button class="btn btn-outline-dark float-right" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
                                 }
                                 @if (!p.ExistingProfile)
                                 {
-                                    <td><button class="button" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
+                                    <td><button class="btn btn-outline-dark float-right" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
                                 }
                             </tr>
                         }
@@ -119,22 +116,28 @@
                 </table>
                 <p style="color:red"><ValidationMessage For="@(() => projectInputModel.CollaboratorProfileInputModels)" /></p>
             </div>
+            @if (editing)
+            {
+                <div class="mb-2">
+                    <row>
+                        
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right">Dodaj saradnika</button>
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Izmjeni</button>
+                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Izbriši</button>
+                       
+                        
+                    </row>
+                 </div>
+            }
+            else
+            {
+                 <button class="btn btn-outline-dark  float-right" style="margin-left:10px;" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+                <button class="btn btn-outline-primary  float-right" style="margin-left:10px;" type="submit">Oglasi projekat</button>
+            }
+            
         </div>
 
-        @if (editing)
-        {
-            <div class="buttons">
-                <button class="button button-primary" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-                <button class="button button-primary" type="submit">Sačuvaj izmjene</button>
-                <button class="button" type="button" @onclick="@CancelEditing">Odustani</button>
-            </div>
-        }
-        else
-        {
-            <div class="buttons">
-                <button class="button button-primary" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-                <button class="button button-primary" type="submit">Oglasi projekat</button>
-            </div>
-        }
     </EditForm>
 </div>
+
+  
