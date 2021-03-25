@@ -1,8 +1,30 @@
-﻿<div class="component">
-    <h5>Tagovi</h5>
+﻿
+<style>
+    .tags {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+        .tags .tag {
+            margin-right: 10px;
+            padding: 5px 10px 5px 10px;
+            border: solid thin lightgray;
+            border-radius: 5px;
+        }
+
+            .tags .tag:hover {
+                color: #FFF;
+                background-color: #d9230f;
+                border-color: #d9230f;
+                cursor: none;
+            }
+
+</style>
+
+<div class="component">
     @if (TagNames.Count == 0)
     {
-        <p>Tagovi nisu odabrani.</p>
+        
     }
     else
     {
