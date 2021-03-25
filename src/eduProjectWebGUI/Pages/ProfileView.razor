@@ -1,7 +1,7 @@
 ﻿@page "/users/{UserId:int}"
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
-
+@inject ILocalStorageService LocalStorage
 
 <style>
     body {
@@ -168,11 +168,33 @@ else
                     </div>
                 </div>
             </div>
-            <a class="btn btn-lg btn-outline-primary" type="submit" @onclick="@(async () =>
+
+            @if (ProfileDisplayModel.IsDisplayPersonal == true)
+            {
+                <row>
+
+                     <a class="btn btn-lg btn-outline-dark" style="margin-top:5px;"  @onclick="@(async () =>
                                                               {
+                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})"
+                        >Moje prijave</a>
+
+                     <a class="btn btn-lg btn-outline-dark" style="margin-top:5px;"  @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))"
+                        >Opcije</a>
+
+                    <a class="btn btn-lg btn-outline-primary" type="submit" @onclick="@(async () =>
+                                                                      {
                                                                   await AuthService.Logout();
                                                                   NavigationManager.NavigateTo("/account/login");
                                                               })" style="margin-top:5px;">Odjavi se</a>
+                </row>
+                 
+
+                   
+            }
+
+           
+           
+
         </div>
 
         <div class="col-md-8">
@@ -193,7 +215,7 @@ else
                 <div class="list-group">
                   <a href="#" class="list-group-item list-group-item-action active">Saradnje na projektima</a>
                     @foreach (var p in ProfileDisplayModel.ProjectCollaborationsDisplayModels)
-                    { <a class="list-group-item list-group-item-action" href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title) >@(p.Title)</a>}
+                    { <a class="list-group-item list-group-item-action" href=@($"{NavigationManager.BaseUri}projects/{p.ProjectId}")>@(p.Title)</a>}
                 </div>
             }
             else

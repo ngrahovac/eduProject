@@ -5,8 +5,56 @@
 @inject IModalService Modal
 @inject NavigationManager NavigationManager
 
-<div class="content">
-    <h3>Poslane prijave</h3>
+<style>
+    body {
+        padding-top: 7rem;
+    }
+
+    .btn-outline-danger {
+        border-color: transparent;
+    }
+
+    .container {
+        margin-bottom: 60px;
+    }
+
+    .list-group {
+        margin-bottom: 2rem;
+    }
+
+
+    .list-group-item-action:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    .list-group-item-action.active {
+        cursor: initial;
+        background-color: #373a3c;
+        border-color: #373a3c;
+    }
+
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 40%;
+        position: absolute;
+    }
+
+    .h3-title {
+        color: gray;
+        text-align: center;
+        margin-bottom:1.5rem;
+    }
+
+    .selected-row {
+        background-color: rgba(0,0,0,.3) !important;
+    }
+    
+</style>
+
+     
+<div class="container">
+    <h3 class="h3-title">Poslane prijave</h3>
 
     @foreach (var projectModel in ProjectApplicationsDisplayModels)
     {
@@ -18,13 +66,13 @@
                 allTables.Add($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
                 <h5>@profileModel.CollaboratorProfileDisplayModel.Description</h5>
                 <div class="collaborator-profiles-table">
-                    <table id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
-                        <thead>
+                    <table  class="table table-hover table-bordered" id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
+                        <thead class="thead-dark">
                             <tr>
-                                <td>Id prijave</td>
-                                <td>Komentar prijavljenog</td>
-                                <td>Komentar autora</td>
-                                <td>Status prijave</td>
+                                <th>Id prijave</th>
+                                <th>Komentar prijavljenog</th>
+                                <th>Komentar autora</th>
+                                <th>Status prijave</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -57,7 +105,6 @@
     }
 
     <div class="buttons">
-        <button @onclick="@RevokeApplication">Poništi prijavu</button>
+        <button class="btn btn-primary float-right"  @onclick="@RevokeApplication">Poništi prijavu</button>
     </div>
 </div>
-
