@@ -164,8 +164,27 @@ namespace eduProjectWebAPI.Migrations
                     { "5", 0, "279ebb84-8ebf-461d-96bb-01a36e1e4604", "markomarkovic@test.com", true, true, null, "MARKOMARKOVIC@TEST.COM", "MARKOMARKOVIC@TEST.COM", "AQAAAAEAACcQAAAAEHSUcUGJ80NRBA51IFIT6Hmdsnnd2X6K+88Qh32WXVGDGyp0yGq7oD7KFzQEXPCYXw==", null, false, "YCRUMPJQ4XDVK5SVH4NKKCZD7GT6L2SJ", false, "markomarkovic@test.com" },
                     { "6", 0, "f7a176dd-d392-4e72-b558-df9f884fbf16", "petrapetric@test.com", true, true, null, "PETRAPETRIC@TEST.COM", "PETRAPETRIC@TEST.COM", "AQAAAAEAACcQAAAAEFjzJQwLfa8qiBv+vkRPAVb1LkSqhIpria+0GAb4dTFf6ZFvl+3H4Z5SGhvYRKrQ/g==", null, false, "ECDDLUTS3UCL2SJJUPKBZS7IFNPX4BFH", false, "petrapetric@test.com" },
                     { "7", 0, "f4de8181-2f1d-41fa-9f53-31f69b7d79d2", "milanmilanic@test.com", true, true, null, "MILANMILANIC@TEST.COM", "MILANMILANIC@TEST.COM", "AQAAAAEAACcQAAAAEIMbanQNVgP7HbGL2D8KdCCe4Ika8BlGvzCHO2WrF1Yl2nEFzrrJLJ6a6D+9WbqbHA==", null, false, "MIUGYEXVPHTXYDIJ2ZPSHCEJFCO2WZVI", false, "milanmilanic@test.com" },
-                    { "8", 0, "1f0ddbb3-a6c1-4a91-9e54-a1066b9dca42", "ananic@test.com", true, true, null, "ANAANIC@TEST.COM", "ANAANIC@TEST.COM", "AQAAAAEAACcQAAAAEEEVprGGdlzE/trKNkFDEoADsUgO0dy16A6e2zleelYn1IwAhDAQTRluj+BkldeajQ==", null, false, "4RONA2UUHXSB2F626TUHKHMP24PND6QA", false, "anaanic@test.com" }
+                    { "8", 0, "1f0ddbb3-a6c1-4a91-9e54-a1066b9dca42", "ananic@test.com", true, true, null, "ANAANIC@TEST.COM", "ANAANIC@TEST.COM", "AQAAAAEAACcQAAAAEEEVprGGdlzE/trKNkFDEoADsUgO0dy16A6e2zleelYn1IwAhDAQTRluj+BkldeajQ==", null, false, "4RONA2UUHXSB2F626TUHKHMP24PND6QA", false, "anaanic@test.com" },
+                    { "9", 0, "43c22374-97c4-4278-9cde-bc4713f26d3d", "admin@test.com", true, true, null, "ADMIN@TEST.COM", "ADMIN@TEST.COM", "AQAAAAEAACcQAAAAEBdVV+vJRq7/JT6OxpmfJaoy8PUReiGDs63Ff8M6FdHGv6fyXpgCh6SLRrwu4bn1xA==", null, false, "JZV6LUEYDIMPJ6SXZGEUMGEWKRLAENAI", false, "admin@test.com" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
+                values: new object[,]
+                {
+                    { "1", "Admin", "ADMIN", "bab4afd0-59bf-498e-8712-5ef8dcc78103" }
+                }
+                );
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[,]
+                {
+                    { "9", "1" }
+                }
+                );
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

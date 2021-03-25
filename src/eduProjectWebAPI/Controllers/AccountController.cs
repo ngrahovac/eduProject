@@ -223,7 +223,7 @@ namespace eduProjectWebAPI.Controllers
             //This is just for initial testing. Code refarctoring needed here.
 
             var confUser = await userManager.FindByEmailAsync(model.Email);
-            if (confUser != null && !confUser.EmailConfirmed && await userManager.CheckPasswordAsync(confUser, model.Password))
+            if (confUser != null && await userManager.CheckPasswordAsync(confUser, model.Password)) //!confUser.EmailConfirmed
                 return BadRequest("Niste aktivirali vas nalog");
 
 
