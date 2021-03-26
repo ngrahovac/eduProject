@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace eduProjectModel.Input
+﻿namespace eduProjectModel.Input
 {
     public class AccountManagementInputModel
     {

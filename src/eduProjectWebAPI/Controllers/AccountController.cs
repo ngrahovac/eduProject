@@ -12,6 +12,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using eduProjectWebAPI.Services;
+using System.Collections.Generic;
+using eduProjectModel.Display;
+using Microsoft.EntityFrameworkCore;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -272,6 +275,14 @@ namespace eduProjectWebAPI.Controllers
             }
             else
                 return BadRequest();
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
+        {
+            var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
+            return Ok(models);
         }
     }
 }
