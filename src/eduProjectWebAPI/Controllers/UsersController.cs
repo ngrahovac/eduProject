@@ -54,6 +54,11 @@ namespace eduProjectWebAPI.Controllers
                     if (user == null)
                         return NotFound();
 
+                    var userAccount = await userManager.FindByIdAsync(user.UserId.ToString());
+
+                    if (!userAccount.ActiveStatus)
+                        return NotFound();
+
                     var authoredProjects = new List<Project>();
                     var projectCollaborations = new List<Project>();
 

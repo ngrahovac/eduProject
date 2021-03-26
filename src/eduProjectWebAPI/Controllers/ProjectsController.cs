@@ -62,9 +62,9 @@ namespace eduProjectWebAPI.Controllers
                     if (project == null)
                         return NotFound();
 
-                    var author = await userManager.FindByIdAsync(project.AuthorId.ToString());
+                    var authorAccount = await userManager.FindByIdAsync(project.AuthorId.ToString());
 
-                    if (!author.ActiveStatus)
+                    if (!authorAccount.ActiveStatus)
                         return NotFound();
 
                     var model = await GetProjectDisplayModel(project, currentUserId, currentUser);

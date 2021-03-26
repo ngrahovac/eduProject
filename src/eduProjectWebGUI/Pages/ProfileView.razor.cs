@@ -30,6 +30,8 @@ namespace eduProjectWebGUI.Pages
             try
             {
                 ProfileDisplayModel = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
+
+                //TODO: Add redirect if not found
             }
             catch (Exception ex)
             {
