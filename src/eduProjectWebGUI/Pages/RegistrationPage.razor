@@ -1,0 +1,43 @@
+﻿@page "/account/register"
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<h1>Registracija</h1>
+
+@if (userProfileInputModel != null)
+{
+
+    <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
+
+    <UserInformationView UserProfileInputModel="@userProfileInputModel"
+                         faculties="@faculties"
+                         studyFields="@studyFields"></UserInformationView>
+
+    <button @onclick="@RegisterUser">Registruj</button>
+}
+
+@code {
+
+    private UserProfileInputModel userProfileInputModel = new UserProfileInputModel();
+    private RegisterInputModel registerInputModel = new RegisterInputModel();
+    private ICollection<Faculty> faculties = new List<Faculty>();
+    private ICollection<StudyField> studyFields = new List<StudyField>();
+    private ICollection<Tag> tags = new List<Tag>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        faculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
+        studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Values;
+        tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
+    }
+
+    public async Task RegisterUser()
+    {
+        await ApiService.PostAsync("/account/register", registerInputModel);
+
+        await ApiService.PostAsync("/users", userProfileInputModel);
+
+        NavigationManager.NavigateTo("/account/login");
+    }
+}

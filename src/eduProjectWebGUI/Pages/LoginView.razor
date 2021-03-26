@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- 
+
 </head>
 <body class="text-center ">
     <style>
@@ -67,39 +67,39 @@
             margin-top: 20px;
         }
 
-        p{
-            margin-bottom:0rem;
+        p {
+            margin-bottom: 0rem;
         }
     </style>
 
-<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
-    <DataAnnotationsValidator />
-    <form class="form-signin">
+    <EditForm Model="@loginInputModel" OnValidSubmit="Login2">
+        <DataAnnotationsValidator />
+        <form class="form-signin">
 
-        <img src="eduProjectLogo.png" class="mb-4" width="300" height="130" />
+            <img src="eduProjectLogo.png" class="mb-4" width="300" height="130" />
 
-       
-        <InputText  class="form-control" type="email" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
-        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Email)" /></p>
 
-       
-        <InputText  class="form-control" type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
-        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
+            <InputText class="form-control" type="email" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
+            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Email)" /></p>
 
-        <div class="checkbox mb-3">
-            <label>Zapamti me</label>
-            <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
-        </div>
 
-       
-        <a class="btn btn-lg btn-dark btn-block" type="submit" @onclick="Login2">Prijava</a>
-        <a class="btn btn-lg btn-outline-dark btn-block" type="submit" href="/registration">Registracija</a>
-        <p class="mt-5 mb-3 text-muted">© 2021</p>
-    </form>
-    
-</EditForm>
-        
-  
+            <InputText class="form-control" type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
+            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
+
+            <div class="checkbox mb-3">
+                <label>Zapamti me</label>
+                <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
+            </div>
+
+
+            <a class="btn btn-lg btn-dark btn-block" type="submit" @onclick="Login2">Prijava</a>
+            <a class="btn btn-lg btn-outline-dark btn-block" type="submit" href="/account/register">Registracija</a>
+            <p class="mt-5 mb-3 text-muted">© 2021</p>
+        </form>
+
+    </EditForm>
+
+
 
 </body>
 
@@ -107,24 +107,24 @@
 
 
 @*<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
-    <DataAnnotationsValidator />
-    <div class="login-box">
+        <DataAnnotationsValidator />
+        <div class="login-box">
 
-        <img src="../img/logo.JPG" class="logo-img" />
+            <img src="../img/logo.JPG" class="logo-img" />
 
-        <label>Email:</label>
-        <InputText type="text" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
-        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Email)" /></p>
+            <label>Email:</label>
+            <InputText type="text" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
+            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Email)" /></p>
 
-        <label>Lozinka:</label>
-        <InputText type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
-        <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
+            <label>Lozinka:</label>
+            <InputText type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
+            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
 
-        <div>
-            <label>Da li želite da zapamtite nalog?</label>
-            <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
+            <div>
+                <label>Da li želite da zapamtite nalog?</label>
+                <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
+            </div>
+
+            <button class="button button-primary" @onclick="Login2">Prijavi se</button>
         </div>
-
-        <button class="button button-primary" @onclick="Login2">Prijavi se</button>
-    </div>
-</EditForm>*@
+    </EditForm>*@

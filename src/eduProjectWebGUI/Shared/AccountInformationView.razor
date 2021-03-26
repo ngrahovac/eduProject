@@ -1,0 +1,15 @@
+﻿<EditForm Model="@RegisterInputModel">
+    <DataAnnotationsValidator />
+
+    <label>Email:</label>
+    <InputText type="text" placeholder="Email" @bind-Value="@RegisterInputModel.Email"></InputText>
+    <p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Email)" /></p>
+
+    <label>Lozinka:</label>
+    <InputText type="password" placeholder="Lozinka" @bind-Value="@RegisterInputModel.Password"></InputText>
+    <p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Password)" /></p>
+
+    <label>Ponovite lozinku:</label>
+    <InputText type="password" placeholder="Ponovite lozinku" @bind-Value="@RegisterInputModel.ConfirmPassword"></InputText>
+    <p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Password)" /></p>
+</EditForm>

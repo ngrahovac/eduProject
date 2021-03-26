@@ -21,11 +21,6 @@ namespace eduProjectWebGUI.Pages
             await ApiService.PostAsync("account/login", loginInputModel);
         }
 
-        public void RegisterToSystem()
-        {
-            Navigation.NavigateTo("account/register");
-        }
-
         public async Task Login2()
         {
             var result = await AuthService.Login(loginInputModel);
