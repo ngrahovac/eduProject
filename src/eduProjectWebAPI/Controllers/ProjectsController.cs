@@ -97,6 +97,19 @@ namespace eduProjectWebAPI.Controllers
 
                     var projectsList = await projects.GetAllAsync();
 
+                    //TODO: Refactor
+                    var activeAuthorProjects = new List<Project>();
+
+                    foreach (var project in projectsList)
+                    {
+                        var authorAccount = await userManager.FindByIdAsync(project.AuthorId.ToString());
+
+                        if (authorAccount.ActiveStatus)
+                            activeAuthorProjects.Add(project);
+                    }
+
+                    projectsList = activeAuthorProjects;
+
                     foreach (var project in projectsList)
                     {
                         var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
