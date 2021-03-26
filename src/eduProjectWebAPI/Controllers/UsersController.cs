@@ -12,6 +12,7 @@ using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -110,6 +111,9 @@ namespace eduProjectWebAPI.Controllers
                 user = fm;
             }
 
+            var usersIds = await userManager.Users.Select(u => u.Id).ToListAsync();
+            int userId = usersIds.Count == 0 ? 1 : int.Parse(usersIds.Max()) + 1;
+            user.UserId = userId;
             await users.AddAsync(user);
             return NoContent(); // TODO: Change to 201
         }
