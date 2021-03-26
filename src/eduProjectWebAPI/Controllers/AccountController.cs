@@ -222,9 +222,9 @@ namespace eduProjectWebAPI.Controllers
             //user must be fetched asynchronously which results in code redundancy.
             //This is just for initial testing. Code refarctoring needed here.
 
-            var confUser = await userManager.FindByEmailAsync(model.Email);
-            if (confUser != null && await userManager.CheckPasswordAsync(confUser, model.Password)) //!confUser.EmailConfirmed
-                return BadRequest("Niste aktivirali vas nalog");
+            //var confUser = await userManager.FindByEmailAsync(model.Email);
+            //if (confUser != null && await userManager.CheckPasswordAsync(confUser, model.Password)) //!confUser.EmailConfirmed
+            //    return BadRequest("Niste aktivirali vas nalog");
 
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
