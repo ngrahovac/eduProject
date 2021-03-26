@@ -134,6 +134,20 @@ namespace eduProjectWebAPI.Controllers
                     {
                         var projectApplications = await applications.GetByProjectIdAsync(projectId);
 
+                        //TODO: Refactor
+
+                        var activeAuthorProjectApplications = new List<ProjectApplication>();
+
+                        foreach (var application in projectApplications)
+                        {
+                            var user = await userManager.FindByIdAsync(application.ApplicantId.ToString());
+
+                            if (user.ActiveStatus)
+                                activeAuthorProjectApplications.Add(application);
+                        }
+
+                        projectApplications = activeAuthorProjectApplications;
+
                         List<Tuple<int, string, string>> modelData = new List<Tuple<int, string, string>>();
                         foreach (var appl in projectApplications)
                         {
