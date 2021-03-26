@@ -253,5 +253,25 @@ namespace eduProjectWebAPI.Controllers
 
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token), loggedUserId = id });
         }
+
+        [AllowAnonymous]
+        [HttpPost("{id}")]
+        public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
+        {
+            //admin check here
+
+            var user = await userManager.FindByIdAsync(id.ToString());
+
+            if (user != null)
+            {
+                user.ActiveStatus = model.ActiveStatus;
+
+                await userManager.UpdateAsync(user);
+
+                return Ok();
+            }
+            else
+                return BadRequest();
+        }
     }
 }
