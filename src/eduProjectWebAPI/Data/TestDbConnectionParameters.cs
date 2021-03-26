@@ -10,7 +10,7 @@ namespace eduProjectWebAPI.Data
     {
         public TestDbConnectionParameters()
         {
-            ConnectionString = "server=localhost;database=eduproject_test;user=UserDB;password=espresso;";
+            ConnectionString = "server=localhost;database=eduproject_test;user=root";
         }
     }
 }
