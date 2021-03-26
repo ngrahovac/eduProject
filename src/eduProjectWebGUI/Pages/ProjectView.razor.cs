@@ -96,6 +96,9 @@ namespace eduProjectWebGUI.Pages
             try
             {
                 ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+
+                if (ProjectDisplayModel.Title.Equals("Not Found"))
+                    NavigationManager.NavigateTo("/404"); //TODO: Update status check
             }
             catch (Exception ex)
             {

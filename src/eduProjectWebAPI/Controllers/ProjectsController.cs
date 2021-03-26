@@ -16,6 +16,7 @@ using System.Text.Json;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query.Internal;
+using Microsoft.AspNetCore.Identity;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -29,15 +30,18 @@ namespace eduProjectWebAPI.Controllers
         private readonly IFacultiesRepository faculties;
         private readonly IUserSettingsRepository settings;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly UserManager<ApplicationUser> userManager;
+
 
         public ProjectsController(IProjectsRepository projects, IUsersRepository users,
-            IFacultiesRepository faculties, IUserSettingsRepository settings, IHttpContextAccessor httpContextAccessor)
+            IFacultiesRepository faculties, IUserSettingsRepository settings, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
             this.settings = settings;
             this.httpContextAccessor = httpContextAccessor;
+            this.userManager = userManager;
         }
 
         [HttpGet("{id}")]
@@ -56,6 +60,11 @@ namespace eduProjectWebAPI.Controllers
                     Project project = await projects.GetAsync(id);
 
                     if (project == null)
+                        return NotFound();
+
+                    var author = await userManager.FindByIdAsync(project.AuthorId.ToString());
+
+                    if (!author.ActiveStatus)
                         return NotFound();
 
                     var model = await GetProjectDisplayModel(project, currentUserId, currentUser);
