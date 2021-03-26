@@ -5,5 +5,6 @@ namespace eduProjectModel.Domain
     public class ApplicationUser : IdentityUser
     {
         /*This class inherits from IdentityUser in case of additional data requirement*/
+        public bool ActiveStatus { get; set; }
     }
 }
