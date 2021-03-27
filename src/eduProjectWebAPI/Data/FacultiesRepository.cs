@@ -177,9 +177,129 @@ namespace eduProjectWebAPI.Data
             return faculties;
         }
 
-        public Task AddAsync(Faculty faculty)
+        public async Task AddAsync(Faculty faculty)
         {
-            throw new NotImplementedException();
+            using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
+            {
+                var command = new MySqlCommand
+                {
+                    Connection = connection
+                };
+
+                await connection.OpenAsync();
+
+                await AddFaculty(command, faculty);
+
+                await connection.CloseAsync();
+            }
+        }
+
+        private async Task AddFaculty(MySqlCommand command, Faculty faculty)
+        {
+            command.CommandText = @"INSERT INTO faculty
+                                    (name, address)
+                                    VALUES
+                                    (@name, @address)";
+
+            command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@name",
+                DbType = DbType.String,
+                Value = faculty.Name
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                ParameterName = "@address",
+                DbType = DbType.String,
+                Value = faculty.Address
+            });
+
+            await command.ExecuteNonQueryAsync();
+            faculty.FacultyId = (int)command.LastInsertedId;
+
+            await AddStudyPrograms(command, faculty);
+        }
+
+        private async Task AddStudyPrograms(MySqlCommand command, Faculty faculty)
+        {
+            command.CommandText = @"INSERT INTO study_program
+                                    (name, cycle, duration_years, faculty_id)
+                                    VALUES
+                                    (@name, @cycle, @years, @facultyId)";
+
+            foreach (var program in faculty.StudyPrograms)
+            {
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@name",
+                    DbType = DbType.String,
+                    Value = program.Name
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@cycle",
+                    DbType = DbType.Byte,
+                    Value = program.Cycle
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@years",
+                    DbType = DbType.Byte,
+                    Value = program.DurationYears
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@facultyId",
+                    DbType = DbType.Int32,
+                    Value = faculty.FacultyId
+                });
+
+                await command.ExecuteNonQueryAsync();
+                program.ProgramId = (int)command.LastInsertedId;
+            }
+
+            foreach (var program in faculty.StudyPrograms)
+            {
+                await AddStudyProgramSpecializations(command, program);
+            }
+        }
+
+        private async Task AddStudyProgramSpecializations(MySqlCommand command, StudyProgram program)
+        {
+            command.CommandText = @"INSERT INTO study_program_specialization
+                                    (name, study_program_id)
+                                    VALUES
+                                    (@name, @programId)";
+
+            foreach (var specialization in program.StudyProgramSpecializations)
+            {
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@name",
+                    DbType = DbType.String,
+                    Value = specialization.Name
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@programId",
+                    DbType = DbType.Int32,
+                    Value = program.ProgramId
+                });
+
+                await command.ExecuteNonQueryAsync();
+                specialization.SpecializationId = (int)command.LastInsertedId;
+            }
         }
     }
 }
