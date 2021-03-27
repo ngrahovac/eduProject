@@ -1,4 +1,5 @@
 ﻿using eduProjectModel.Domain;
+using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ namespace eduProjectWebAPI.Controllers
     {
         private readonly DbConnectionParameters dbConnectionString;
         private readonly IFacultiesRepository faculties;
+        private readonly IStudyFieldsRepository studyFields;
 
-        public ValueObjectsController(DbConnectionParameters dbConnectionString, IFacultiesRepository faculties)
+        public ValueObjectsController(DbConnectionParameters dbConnectionString, IFacultiesRepository faculties, IStudyFieldsRepository studyFields)
         {
             this.dbConnectionString = dbConnectionString;
             this.faculties = faculties;
+            this.studyFields = studyFields;
         }
 
         [HttpGet("/tags")]
@@ -123,5 +126,28 @@ namespace eduProjectWebAPI.Controllers
             return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
                                                              // }
         }
+
+        [HttpPost("/fields")]
+        public async Task<ActionResult> AddStudyField(StudyFieldInputModel model)
+        {
+            //TODO: Add auth check
+
+            try
+            {
+                StudyField newField = new StudyField();
+                model.MapTo(newField);
+
+                await studyFields.AddAsync(newField);
+
+                //TODO: Change to Created
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+        }
+
+        
     }
 }

@@ -27,6 +27,16 @@ namespace eduProjectWebGUI.Services
         {
             var loginAsJson = JsonSerializer.Serialize(model);
             var response = await httpClient.PostAsync("account/login2", new StringContent(loginAsJson, Encoding.UTF8, "application/json"));
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                return new LoginResult
+                {
+                    Successful = false,
+                    Error = "User suspended"
+                };
+            }
+
             var loginResult = JsonSerializer.Deserialize<LoginResult>(await response.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (!response.IsSuccessStatusCode)

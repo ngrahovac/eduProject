@@ -232,11 +232,17 @@ namespace eduProjectWebAPI.Controllers
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
+            //TODO: Fix BadRequest in multiple return statements
+
             if (!result.Succeeded)
                 return BadRequest();
 
-            var user = userManager.FindByEmailAsync(model.Email);
-            var id = user.Result.Id.ToString();
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (!user.ActiveStatus)
+                return BadRequest();
+
+            var id = user.Id.ToString();
 
             var claims = new[]
             {
