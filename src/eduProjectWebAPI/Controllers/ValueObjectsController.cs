@@ -148,6 +148,25 @@ namespace eduProjectWebAPI.Controllers
             }
         }
 
-        
+        [HttpPost("/faculties")]
+        public async Task<ActionResult> AddFaculty(FacultyInputModel model)
+        {
+            //TODO: Add auth check
+
+            try
+            {
+                Faculty newFaculty = new Faculty();
+                model.MapTo(newFaculty);
+
+                await faculties.AddAsync(newFaculty);
+
+                //TODO: Change to Created
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+        }
     }
 }
