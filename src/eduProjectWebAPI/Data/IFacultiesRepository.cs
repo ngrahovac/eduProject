@@ -12,5 +12,7 @@ namespace eduProjectWebAPI.Data
 
         public Task<ICollection<Faculty>> GetAllAsync();
 
+        public Task AddAsync(Faculty faculty);
+
     }
 }

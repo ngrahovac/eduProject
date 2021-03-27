@@ -177,5 +177,9 @@ namespace eduProjectWebAPI.Data
             return faculties;
         }
 
+        public Task AddAsync(Faculty faculty)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
