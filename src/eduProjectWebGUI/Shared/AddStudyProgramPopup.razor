@@ -1,0 +1,66 @@
+﻿@layout LoginLayout
+
+<EditForm Model="@model"
+          OnValidSubmit="@AddProgram">
+
+    <label>Naziv studijskog programa</label>
+    <InputText @bind-Value="@model.Name"></InputText>
+    <label>Ciklus</label>
+    <InputNumber @bind-Value="@model.Cycle"></InputNumber>
+    <label>Trajanje</label>
+    <InputNumber @bind-Value="@model.DurationYears"></InputNumber>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Naziv smjera</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var spec in model.StudyProgramSpecializationInputModels)
+            {
+                <tr>
+                    <td>
+                        <InputText @bind-Value="@spec.Name"></InputText>
+                    </td>
+                    <td><button @onclick="@(() => model.StudyProgramSpecializationInputModels.Remove(spec))">Ukloni</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <br />
+    <button type="button"
+            @onclick="@(() => model.StudyProgramSpecializationInputModels.Add(new StudyProgramSpecializationInputModel()))">
+        Dodaj smjer
+    </button>
+
+    <br />
+    <button type="submit">
+        Sačuvaj program
+    </button>
+</EditForm>
+
+@code {
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter]
+    public FacultyInputModel FacultyInputModel { get; set; }
+
+    StudyProgramInputModel model = new StudyProgramInputModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    public async Task AddProgram()
+    {
+        FacultyInputModel.StudyProgramInputModels.Add(model);
+        BlazoredModal.Close();
+    }
+}

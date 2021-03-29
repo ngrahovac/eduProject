@@ -1,0 +1,115 @@
+﻿@page "/admin/faculties"
+@layout LoginLayout
+@inject IModalService Modal
+@inject ApiService ApiService
+
+<h3>Upravljanje fakultetima</h3>
+
+@if (faculties == null)
+{
+    <h3>Loading..</h3>
+}
+else
+{
+
+    <h4>Dodani fakulteti</h4>
+    <ul class="list-group">
+        @foreach (var f in faculties)
+        {
+            <li>@f.Name</li>
+        }
+    </ul>
+
+}
+
+
+<h4>Dodaj novi fakultet</h4>
+
+<EditForm OnValidSubmit="@AddFaculty" Model="@model">
+    <h5>Naziv</h5>
+    <InputText @bind-Value="@model.Name"></InputText>
+
+    <h5>Adresa</h5>
+    <InputText @bind-Value="@model.Address"></InputText>
+
+    <h5>Dodani studijski programi</h5>
+    @foreach (var prog in model.StudyProgramInputModels)
+    {
+        <table>
+            <thead>
+                <tr>
+                    <td>Naziv</td>
+                    <td>Ciklus</td>
+                    <td>Trajanje</td>
+                    <td>Akcija</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@prog.Name</td>
+                    <td>@prog.Cycle</td>
+                    <td>@prog.DurationYears</td>
+                    <td><button @onclick="@(() => model.StudyProgramInputModels.Remove(prog))">Ukloni</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h6>Studijski smjerovi</h6>
+        <ul class="list-group">
+            @foreach (var spec in prog.StudyProgramSpecializationInputModels)
+            {
+                <li>@spec.Name</li>
+            }
+        </ul>
+    }
+
+    <br />
+    <button type="button" @onclick="@AddProgram">Dodaj studijski program</button>
+    <br />
+    <button type="submit">Dodaj fakultet</button>
+</EditForm>
+
+
+@code
+{
+    FacultyInputModel model = new FacultyInputModel();
+
+    ICollection<Faculty> faculties;
+
+    protected override async Task OnInitializedAsync()
+    {
+        faculties = await ApiService.GetAsync<ICollection<Faculty>>("/faculties");
+    }
+
+    public async Task AddFaculty()
+    {
+        Console.WriteLine("Dodan fakultet sa sljedecim podacima:");
+        Console.WriteLine($"Naziv: {model.Name}");
+        Console.WriteLine($"Adresa: {model.Address}");
+        Console.WriteLine($"Broj studijskih programa: {model.StudyProgramInputModels.Count()}");
+        foreach (var prog in model.StudyProgramInputModels)
+        {
+            Console.WriteLine($"Naziv programa: {prog.Name}");
+            Console.WriteLine($"Ciklus: {prog.Cycle}");
+            Console.WriteLine($"Trajanje: {prog.DurationYears}");
+            Console.WriteLine($"Broj studijskih smjerova: {prog.StudyProgramSpecializationInputModels.Count()}");
+
+            foreach (var spec in prog.StudyProgramSpecializationInputModels)
+            {
+                Console.WriteLine($"Naziv smjera: {spec.Name}");
+            }
+        }
+    }
+
+    public async Task AddProgram()
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(AddStudyProgramPopup.FacultyInputModel), model);
+
+        var modal = Modal.Show<AddStudyProgramPopup>("Dodavanje studijskog programa", parameters);
+        var result = await modal.Result;
+        if (!result.Cancelled)
+            base.StateHasChanged();
+
+    }
+}
