@@ -3,7 +3,214 @@
 @inject IModalService Modal
 @inject ApiService ApiService
 
-<h3>Upravljanje fakultetima</h3>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    ul {
+        margin-left: 20px;
+    }
+     li{
+        list-style-type: none;
+        margin: 10px 0 10px 10px;
+        position: relative;
+    }
+        li:before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -20px;
+            border-left: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            width: 20px;
+            height: 15px;
+        }
+        li:after {
+            position: absolute;
+            content: "";
+            top: 5px;
+            left: -20px;
+            border-left: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            width: 20px;
+            height: 100%;
+        }
+
+        li:last-child:after {
+            display: none;
+        }
+
+    span {
+        display: block;
+        border: 1px solid #ddd;
+        padding: 10px;
+        color: #888;
+        text-decoration: none;
+    }
+        span:hover, span:focus {
+            
+            background: #eee;
+            color: #000;
+            border: 1px solid #eee;
+            cursor:grab;
+           
+        }
+    .h3-tree-title {
+        color: gray;
+        
+    } 
+    .h3-title{
+        color:gray;
+        text-align:center;
+    }
+    
+    .btn{
+        margin-top:1.5rem;
+        margin-bottom:30px;
+    }
+
+
+
+</style>
+
+<div class="container">
+
+    <h3 class="h3-title">Administrator</h3>
+
+
+    <table class="table table-hover table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Korisničko ime</th>
+      <th scope="col">Status</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Nikolina Grahovac</td>
+      <td>
+         <div class="custom-control custom-switch text-center">
+          <input type="checkbox" class="custom-control-input" id="customSwitch1">
+          <label class="custom-control-label" for="customSwitch1"></label>
+        </div>
+      </td>
+      
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Zoran Pantoš</td>
+       <td>
+         <div class="custom-control custom-switch text-center">
+          <input type="checkbox" class="custom-control-input" id="customSwitch2">
+          <label class="custom-control-label" for="customSwitch2"></label>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Aleksandar Jovanović</td>
+       <td>
+         <div class="custom-control custom-switch text-center">
+          <input type="checkbox" class="custom-control-input" id="customSwitch3">
+          <label class="custom-control-label" for="customSwitch3"></label>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+  
+
+
+
+
+
+
+   
+    <h3 class="h3-tree-title">Fakulteti</h3>
+<ul class="wtree">
+  <li>
+    <span>Ekonomski fakultet</span>
+  </li>
+  <li>     
+           <span>Elektrotehnički fakultet</span>
+    <ul>
+      <li>
+        <span>Računarstvo i informatika</span>
+          <ul>
+          <li>
+            <span>Softversko inženjerstvo</span>
+          </li>
+          <li>
+            <span>Računarsko inženjerstvo</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <span>Elektronika i telekomunikacije</span>
+          <ul>
+          <li>
+            <span>Smjer elektronika</span>
+          </li>
+          <li>
+            <span>Smjer telekomunikacije</span>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <span>Elektroenergetika i automatika</span>
+          <ul>
+               <li>
+                <span>Smjer elektroenergetika</span>
+              </li>
+              <li>
+                <span>Smjer automatika</span>
+              </li>
+          </ul>
+      </li>
+     
+    </ul>
+  </li>
+  <li>
+    <span>Mašinski fakultet</span>
+    <ul>
+      <li>
+        <span>Proizvodno mašinstvo</span>       
+      </li>
+         <li>
+        <span>Energetsko i saobraćajno mašinstvo</span>       
+      </li>
+         <li>
+        <span>Mehatronika</span>       
+      </li>
+         <li>
+        <span>Industrijsko inženjerstvo</span>       
+      </li>
+         <li>
+        <span>Zaštita na radu</span>       
+      </li>
+         <li>
+        <span>Konstrukciono mašinstvo</span>       
+      </li>
+    </ul>
+  </li>
+</ul>
+      <button class="btn btn-outline-primary float-right" style="margin-left:0.75rem;">Dodaj fakultet</button>
+  <button class="btn btn-outline-primary float-right">Dodaj studijski program</button>
+
+</div>
+
+
+
+
+
+
+<h3 style="margin-top:150px;">Upravljanje fakultetima</h3>
 
 @if (faculties == null)
 {
