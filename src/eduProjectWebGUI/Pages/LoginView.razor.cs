@@ -28,12 +28,7 @@ namespace eduProjectWebGUI.Pages
             if (result.Successful)
                 Navigation.NavigateTo("/homepage");
             else
-            {
-                if (result.Error.Equals("User suspended"))
-                    Console.WriteLine("User suspended. Please contact your administrator.");
-
-                Console.WriteLine("Error while trying to log in");
-            }
+                Console.WriteLine(result.Error);
         }
     }
 }

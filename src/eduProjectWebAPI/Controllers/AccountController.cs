@@ -232,15 +232,15 @@ namespace eduProjectWebAPI.Controllers
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-            //TODO: Fix BadRequest in multiple return statements
+            //TODO: Fix BadRequest in multiple return statements - FIXED?
 
             if (!result.Succeeded)
-                return BadRequest();
+                return BadRequest("Invalid password");
 
             var user = await userManager.FindByEmailAsync(model.Email);
 
             if (!user.ActiveStatus)
-                return BadRequest();
+                return BadRequest("Account suspended");
 
             var id = user.Id.ToString();
 

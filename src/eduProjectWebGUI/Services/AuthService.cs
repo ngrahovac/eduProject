@@ -33,7 +33,7 @@ namespace eduProjectWebGUI.Services
                 return new LoginResult
                 {
                     Successful = false,
-                    Error = "User suspended"
+                    Error = await response.Content.ReadAsStringAsync()
                 };
             }
 
