@@ -1,0 +1,162 @@
+﻿@page "/admin/accounts"
+@layout LoginLayout
+@inject IModalService Modal
+@inject ApiService ApiService
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    ul {
+        margin-left: 20px;
+    }
+
+    li {
+        list-style-type: none;
+        margin: 10px 0 10px 10px;
+        position: relative;
+    }
+
+        li:before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: -20px;
+            border-left: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            width: 20px;
+            height: 15px;
+        }
+
+        li:after {
+            position: absolute;
+            content: "";
+            top: 5px;
+            left: -20px;
+            border-left: 1px solid #ddd;
+            border-top: 1px solid #ddd;
+            width: 20px;
+            height: 100%;
+        }
+
+        li:last-child:after {
+            display: none;
+        }
+
+    span {
+        display: block;
+        border: 1px solid #ddd;
+        padding: 10px;
+        color: #888;
+        text-decoration: none;
+    }
+
+        span:hover, span:focus {
+            background: #eee;
+            color: #000;
+            border: 1px solid #eee;
+            cursor: grab;
+        }
+
+    .h3-tree-title {
+        color: gray;
+    }
+
+    .h3-title {
+        color: gray;
+        text-align: center;
+    }
+
+    .btn {
+        margin-top: 1.5rem;
+        margin-bottom: 30px;
+    }
+</style>
+
+<h3 class="h3-title">Administrator</h3>
+
+@if (!loaded)
+{
+<h3>Loading...</h3> }
+else
+{
+<div class="container">
+    <h3>Korisnički nalozi</h3>
+
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Korisničko ime</th>
+                <th scope="col">Status</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < accountDisplayModels.Count; ++i)
+            {
+                int index = i;
+<tr>
+    <th scope="row">@accountDisplayModels.ElementAt(index).AccountId</th>
+    <td>@accountDisplayModels.ElementAt(index).Username</td>
+    <td>
+        <div class="custom-control custom-switch text-center">
+            <input type="checkbox" class="custom-control-input" id=@($"customSwitch{index}")
+                   @bind-value="@accountInputModels.ElementAt(index).ActiveStatus">
+            <label class="custom-control-label" for=@($"customSwitch{index}")></label>
+        </div>
+
+
+    </td>
+
+
+
+</tr>}
+
+
+        </tbody>
+    </table>
+
+
+    <button @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
+</div>}
+
+@code
+ { private ICollection<AccountDisplayModel> accountDisplayModels;
+    private ICollection<AccountManagementInputModel> accountInputModels;
+    private bool loaded = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        accountDisplayModels = await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account");
+        accountInputModels = new List<AccountManagementInputModel>();
+        for (int i = 0; i < accountDisplayModels.Count; ++i)
+            accountInputModels.Add(new AccountManagementInputModel
+            {
+                AccountId = accountDisplayModels.ElementAt(i).AccountId,
+                ActiveStatus = false
+            });
+        loaded = true;
+    }
+
+    private async Task UpdateAccounts()
+    {
+        Console.WriteLine("Stanje je sljedece");
+        for (int i = 0; i < accountInputModels.Count; ++i)
+        {
+            accountInputModels.ElementAt(i).ActiveStatus = !accountInputModels.ElementAt(i).ActiveStatus;
+            Console.WriteLine(accountInputModels.ElementAt(i).ActiveStatus);
+        }
+
+
+        /*
+        for (int i = 0; i < accountInputModels.Count; ++i)
+        {
+            await ApiService.PostAsync<AccountManagementInputModel>("/account", accountInputModels.ElementAt(i));
+        }
+        */
+
+    } } 
