@@ -2,6 +2,7 @@
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using System;
@@ -17,12 +18,14 @@ namespace eduProjectWebAPI.Controllers
         private readonly DbConnectionParameters dbConnectionString;
         private readonly IFacultiesRepository faculties;
         private readonly IStudyFieldsRepository studyFields;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public ValueObjectsController(DbConnectionParameters dbConnectionString, IFacultiesRepository faculties, IStudyFieldsRepository studyFields)
+        public ValueObjectsController(DbConnectionParameters dbConnectionString, IFacultiesRepository faculties, IStudyFieldsRepository studyFields, UserManager<ApplicationUser> userManager)
         {
             this.dbConnectionString = dbConnectionString;
             this.faculties = faculties;
             this.studyFields = studyFields;
+            this.userManager = userManager;
         }
 
         [HttpGet("/tags")]
@@ -131,42 +134,64 @@ namespace eduProjectWebAPI.Controllers
         public async Task<ActionResult> AddStudyField(StudyFieldInputModel model)
         {
             //TODO: Add auth check
-
-            try
+            if (await IsUserAdmin())
             {
-                StudyField newField = new StudyField();
-                model.MapTo(newField);
+                try
+                {
+                    StudyField newField = new StudyField();
+                    model.MapTo(newField);
 
-                await studyFields.AddAsync(newField);
+                    await studyFields.AddAsync(newField);
 
-                //TODO: Change to Created
-                return Ok();
+                    //TODO: Change to Created
+                    return Ok();
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
+                }
             }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message + "\n" + e.StackTrace);
-            }
+            else
+                return Forbid();
         }
 
         [HttpPost("/faculties")]
         public async Task<ActionResult> AddFaculty(FacultyInputModel model)
         {
             //TODO: Add auth check
-
-            try
+            if (await IsUserAdmin())
             {
-                Faculty newFaculty = new Faculty();
-                model.MapTo(newFaculty);
+                try
+                {
+                    Faculty newFaculty = new Faculty();
+                    model.MapTo(newFaculty);
 
-                await faculties.AddAsync(newFaculty);
+                    await faculties.AddAsync(newFaculty);
 
-                //TODO: Change to Created
-                return Ok();
+                    //TODO: Change to Created
+                    return Ok();
+                }
+                catch (Exception e)
+                {
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
+                }
             }
-            catch (Exception e)
+            else
+                return Forbid();
+        }
+
+        private async Task<bool> IsUserAdmin()
+        {
+            int? currentUserId = HttpContext.Request.ExtractUserId();
+
+            if (currentUserId != null)
             {
-                return BadRequest(e.Message + "\n" + e.StackTrace);
+                var user = await userManager.FindByIdAsync(currentUserId.ToString());
+
+                return await userManager.IsInRoleAsync(user, "Admin");
             }
+            else
+                return false; //Other alternative?
         }
     }
 }

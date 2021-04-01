@@ -268,27 +268,50 @@ namespace eduProjectWebAPI.Controllers
         public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
         {
             //admin check here
-
-            var user = await userManager.FindByIdAsync(id.ToString());
-
-            if (user != null)
+            if (await IsUserAdmin())
             {
-                user.ActiveStatus = model.ActiveStatus;
+                var user = await userManager.FindByIdAsync(id.ToString());
 
-                await userManager.UpdateAsync(user);
+                if (user != null)
+                {
+                    user.ActiveStatus = model.ActiveStatus;
 
-                return Ok();
+                    await userManager.UpdateAsync(user);
+
+                    return Ok();
+                }
+                else
+                    return BadRequest();
             }
             else
-                return BadRequest();
+                return Forbid();
         }
 
         [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
         {
-            var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
-            return Ok(models);
+            if (await IsUserAdmin())
+            {
+                var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
+                return Ok(models);
+            }
+            else
+                return Forbid();
+        }
+
+        private async Task<bool> IsUserAdmin()
+        {
+            int? currentUserId = HttpContext.Request.ExtractUserId();
+
+            if (currentUserId != null)
+            {
+                var user = await userManager.FindByIdAsync(currentUserId.ToString());
+
+                return await userManager.IsInRoleAsync(user, "Admin");
+            }
+            else
+                return false; //Other alternative?
         }
     }
 }
