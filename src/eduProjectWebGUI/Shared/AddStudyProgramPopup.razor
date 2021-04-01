@@ -1,20 +1,49 @@
 ﻿@layout LoginLayout
 
+<style>
+    .btn-outline-dark{
+        width:100%;
+    }
+    span{
+        border:0px;
+    }
+
+    .float-right {
+        margin-top: 1rem;
+        margin-left:0.75rem;
+    }
+    .blazored-modal-close{
+        border:0;
+    }
+ 
+    
+</style>
+
 <EditForm Model="@model"
           OnValidSubmit="@AddProgram">
+    <div class="mb-3">
+        <label>Naziv studijskog programa</label>
+        <InputText class="form-control" @bind-Value="@model.Name"></InputText>
+    </div>
 
-    <label>Naziv studijskog programa</label>
-    <InputText @bind-Value="@model.Name"></InputText>
-    <label>Ciklus</label>
-    <InputNumber @bind-Value="@model.Cycle"></InputNumber>
-    <label>Trajanje</label>
-    <InputNumber @bind-Value="@model.DurationYears"></InputNumber>
+    <div class="mb-3">
+        <label>Ciklus</label>
+        <InputNumber class="form-control" @bind-Value="@model.Cycle"></InputNumber>
+    </div>
+    <div class="mb-3">
+         <label>Trajanje</label>
+         <InputNumber class="form-control" @bind-Value="@model.DurationYears"></InputNumber>
+    </div>
+    
+    
+   
 
-    <table>
-        <thead>
+
+    <table class="table table-bordered">
+        <thead class="thead-dark">
             <tr>
-                <td>Naziv smjera</td>
-                <td></td>
+                <th>Naziv smjera</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -22,25 +51,23 @@
             {
                 <tr>
                     <td>
-                        <InputText @bind-Value="@spec.Name"></InputText>
+                        <InputText class="form-control" @bind-Value="@spec.Name"></InputText>
                     </td>
-                    <td><button @onclick="@(() => model.StudyProgramSpecializationInputModels.Remove(spec))">Ukloni</button></td>
+                    <td><button class="btn btn-outline-dark" @onclick="@(() => model.StudyProgramSpecializationInputModels.Remove(spec))">Ukloni</button></td>
                 </tr>
             }
         </tbody>
     </table>
 
+    <button type="submit" class="btn btn-primary float-right" >
+        Sačuvaj program
+    </button>
 
-    <br />
-    <button type="button"
+    <button type="button" class="btn btn-outline-primary float-right" 
             @onclick="@(() => model.StudyProgramSpecializationInputModels.Add(new StudyProgramSpecializationInputModel()))">
         Dodaj smjer
     </button>
-
-    <br />
-    <button type="submit">
-        Sačuvaj program
-    </button>
+    
 </EditForm>
 
 @code {

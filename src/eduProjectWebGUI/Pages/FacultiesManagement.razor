@@ -69,102 +69,148 @@
         color: gray;
         text-align: center;
     }
+    .h3-faculty-title{
+        margin-top:5rem;
+        margin-bottom:-1rem;
+    }
 
-    .btn {
+
+    .label-margin {
+        margin-bottom: 0px;
         margin-top: 1.5rem;
-        margin-bottom: 30px;
+    }
+
+    .list-group-item-dark {
+        background: #373a3c;
+        color:white;
+        font-weight:bold;
+    }
+    .list-group-item-dark:hover{
+        cursor:pointer;
+        color:white;
+        text-decoration:none;
+    }
+    .table{
+        margin-bottom:0rem;
+    }
+    .list-group{
+        margin-bottom:1rem;
+    }
+
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 50%;
+        position: absolute;
+        vertical-align:central;
+        margin-top:15rem;
     }
 </style>
 
-<div class="container">
 
-    <h3 class="h3-title">Administrator</h3>
 
-    @if (faculties == null)
+
+@if (faculties == null)
     {
-<h3>Loading...</h3> }
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+      </div>      
+    </div>
+    }
 else
 {
-<h3 class="h3-tree-title">Fakulteti</h3>
-                <br />
-                                <ul class="wtree">
-                                    @foreach (var f in faculties)
-                                    {
-                    <li>
-                        <span>@f.Name</span>
-                        <ul>
+    <div class="container">
+    <h3 class="h3-title">Administrator</h3>
+    <h3 class="h3-tree-title">Fakulteti</h3>
+    <ul class="wtree">
+        @foreach (var f in faculties)
+            {
+            <li>
+                <span>@f.Name</span>  
+                <ul>
+                        @foreach (var sp in f.StudyPrograms)
+                            {
                             <li>
-                                @foreach (var sp in f.StudyPrograms)
-                                {
-            <span>@sp.Name</span>
+                                <span>@sp.Name [Ciklus: @sp.Cycle] [Trajanje: @sp.DurationYears] </span>
+                                <ul> 
                                     @if (sp.StudyProgramSpecializations.Count != 0)
-                                    {
-            <ul>
-                @foreach (var sps in sp.StudyProgramSpecializations)
-                {
-<li>
-    <span>@sps.Name</span>
-</li>
-}
-            </ul>}}
+                                        {    
+                                        @foreach (var sps in sp.StudyProgramSpecializations)
+                                            {
+                                            <li>
+                                                <span>@sps.Name </span>
+                                            </li>
+                                            }
+                                        }
+                                </ul>                        
                             </li>
-                        </ul>
-                    </li>
-}
-
-                                </ul>
-                                                <button class="btn btn-outline-primary float-right" style="margin-left:0.75rem;">Dodaj fakultet</button>
-                                                                <button class="btn btn-outline-primary float-right">Dodaj studijski program</button>}
-
-</div>
+                            }
+                </ul>
+            </li>
+            }
+    </ul>
+   
 
 
-
-
-
-<h3 class="h3-title">Dodavanje fakulteta</h3>
+        <h3 class="h3-faculty-title">Dodavanje fakulteta</h3>
 
 <EditForm OnValidSubmit="@AddFaculty" Model="@model">
-    <h5>Naziv</h5>
-    <InputText @bind-Value="@model.Name"></InputText>
+    <label class="label-margin">Naziv</label>
+    <InputText  @bind-Value="@model.Name" class="form-control"></InputText>
 
-    <h5>Adresa</h5>
-    <InputText @bind-Value="@model.Address"></InputText>
+    <label class="label-margin">Adresa</label>
+    <InputText @bind-Value="@model.Address" class="form-control"></InputText>
 
-    <h5>Dodani studijski programi</h5>
+    <h4 class="h3-tree-title" style="margin-top:1rem;">Dodani studijski programi</h4>
     @foreach (var prog in model.StudyProgramInputModels)
     {
-<table>
-    <thead>
-        <tr>
-            <td>Naziv</td>
-            <td>Ciklus</td>
-            <td>Trajanje</td>
-            <td>Akcija</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>@prog.Name</td>
-            <td>@prog.Cycle</td>
-            <td>@prog.DurationYears</td>
-            <td><button @onclick="@(() => model.StudyProgramInputModels.Remove(prog))">Ukloni</button></td>
-        </tr>
-    </tbody>
-</table>
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Naziv</th>
+                    <th>Ciklus</th>
+                    <th>Trajanje</th>
+                    <th width="30px">Akcija</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@prog.Name</td>
+                    <td>@prog.Cycle</td>
+                    <td>@prog.DurationYears</td>
+                    <td><button class="btn btn-outline-dark" @onclick="@(() => model.StudyProgramInputModels.Remove(prog))" style="width:100%">Ukloni</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="list-group">
+             <a class="list-group-item list-group-item-dark dark" aria-disabled="true"> Studijski smjerovi  </a>
+             @foreach (var spec in prog.StudyProgramSpecializationInputModels)
+             { 
+                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">@spec.Name</a>
+             }
+            
 
-                    <h6>Studijski smjerovi</h6>
-                                        <ul class="list-group">
-                                            @foreach (var spec in prog.StudyProgramSpecializationInputModels)
-                                            {
-                        <li>@spec.Name</li>}
-                                        </ul>}
-
-    <br />
-    <button type="button" @onclick="@AddProgram">Dodaj studijski program</button>
-    <br />
-    <button type="submit">Dodaj fakultet</button>
+        </div>
+                    }
 </EditForm>
+
+         <button class="btn btn-primary float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
+            <button class="btn btn-outline-primary float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
+    </div>
+
+
+    
+
+
+}
+
+
+
+
+
+
 
 
 @code
@@ -202,6 +248,7 @@ else
         var parameters = new ModalParameters();
         parameters.Add(nameof(AddStudyProgramPopup.FacultyInputModel), model);
 
+        
         var modal = Modal.Show<AddStudyProgramPopup>("Dodavanje studijskog programa", parameters);
         var result = await modal.Result;
         if (!result.Cancelled)
