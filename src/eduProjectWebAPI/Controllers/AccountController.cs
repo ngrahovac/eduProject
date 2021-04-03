@@ -43,7 +43,8 @@ namespace eduProjectWebAPI.Controllers
                 var newUser = new ApplicationUser
                 {
                     UserName = model.Email,
-                    Email = model.Email
+                    Email = model.Email,
+                    ActiveStatus = true
                 };
 
                 newUser.Id = GetNextAvailableUserId();
