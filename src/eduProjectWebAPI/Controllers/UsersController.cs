@@ -116,8 +116,9 @@ namespace eduProjectWebAPI.Controllers
                 user = fm;
             }
 
-            var usersIds = await userManager.Users.Select(u => u.Id).ToListAsync();
-            int userId = usersIds.Count == 0 ? 1 : int.Parse(usersIds.Max()) + 1;
+            var usersIds = await userManager.Users.Select(u => int.Parse(u.Id)).ToListAsync();
+
+            int userId = usersIds.Count == 0 ? 1 : usersIds.Max();
             user.UserId = userId;
             await users.AddAsync(user);
             return NoContent(); // TODO: Change to 201

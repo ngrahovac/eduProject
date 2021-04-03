@@ -14,8 +14,8 @@ namespace eduProjectWebGUI.Pages
         [Parameter]
         public int UserId { get; set; }
 
-        private UserSettingsDisplayModel displayModel;
-        private UserSettingsInputModel inputModel;
+        private UserSettingsDisplayModel userSettingsDisplayModel;
+        private UserSettingsInputModel userSettingsInputModel;
 
         private ICollection<Tag> tags = new List<Tag>();
 
@@ -23,7 +23,7 @@ namespace eduProjectWebGUI.Pages
         private Tag AddedTag
         {
             get { return addedTag; }
-            set { addedTag = value; inputModel.UserTagNames.Add(value.Name); }
+            set { addedTag = value; userSettingsInputModel.UserTagNames.Add(value.Name); }
         }
 
         protected async override Task OnInitializedAsync()
@@ -31,8 +31,8 @@ namespace eduProjectWebGUI.Pages
             try
             {
                 tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
-                displayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
-                inputModel = new UserSettingsInputModel(displayModel);
+                userSettingsDisplayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
+                userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
             }
             catch (Exception ex)
             {
@@ -47,7 +47,7 @@ namespace eduProjectWebGUI.Pages
 
         private async Task UpdateSettings()
         {
-            await ApiService.PutAsync($"/users/{UserId}/settings", inputModel);
+            await ApiService.PutAsync($"/users/{UserId}/settings", userSettingsInputModel);
             NavigationManager.NavigateTo($"/users/{UserId}/settings", true);
         }
 

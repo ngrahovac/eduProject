@@ -1,4 +1,5 @@
 ﻿using eduProjectModel.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
@@ -12,6 +13,7 @@ namespace eduProjectWebAPI.Data
     public class UsersRepository : IUsersRepository
     {
         private readonly DbConnectionParameters dbConnectionParameters;
+        private readonly UserManager<ApplicationUser> userManager;
 
         public UsersRepository(DbConnectionParameters dbConnectionParameters)
         {
@@ -194,11 +196,18 @@ namespace eduProjectWebAPI.Data
         private async Task AddUserData(MySqlCommand command, User user)
         {
             command.CommandText = @"INSERT INTO user
-                                    (first_name, last_name)
+                                    (user_id, first_name, last_name, user_account_type_id)
                                     VALUES
-                                    (@firstName, @lastName)";
+                                    (@userId, @firstName, @lastName, @accountTypeId)";
 
             command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
 
             command.Parameters.Add(new MySqlParameter
             {
@@ -212,6 +221,13 @@ namespace eduProjectWebAPI.Data
                 DbType = DbType.String,
                 ParameterName = "@lastName",
                 Value = user.LastName
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@accountTypeId",
+                Value = user is Student ? 1 : 2
             });
 
             await command.ExecuteNonQueryAsync();
