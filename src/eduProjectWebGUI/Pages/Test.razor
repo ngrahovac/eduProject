@@ -1,0 +1,16 @@
+﻿@page "/test"
+@layout LoginLayout
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <h2>Welcome Admin</h2>
+    </Authorized>
+
+    <NotAuthorized>
+        <h2>Not Allowed</h2>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+}

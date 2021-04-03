@@ -31,7 +31,9 @@ namespace eduProjectWebGUI.Utils
                 return null;
 
             var claims = ParseClaimsFromJwt(token).ToArray();
-            return int.Parse(claims[1].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
+
+            //old value: claims[1] - caused index out of the bounds exception because role claim is added
+            return int.Parse(claims[2].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
         }
 
         private static byte[] ParseBase64WithoutPadding(string base64)

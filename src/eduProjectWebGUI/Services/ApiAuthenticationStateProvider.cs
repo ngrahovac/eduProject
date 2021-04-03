@@ -96,9 +96,10 @@ namespace eduProjectWebGUI.Services
                     claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
                 
                 keyValuePairs.Remove(ClaimTypes.Role);
-            }
 
-            claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+                //if something around here breaks, this call was originally outside of this if branch, if this information is of any value
+                claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
+            }
 
             //_____________________________________________
             keyValuePairs.TryGetValue(ClaimTypes.NameIdentifier, out object id);
@@ -116,6 +117,7 @@ namespace eduProjectWebGUI.Services
                 claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
             }
             //_____________________________________________
+
             return claims;
         }
 

@@ -233,8 +233,6 @@ namespace eduProjectWebAPI.Controllers
 
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
-            //TODO: Fix BadRequest in multiple return statements - FIXED?
-
             if (!result.Succeeded)
                 return BadRequest("Invalid password");
 
@@ -245,10 +243,13 @@ namespace eduProjectWebAPI.Controllers
 
             var id = user.Id.ToString();
 
+            string role = await userManager.IsInRoleAsync(user, "Admin") ? "Admin" : "User";
+
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, model.Email),
-                new Claim(ClaimTypes.NameIdentifier, id)
+                new Claim(ClaimTypes.NameIdentifier, id),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSecurityKey"]));
