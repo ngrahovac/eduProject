@@ -48,14 +48,19 @@ else
 
     <h3 class="h3-faculty-title">Dodavanje naučne oblasti</h3>
     <EditForm Model="@model" OnValidSubmit="@AddStudyField">
+        <DataAnnotationsValidator />
+
         <label>Naziv oblasti</label>
-        <InputText @bind-Value="@model.Name"></InputText>
+        <InputText class="form-control" @bind-Value="@model.Name"></InputText>
+        <p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
+
         <label>Opis oblasti</label>
         <InputText @bind-Value="@model.Description"></InputText>
 
+        <button type="submit" class="btn btn-primary float-right" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
     </EditForm>
 
-    <button class="btn btn-primary float-right" @onclick="@AddStudyField" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
+    
 </div>}
 
 
