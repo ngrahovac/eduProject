@@ -7,19 +7,24 @@
         padding-top: 7rem;
         padding-bottom: 7rem;
     }
+
     .container {
         margin-bottom: 60px;
     }
+
     .tags-margin-right {
         margin-right: 5px;
     }
-    .h3-title{
-        color:gray;
-        text-align:center;
+
+    .h3-title {
+        color: gray;
+        text-align: center;
     }
+
     .selected-row {
         background-color: rgba(0,0,0,.3) !important;
     }
+
     .spinner-border {
         width: 60px;
         height: 60px;
@@ -32,42 +37,36 @@
         margin-bottom: 0.3rem;
     }
 
-    .btn{
-        margin-top:1rem;
+    .btn {
+        margin-top: 1rem;
     }
-   
 </style>
 
 
 
 @if (userProfileInputModel == null)
 {
-    <div class="d-flex justify-content-center">
-      <div class="spinner-border text-primary" role="status">
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
         <span class="sr-only"></span>
-      </div>      
     </div>
-   
-}
+</div> }
 else
 {
 
-    <div class="container">
-        <h3 class="h3-title">Registracija</h3>
-         <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
+<div class="container">
+    <h3 class="h3-title">Registracija</h3>
+    <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
 
-        <UserInformationView UserProfileInputModel="@userProfileInputModel"
-                             faculties="@faculties"
-                             studyFields="@studyFields"></UserInformationView>
+    <UserInformationView UserProfileInputModel="@userProfileInputModel"
+                         faculties="@faculties"
+                         studyFields="@studyFields"></UserInformationView>
 
-        <button class="btn btn-outline-primary float-right" @onclick="@RegisterUser">Registruj se</button>
+    <button class="btn btn-outline-primary float-right" @onclick="@RegisterUser">Registruj se</button>
 
-    </div>
-}
+</div>            }
 
-@code {
-
-    private UserProfileInputModel userProfileInputModel = new UserProfileInputModel();
+@code { private UserProfileInputModel userProfileInputModel = new UserProfileInputModel();
     private RegisterInputModel registerInputModel = new RegisterInputModel();
     private ICollection<Faculty> faculties = new List<Faculty>();
     private ICollection<StudyField> studyFields = new List<StudyField>();
@@ -88,5 +87,4 @@ else
         await ApiService.PostAsync("/users", userProfileInputModel);
 
         NavigationManager.NavigateTo("/account/login");
-    }
-}
+    } }

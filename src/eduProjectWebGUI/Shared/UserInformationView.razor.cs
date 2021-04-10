@@ -14,9 +14,6 @@ namespace eduProjectWebGUI.Shared
     public partial class UserInformationView
     {
 
-        // input model for collaborator profile the user is currently creating
-        private CollaboratorProfileInputModel collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-
         // selected values
         private string cycleStr;
         private string yearStr;
@@ -24,8 +21,11 @@ namespace eduProjectWebGUI.Shared
         [Parameter] public UserProfileInputModel UserProfileInputModel { get; set; }
 
         // combo boxes backing lists
-        [Parameter] public ProjectInputModel ProjectInputModel { get; set; }
-        [Parameter] public ICollection<StudyField> studyFields { get; set; } = new List<StudyField>();
+        [Parameter]
+        public bool Editing { get; set; } = false;
+
+        [Parameter]
+        public ICollection<StudyField> studyFields { get; set; } = new List<StudyField>();
         [Parameter] public ICollection<Faculty> faculties { get; set; } = new List<Faculty>();
         [Parameter] public bool editingProfile { get; set; }
         [Parameter] public int profileIndex { get; set; }
@@ -149,32 +149,25 @@ namespace eduProjectWebGUI.Shared
 
         protected override async Task OnInitializedAsync()
         {
-            /*
-            if (editingProfile == true)
+            if (Editing == true)
             {
-                collaboratorProfileInputModel = ProjectInputModel.CollaboratorProfileInputModels.ElementAt(profileIndex);
-                base.StateHasChanged();
-
-                var model = collaboratorProfileInputModel;
-                await CollaboratorProfileTypeChanged(model.CollaboratorProfileType);
-
-                if (model.CollaboratorProfileType == CollaboratorProfileType.Student)
+                if (UserProfileInputModel.UserAccountType == UserAccountType.Student)
                 {
-                    if (model.FacultyName != null)
+                    if (UserProfileInputModel.FacultyName != null)
                     {
-                        await FacultySelected(model.FacultyName);
-                        if (model.Cycle != null)
+                        await FacultySelected(UserProfileInputModel.FacultyName);
+                        if (UserProfileInputModel.Cycle != null)
                         {
-                            await CycleSelected(model.Cycle.ToString());
-                            if (model.StudyProgramName != null)
+                            await CycleSelected(UserProfileInputModel.Cycle.ToString());
+                            if (UserProfileInputModel.StudyProgramName != null)
                             {
-                                await ProgramSelected(model.StudyProgramName);
-                                if (model.StudyYear != null)
+                                await ProgramSelected(UserProfileInputModel.StudyProgramName);
+                                if (UserProfileInputModel.StudyYear != null)
                                 {
-                                    await YearSelected(model.StudyYear.ToString());
-                                    if (model.StudyProgramSpecializationName != null)
+                                    await YearSelected(UserProfileInputModel.StudyYear.ToString());
+                                    if (UserProfileInputModel.StudyProgramSpecializationName != null)
                                     {
-                                        await SpecializationSelected(model.StudyProgramSpecializationName);
+                                        await SpecializationSelected(UserProfileInputModel.StudyProgramSpecializationName);
                                     }
                                 }
                             }
@@ -182,20 +175,23 @@ namespace eduProjectWebGUI.Shared
                     }
                 }
 
-                else if (model.CollaboratorProfileType == CollaboratorProfileType.FacultyMember)
+                else if (UserProfileInputModel.UserAccountType == UserAccountType.FacultyMember)
                 {
-                    if (model.FacultyName != null)
+                    if (UserProfileInputModel.FacultyName != null)
                     {
-                        await FacultySelected(model.FacultyName);
+                        await FacultySelected(UserProfileInputModel.FacultyName);
                     }
-                    Console.WriteLine($"NAUCNA OBLAST JE {model.StudyFieldName}");
+                    Console.WriteLine($"NAUCNA OBLAST JE {UserProfileInputModel.StudyFieldName}");
                     base.StateHasChanged();
                 }
             }
-            */
+
         }
 
-
+        protected override async Task OnParametersSetAsync()
+        {
+            base.StateHasChanged();
+        }
         /*
     private async void SaveUserProfile()
     {

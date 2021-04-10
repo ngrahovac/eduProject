@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using eduProjectModel.Display;
+using System.ComponentModel.DataAnnotations;
 
 namespace eduProjectModel.Input
 {
@@ -18,5 +19,15 @@ namespace eduProjectModel.Input
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Lozinke se ne podudaraju")]
         public string ConfirmPassword { get; set; }
+
+        public RegisterInputModel()
+        {
+
+        }
+
+        public RegisterInputModel(AccountDisplayModel model)
+        {
+            Email = model.Email;
+        }
     }
 }

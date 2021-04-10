@@ -3,19 +3,19 @@
     <EditForm Model="@UserProfileInputModel">
         <DataAnnotationsValidator />
         <hr />
-        
-         <div class="mb-3">
+
+        <div class="mb-3">
             <label>Ime</label>
             <InputText class="form-control" @bind-Value="@UserProfileInputModel.FirstName"></InputText>
-         </div>
-         <div class="mb-3">
+        </div>
+        <div class="mb-3">
             <label>Prezime</label>
             <InputText class="form-control" @bind-Value="@UserProfileInputModel.LastName"></InputText>
-         </div>
+        </div>
 
-         <div class="mb-3">
+        <div class="mb-3">
             <label>Tip korisnika</label>
-             
+
             <InputSelect class="form-control" TValue="UserAccountType"
                          ValueChanged="@((UserAccountType t) => UserAccountTypeChanged(t))"
                          ValueExpression="@(() => UserProfileInputModel.UserAccountType)"
@@ -35,7 +35,7 @@
             <p style="color:red"><ValidationMessage For="@(() => UserProfileInputModel.UserAccountType)" /></p>
         </div>
 
-         <div class="mb-3">
+        <div class="mb-3">
             <label>Fakultet</label>
             <InputSelect class="form-control" TValue="@string"
                          ValueChanged="@((string f) => FacultySelected(f))"
@@ -55,10 +55,10 @@
 
                 }
             </InputSelect>
-         </div>
+        </div>
         @if (UserProfileInputModel.UserAccountType == UserAccountType.Student)
         {
-             <div class="mb-3">
+            <div class="mb-3">
                 <label>Ciklus</label>
                 <InputSelect class="form-control" TValue="@string"
                              ValueChanged="@((string c) => { CycleSelected(c); })"
@@ -78,7 +78,7 @@
                     }
 
                 </InputSelect>
-             </div>
+            </div>
             <div class="mb-3">
                 <label>Studijski program</label>
                 <InputSelect class="form-control" TValue="@string"
@@ -88,7 +88,7 @@
                     <option></option>
                     @foreach (var p in programs)
                     {
-                        if (p.Name == collaboratorProfileInputModel.StudyProgramName)
+                        if (p.Name == UserProfileInputModel.StudyProgramName)
                         {
                             <option selected value="@p.Name">@p.Name</option>
                         }
@@ -118,8 +118,8 @@
                         }
                     }
                 </InputSelect>
-             </div>
-             <div class="mb-3">
+            </div>
+            <div class="mb-3">
                 <label>Godina</label>
                 <InputSelect class="form-control" TValue="@string"
                              ValueChanged="@((string y) => { YearSelected(y); })"
@@ -138,12 +138,12 @@
                         }
                     }
                 </InputSelect>
-             </div>
+            </div>
         }
 
         @if (UserProfileInputModel.UserAccountType == UserAccountType.FacultyMember)
         {
-             <div class="mb-3">
+            <div class="mb-3">
                 <label>Akademsko zvanje</label>
                 <InputSelect class="form-control" @bind-Value="@UserProfileInputModel.AcademicRank">
                     @foreach (var value in Enum.GetValues(typeof(AcademicRank)))
@@ -158,25 +158,25 @@
                             }
                         }
                 </InputSelect>
-             </div>
-             <div class="mb-3">
-               <label>Uža naučna oblast</label>
-               <InputSelect class="form-control" TValue="string"
-                            @bind-Value="@UserProfileInputModel.StudyFieldName">
-                   <option value=null></option>
-                   @foreach (var sf in studyFields)
-                   {
-                       if (sf.Name == collaboratorProfileInputModel.StudyFieldName)
-                       {
-                           <option selected value="@sf.Name">@sf.Name</option>
-                       }
-                       else
-                       {
-                           <option value="@sf.Name">@sf.Name</option>
-                       }
-                   }
-               </InputSelect>
-             </div>
+            </div>
+            <div class="mb-3">
+                <label>Uža naučna oblast</label>
+                <InputSelect class="form-control" TValue="string"
+                             @bind-Value="@UserProfileInputModel.StudyFieldName">
+                    <option value=null></option>
+                    @foreach (var sf in studyFields)
+                    {
+                        if (sf.Name == UserProfileInputModel.StudyFieldName)
+                        {
+                            <option selected value="@sf.Name">@sf.Name</option>
+                        }
+                        else
+                        {
+                            <option value="@sf.Name">@sf.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
         }
     </EditForm>
 
