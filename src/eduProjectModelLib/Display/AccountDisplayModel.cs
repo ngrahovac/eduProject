@@ -6,6 +6,7 @@ namespace eduProjectModel.Display
     {
         public int AccountId { get; set; }
         public string Username { get; set; }
+        public string Email { get; set; }
 
         public AccountDisplayModel()
         {
@@ -16,6 +17,7 @@ namespace eduProjectModel.Display
         {
             AccountId = int.Parse(user.Id);
             Username = user.UserName;
+            Email = user.Email;
         }
     }
 }
