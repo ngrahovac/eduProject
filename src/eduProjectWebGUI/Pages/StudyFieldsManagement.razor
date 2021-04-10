@@ -1,0 +1,88 @@
+﻿@page "/admin/fields"
+@layout LoginLayout
+@inject IModalService Modal
+@inject ApiService ApiService
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 50%;
+        position: absolute;
+        vertical-align: central;
+        margin-top: 15rem;
+    }
+
+    .h3-title {
+        color: gray;
+        text-align: center;
+    }
+</style>
+
+
+@if (fields == null)
+{
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only"></span>
+    </div>
+</div> }
+else
+{
+<div class="container">
+    <h3 class="h3-title">Administrator</h3>
+    <h3 class="h3-tree-title">Naučne oblasti</h3>
+    <ul class="list-group">
+        @foreach (var field in fields)
+        {
+<li class="list-group-item">@field.Name</li>
+}
+    </ul>
+
+    <h3 class="h3-faculty-title">Dodavanje naučne oblasti</h3>
+    <EditForm Model="@model" OnValidSubmit="@AddStudyField">
+        <label>Naziv oblasti</label>
+        <InputText @bind-Value="@model.Name"></InputText>
+        <label>Opis oblasti</label>
+        <InputText @bind-Value="@model.Description"></InputText>
+
+    </EditForm>
+
+    <button class="btn btn-primary float-right" @onclick="@AddStudyField" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
+</div>}
+
+
+
+
+
+
+
+
+@code
+{ ICollection<StudyField> fields;
+
+    StudyFieldInputModel model = new StudyFieldInputModel();
+    protected override async Task OnInitializedAsync()
+    {
+        fields = (await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields")).Values.ToList();
+
+    }
+
+
+    public async Task AddStudyField()
+    {
+        await ApiService.PostAsync("/fields", model);
+        fields.Add(new StudyField
+        {
+            Name = model.Name,
+            Description = model.Description
+        });
+
+    } }
