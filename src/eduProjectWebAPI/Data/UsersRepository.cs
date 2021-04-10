@@ -375,8 +375,15 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.String,
-                ParameterName = "@fistName",
+                ParameterName = "@firstName",
                 Value = user.FirstName
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.String,
+                ParameterName = "@lastName",
+                Value = user.LastName
             });
 
             command.Parameters.Add(new MySqlParameter
@@ -426,7 +433,7 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.Int32,
-                ParameterName = "@specialiationId",
+                ParameterName = "@specializationId",
                 Value = s.StudyProgramSpecializationId
             });
 
