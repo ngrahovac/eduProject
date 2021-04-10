@@ -20,6 +20,10 @@ namespace eduProjectModel.Input
         [Compare("Password", ErrorMessage = "Lozinke se ne podudaraju")]
         public string ConfirmPassword { get; set; }
 
+        [Required(ErrorMessage = "Polje ne može biti prazno.")]
+        [DataType(DataType.Password)]
+        public string ExistingPassword { get; set; }
+
         public RegisterInputModel()
         {
 

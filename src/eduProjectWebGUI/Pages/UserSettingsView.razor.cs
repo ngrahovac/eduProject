@@ -66,7 +66,7 @@ namespace eduProjectWebGUI.Pages
 
         private async Task UpdateAccountInformation()
         {
-            throw new NotImplementedException();
+            await ApiService.PutAsync($"/account/{UserId}", registerInputModel);
         }
 
         private async Task UpdateSettings()
