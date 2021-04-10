@@ -73,6 +73,9 @@ namespace eduProjectWebAPI.Controllers
             return BadRequest(ModelState);
         }
 
+
+        // ZORANE treba nam metoda za update emaila i lozinke postojeceg usera, dodala sam AccountId u RegisterInputModel
+        // ZORANE zasto je ovo get action metoda? bruh
         [HttpGet]
         [Route("[action]")]
         [AllowAnonymous]
@@ -301,6 +304,20 @@ namespace eduProjectWebAPI.Controllers
             else
                 return Forbid();
         }
+
+        [AllowAnonymous]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AccountDisplayModel>> GetById(int id)
+        {
+            var userAccount = await userManager.FindByIdAsync($"{id}");
+            if (userAccount == null)
+                return NotFound();
+
+            return new AccountDisplayModel(userAccount);
+        }
+
+
+
 
         private async Task<bool> IsUserAdmin()
         {
