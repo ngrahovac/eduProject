@@ -44,7 +44,7 @@
 @if (ProfileDisplayModel == null)
 {
     <div class="d-flex justify-content-center">
-      <div class="spinner-border text-primary" role="status">
+      <div class="spinner-border text-info" role="status">
         <span class="sr-only"></span>
       </div>      
     </div>
@@ -173,12 +173,12 @@ else
             {
                 <row>
 
-                     <a class="btn btn-lg btn-outline-dark" style="margin-top:5px;"  @onclick="@(async () =>
+                     <a class="btn btn-lg btn-outline-info" style="margin-top:5px;"  @onclick="@(async () =>
                                                               {
                                                                   NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})"
                         >Moje prijave</a>
 
-                     <a class="btn btn-lg btn-outline-dark" style="margin-top:5px;"  @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))"
+                     <a class="btn btn-lg btn-outline-info" style="margin-top:5px;"  @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))"
                         >Opcije</a>
 
                     <a class="btn btn-lg btn-outline-primary" type="submit" @onclick="@(async () =>

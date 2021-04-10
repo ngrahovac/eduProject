@@ -1,9 +1,14 @@
 ﻿@page "/admin/faculties"
-@layout LoginLayout
+@layout AdminLayout
 @inject IModalService Modal
 @inject ApiService ApiService
 
 <style>
+
+    .container {
+        padding-top:2rem;
+    }
+
     * {
         margin: 0;
         padding: 0;
@@ -101,10 +106,8 @@
         width: 60px;
         height: 60px;
         text-align: center;
-        top: 50%;
+        top: 40%;
         position: absolute;
-        vertical-align:central;
-        margin-top:15rem;
     }
 </style>
 
@@ -114,7 +117,7 @@
 @if (faculties == null)
     {
     <div class="d-flex justify-content-center">
-      <div class="spinner-border text-primary" role="status">
+      <div class="spinner-border text-info" role="status">
         <span class="sr-only"></span>
       </div>      
     </div>
@@ -196,8 +199,8 @@ else
                     }
 </EditForm>
 
-         <button class="btn btn-primary float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
-            <button class="btn btn-outline-primary float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
+         <button class="btn btn-outline-info float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
+            <button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
     </div>
 
 

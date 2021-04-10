@@ -18,7 +18,7 @@
 @if (ProjectApplicationsDisplayModel == null)
 {
      <div class="d-flex justify-content-center">
-                  <div class="spinner-border text-primary" role="status">
+                  <div class="spinner-border text-info" role="status">
                     <span class="sr-only"></span>
                   </div>      
                 </div>
@@ -82,7 +82,7 @@ else
     }
 
     <div class="buttons">
-        <button class="btn btn-primary" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
+        <button class="btn btn-outline-info" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
     </div>
 </div>
 }

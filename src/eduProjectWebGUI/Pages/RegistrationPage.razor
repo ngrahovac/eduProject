@@ -47,7 +47,7 @@
 @if (userProfileInputModel == null)
 {
 <div class="d-flex justify-content-center">
-    <div class="spinner-border text-primary" role="status">
+    <div class="spinner-border text-info" role="status">
         <span class="sr-only"></span>
     </div>
 </div> }
@@ -62,7 +62,7 @@ else
                          faculties="@faculties"
                          studyFields="@studyFields"></UserInformationView>
 
-    <button class="btn btn-outline-primary float-right" @onclick="@RegisterUser">Registruj se</button>
+    <button class="btn btn-outline-info float-right" @onclick="@RegisterUser">Registruj se</button>
 
 </div>            }
 

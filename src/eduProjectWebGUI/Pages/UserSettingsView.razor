@@ -44,7 +44,7 @@
 @if (userSettingsDisplayModel == null)
 {
     <div class="d-flex justify-content-center">
-        <div class="spinner-border text-primary" role="status">
+        <div class="spinner-border text-info" role="status">
             <span class="sr-only"></span>
         </div>
     </div> }
@@ -140,8 +140,8 @@ else
                 </NotFoundTemplate>
             </BlazoredTypeahead>
 
-            <button class="btn btn-primary float-right" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
-            <button class="btn btn-outline-dark float-right" @onclick="@CancelUpdateSettings">Odustani</button>
+            <button class="btn btn-outline-info float-right" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
+            <button class="btn btn-outline-primary float-right" @onclick="@CancelUpdateSettings">Odustani</button>
 
 
 
