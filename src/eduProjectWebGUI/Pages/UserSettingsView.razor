@@ -35,9 +35,18 @@
         margin-bottom: 0.7rem;
     }
 
-    .btn {
+    .btn-save {
         margin-top: 0.7rem;
         margin-left: 0.5rem;
+    }
+ 
+
+    .h3-subtitle{
+        margin-top:0;
+    }
+
+    hr{
+        margin-top:4rem;
     }
 </style>
 
@@ -61,12 +70,12 @@ else
 
         <h3>Podaci naloga</h3>
         <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
-        <button type="button" @onclick="@UpdateAccountInformation">Sačuvaj</button>
+        <button class="btn btn-outline-info float-right" @onclick="@UpdateAccountInformation">Sačuvaj</button>
         <hr />
 
         @if (userProfileInputModel.UserAccountType is UserAccountType.Student)
         {
-            <h3>Podaci o studiranju</h3>}
+            <h3 class="h3-subtitle">Podaci o studiranju</h3>}
         else
         {
             <h3>Podaci o zaposlenju</h3>}
@@ -75,11 +84,11 @@ else
                              studyFields="@studyFields"
                              Editing="true"></UserInformationView>
 
-        <button type="button" @onclick="@UpdateUserInformation">Sačuvaj</button>
+        <button class="btn btn-outline-info float-right" @onclick="@UpdateUserInformation">Sačuvaj</button>
         <hr />
 
 
-        <h3>Podaci profila</h3>
+        <h3 class="h3-subtitle">Podaci profila</h3>
         <EditForm Model="@userSettingsInputModel">
             <label class="label-margin">Biografija</label>
             <InputTextArea class="form-control" @bind-Value="@userSettingsInputModel.Bio"></InputTextArea>
@@ -124,6 +133,8 @@ else
                 <label class="form-control">Vidljivi projekti</label>
             </div>
 
+
+             <label class="label-margin">Tagovi</label>
             <TagsOverview Editing="true" TagNames="@userSettingsInputModel.UserTagNames"></TagsOverview>
 
             <BlazoredTypeahead SearchMethod="@FilterTags"
@@ -140,8 +151,8 @@ else
                 </NotFoundTemplate>
             </BlazoredTypeahead>
 
-            <button class="btn btn-outline-info float-right" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
-            <button class="btn btn-outline-primary float-right" @onclick="@CancelUpdateSettings">Odustani</button>
+            <button class="btn btn-outline-info float-right btn-save" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
+            <button class="btn btn-outline-primary float-right btn-save" @onclick="@CancelUpdateSettings">Odustani</button>
 
 
 

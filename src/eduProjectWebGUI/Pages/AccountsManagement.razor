@@ -79,9 +79,17 @@
         margin-top: 1.5rem;
         margin-bottom: 30px;
     }
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 40%;
+        position: absolute;
+    }
+
 </style>
 
-<h3 class="h3-title">Administrator</h3>
+
 
 @if (!loaded)
 {
@@ -94,6 +102,9 @@
 else
 {
 <div class="container">
+
+    <h3 class="h3-title">Administrator</h3>
+
     <h3>Korisnički nalozi</h3>
 
     <table class="table table-hover table-bordered">

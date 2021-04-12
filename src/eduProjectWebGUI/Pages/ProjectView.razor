@@ -52,12 +52,14 @@
     }
         .table tr:hover {
             cursor: pointer;
-            background: rgba(0,0,0,.075);
+            background: #029acf;
         }
 
 
     .selected-row {
-        background-color: rgba(0,0,0,.3) !important;
+        /*background-color: rgba(0, 251, 255, 0.3) !important;*/
+        background-color: #029acf;
+       
     }
 
     .tags {
@@ -74,9 +76,9 @@
 
             .tags .tag:hover {
                 color: #FFF;
-                background-color: #d9230f;
-                border-color: #d9230f;
-                cursor:none;
+                background-color: #029acf;
+                border-color: #029acf;
+                cursor: none;
             }
 
     .spinner-border {
@@ -158,7 +160,7 @@
                 @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
                 {
         <div class="buttons">
-            <button class="btn btn-primary" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
+            <button class="btn btn-outline-info" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
         </div>
                        
                    

@@ -8,9 +8,7 @@
         padding-top: 7rem;
     }
 
-    .btn-outline-danger {
-        border-color: transparent;
-    }
+  
 
     .container {
         margin-bottom: 60px;
@@ -37,6 +35,13 @@
         top: 40%;
         position: absolute;
     }
+
+    .btn-group {
+        display: block;
+    }
+        .btn-group button:not(:last-child) {
+            border-bottom: none;
+        }
     
 </style>
 
@@ -171,22 +176,22 @@ else
 
             @if (ProfileDisplayModel.IsDisplayPersonal == true)
             {
-                <row>
+                <div class="btn-group">
 
-                     <a class="btn btn-lg btn-outline-info" style="margin-top:5px;"  @onclick="@(async () =>
+                     <a class="btn btn-outline-info" style="margin-top:5px;"  @onclick="@(async () =>
                                                               {
                                                                   NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})"
                         >Moje prijave</a>
 
-                     <a class="btn btn-lg btn-outline-info" style="margin-top:5px;"  @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))"
+                     <a class="btn btn-outline-info" style="margin-top:5px;"  @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))"
                         >Opcije</a>
 
-                    <a class="btn btn-lg btn-outline-primary" type="submit" @onclick="@(async () =>
+                    <a class="btn btn-outline-primary" type="submit" @onclick="@(async () =>
                                                                       {
                                                                   await AuthService.Logout();
                                                                   NavigationManager.NavigateTo("/account/login");
                                                               })" style="margin-top:5px;">Odjavi se</a>
-                </row>
+                </div>
                  
 
                    
