@@ -22,6 +22,7 @@ namespace eduProjectModel.Input
         public int? StudyYear { get; set; }
         public string StudyProgramSpecializationName { get; set; }
         public string StudyFieldName { get; set; }
+        public bool ApplicationsOpen { get; set; } = true;
 
         public CollaboratorProfileInputModel()
         {
@@ -30,6 +31,7 @@ namespace eduProjectModel.Input
 
         public void MapTo(StudentProfile profile, Faculty faculty)
         {
+            profile.ApplicationsOpen = ApplicationsOpen;
             profile.Description = ActivityDescription;
             profile.StudyCycle = Cycle;
             profile.StudyYear = StudyYear;
@@ -55,6 +57,7 @@ namespace eduProjectModel.Input
         public void MapTo(FacultyMemberProfile profile)
         {
             profile.Description = ActivityDescription;
+            profile.ApplicationsOpen = ApplicationsOpen;
             if (StudyFieldName != null)
                 profile.StudyField = StudyField.fields.Where(sf => sf.Value.Name == StudyFieldName).First().Value;
         }

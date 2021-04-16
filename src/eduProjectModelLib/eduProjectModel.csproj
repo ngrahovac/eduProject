@@ -5,17 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
     <Compile Remove="Validation\**" />
+    <EmbeddedResource Remove="Properties\**" />
     <EmbeddedResource Remove="Validation\**" />
+    <None Remove="Properties\**" />
     <None Remove="Validation\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Properties\launchSettings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>
