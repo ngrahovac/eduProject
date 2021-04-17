@@ -168,7 +168,7 @@ namespace eduProjectWebAPI.Data
         {
             command.CommandText = @"SELECT collaborator_profile_id, collaborator_profile.description, user_account_type_id, 
 	                                       cycle, study_year, student_profile.faculty_id, study_program_id, study_program_specialization_id,
-	                                       faculty_member_profile.faculty_id, study_field_id
+	                                       faculty_member_profile.faculty_id, study_field_id, applications_open
                                            FROM collaborator_profile
                                            LEFT OUTER JOIN student_profile USING(collaborator_profile_id)
                                            LEFT OUTER JOIN faculty_member_profile USING(collaborator_profile_id)                                                           
@@ -223,7 +223,8 @@ namespace eduProjectWebAPI.Data
                     StudyYear = !reader.IsDBNull(4) ? (int?)reader.GetInt32(4) : null,
                     FacultyId = !reader.IsDBNull(5) ? (int?)reader.GetInt32(5) : null,
                     StudyProgramId = !reader.IsDBNull(6) ? (int?)reader.GetInt32(6) : null,
-                    StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null
+                    StudyProgramSpecializationId = !reader.IsDBNull(7) ? (int?)reader.GetInt32(7) : null,
+                    ApplicationsOpen = reader.GetBoolean(10)
                 };
 
                 project.CollaboratorProfiles.Add(profile);
@@ -236,7 +237,8 @@ namespace eduProjectWebAPI.Data
                     CollaboratorProfileId = reader.GetInt32(0),
                     Description = reader.GetString(1),
                     FacultyId = !reader.IsDBNull(8) ? (int?)reader.GetInt32(8) : null,
-                    StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null
+                    StudyField = !reader.IsDBNull(9) ? StudyField.fields[reader.GetInt32(9)] : null,
+                    ApplicationsOpen = reader.GetBoolean(10)
                 };
 
                 project.CollaboratorProfiles.Add(profile);
@@ -385,9 +387,9 @@ namespace eduProjectWebAPI.Data
             foreach (var profile in project.CollaboratorProfiles)
             {
                 command.CommandText = @"INSERT INTO collaborator_profile
-                                        (description, project_id, user_account_type_id)
+                                        (description, project_id, user_account_type_id, applications_open)
                                         VALUES
-                                        (@description, @projectId, @profileTypeId)";
+                                        (@description, @projectId, @profileTypeId, @applicationsOpen)";
 
                 command.Parameters.Clear();
 
@@ -410,6 +412,13 @@ namespace eduProjectWebAPI.Data
                     ParameterName = "@profileTypeId",
                     DbType = DbType.Int32,
                     Value = profile is StudentProfile ? (int)CollaboratorProfileType.Student : (int)CollaboratorProfileType.FacultyMember
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@applicationsOpen",
+                    DbType = DbType.Boolean,
+                    Value = profile.ApplicationsOpen
                 });
 
                 await command.ExecuteNonQueryAsync();
@@ -647,9 +656,9 @@ namespace eduProjectWebAPI.Data
             foreach (var profile in project.CollaboratorProfiles) // contains only added profiles
             {
                 command.CommandText = @"INSERT INTO collaborator_profile
-                                        (description, project_id, user_account_type_id)
+                                        (description, project_id, user_account_type_id, applications_open)
                                         VALUES
-                                        (@description, @projectId, @profileTypeId)";
+                                        (@description, @projectId, @profileTypeId, @applicationsOpen)";
 
                 command.Parameters.Clear();
 
@@ -672,6 +681,13 @@ namespace eduProjectWebAPI.Data
                     ParameterName = "@profileTypeId",
                     DbType = DbType.Int32,
                     Value = profile is StudentProfile ? (int)CollaboratorProfileType.Student : (int)CollaboratorProfileType.FacultyMember
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@applicationsOpen",
+                    DbType = DbType.Boolean,
+                    Value = profile.ApplicationsOpen
                 });
 
                 await command.ExecuteNonQueryAsync();
