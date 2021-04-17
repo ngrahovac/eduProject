@@ -12,6 +12,7 @@ namespace eduProjectModel.Display
         public bool ApplicationsOpen { get; set; }
         public string Description { get; set; }
         public bool Recommended { get; set; } = false;
+        public bool AlreadyApplied { get; set; }
         public CollaboratorProfileDisplayModel()
         {
 

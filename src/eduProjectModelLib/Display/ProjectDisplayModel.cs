@@ -102,5 +102,21 @@ namespace eduProjectModel.Display
                 FacultyMemberProfileDisplayModels = null;
             }
         }
+
+
+        public CollaboratorProfileDisplayModel GetCollaboratorProfileDisplayModelById(int id)
+        {
+            if (StudentProfileDisplayModels.Select(p => p.CollaboratorProfileId).Contains(id))
+            {
+                return StudentProfileDisplayModels.Where(p => p.CollaboratorProfileId == id).First();
+            }
+            else if (FacultyMemberProfileDisplayModels.Select(p => p.CollaboratorProfileId).Contains(id))
+            {
+                return FacultyMemberProfileDisplayModels.Where(p => p.CollaboratorProfileId == id).First();
+            }
+
+            return null;
+        }
+
     }
 }

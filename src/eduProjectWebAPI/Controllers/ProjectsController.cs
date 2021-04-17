@@ -29,17 +29,20 @@ namespace eduProjectWebAPI.Controllers
         private readonly IUsersRepository users;
         private readonly IFacultiesRepository faculties;
         private readonly IUserSettingsRepository settings;
+        private readonly IProjectApplicationsRepository applications;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly UserManager<ApplicationUser> userManager;
 
 
         public ProjectsController(IProjectsRepository projects, IUsersRepository users,
-            IFacultiesRepository faculties, IUserSettingsRepository settings, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+            IFacultiesRepository faculties, IUserSettingsRepository settings, IProjectApplicationsRepository applications,
+            IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
             this.settings = settings;
+            this.applications = applications;
             this.httpContextAccessor = httpContextAccessor;
             this.userManager = userManager;
         }
@@ -143,6 +146,18 @@ namespace eduProjectWebAPI.Controllers
                 }
 
                 model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, null, facultiesList);
+
+                // checking if current user had already applied to any of the collaborator profiles
+                var userApplicationsForThisProject = (await applications.GetByApplicantIdAsync(currentUserId)).Where(a => a.ProjectId == project.ProjectId);
+                if (userApplicationsForThisProject.Count() != 0)
+                {
+                    // the user had already applied to some profiles
+                    foreach (var a in userApplicationsForThisProject)
+                    {
+                        var profile = model.GetCollaboratorProfileDisplayModelById(a.CollaboratorProfileId);
+                        profile.AlreadyApplied = true;
+                    }
+                }
             }
             else
             {
