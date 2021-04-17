@@ -12,6 +12,7 @@ namespace eduProjectModel.Input
     {
         [Required(ErrorMessage = "Tip saradnika se mora odabrati.")]
         public CollaboratorProfileType CollaboratorProfileType { get; set; }
+        public int CollaboratorProfileId { get; set; }
         public bool ExistingProfile { get; set; }
 
         [Required(ErrorMessage = "Polje ne može biti prazno.")]
@@ -31,6 +32,7 @@ namespace eduProjectModel.Input
 
         public void MapTo(StudentProfile profile, Faculty faculty)
         {
+            profile.CollaboratorProfileId = CollaboratorProfileId;
             profile.ApplicationsOpen = ApplicationsOpen;
             profile.Description = ActivityDescription;
             profile.StudyCycle = Cycle;
@@ -56,6 +58,7 @@ namespace eduProjectModel.Input
 
         public void MapTo(FacultyMemberProfile profile)
         {
+            profile.CollaboratorProfileId = CollaboratorProfileId;
             profile.Description = ActivityDescription;
             profile.ApplicationsOpen = ApplicationsOpen;
             if (StudyFieldName != null)
@@ -70,6 +73,8 @@ namespace eduProjectModel.Input
                 return new CollaboratorProfileInputModel
                 {
                     CollaboratorProfileType = CollaboratorProfileType.Student,
+                    CollaboratorProfileId = profile.CollaboratorProfileId,
+                    ApplicationsOpen = profile.ApplicationsOpen,
                     ActivityDescription = profile.Description,
                     FacultyName = sp.FacultyName,
                     Cycle = sp.StudyCycle,
@@ -85,6 +90,8 @@ namespace eduProjectModel.Input
                 return new CollaboratorProfileInputModel
                 {
                     CollaboratorProfileType = CollaboratorProfileType.FacultyMember,
+                    CollaboratorProfileId = profile.CollaboratorProfileId,
+                    ApplicationsOpen = profile.ApplicationsOpen,
                     ActivityDescription = profile.Description,
                     FacultyName = fp.FacultyName,
                     StudyFieldName = fp.StudyFieldName

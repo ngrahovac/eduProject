@@ -567,10 +567,7 @@ namespace eduProjectWebAPI.Data
                     await UpdateBasicProjectInfo(command, updatedProject);
                 }
 
-                if (project.CollaboratorProfiles.Count != 0) // contains only new profiles
-                {
-                    await UpdateCollaboratorProfilesInfo(command, updatedProject);
-                }
+                await UpdateCollaboratorProfilesInfo(command, updatedProject);
 
                 if (updatedProject.CollaboratorIds.Count > 0)
                 {
@@ -651,9 +648,10 @@ namespace eduProjectWebAPI.Data
 
         private async Task UpdateCollaboratorProfilesInfo(MySqlCommand command, Project project)
         {
-            var oldProject = await GetAsync(project.ProjectId);
+            var addedProfiles = project.CollaboratorProfiles.Where(p => p.CollaboratorProfileId == 0);
+            var existingProfiles = project.CollaboratorProfiles.Where(p => p.CollaboratorProfileId != 0);
 
-            foreach (var profile in project.CollaboratorProfiles) // contains only added profiles
+            foreach (var profile in addedProfiles)
             {
                 command.CommandText = @"INSERT INTO collaborator_profile
                                         (description, project_id, user_account_type_id, applications_open)
@@ -780,6 +778,32 @@ namespace eduProjectWebAPI.Data
 
                     await command.ExecuteNonQueryAsync();
                 }
+            }
+
+            foreach (var profile in existingProfiles)
+            {
+                command.CommandText = @"UPDATE collaborator_profile
+                                        SET
+                                        applications_open = @applicationsOpen
+                                        WHERE collaborator_profile_id = @profileId";
+
+                command.Parameters.Clear();
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    DbType = DbType.Boolean,
+                    ParameterName = "@applicationsOpen",
+                    Value = profile.ApplicationsOpen
+                });
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    DbType = DbType.Int32,
+                    ParameterName = "@profileId",
+                    Value = profile.CollaboratorProfileId
+                });
+
+                await command.ExecuteNonQueryAsync();
             }
 
         }

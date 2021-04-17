@@ -81,7 +81,7 @@ namespace eduProjectModel.Input
 
             project.CollaboratorProfiles.Clear();
 
-            foreach (var model in CollaboratorProfileInputModels.Where(m => m.ExistingProfile == false))
+            foreach (var model in CollaboratorProfileInputModels)
             {
                 if (model.CollaboratorProfileType == CollaboratorProfileType.Student)
                 {
