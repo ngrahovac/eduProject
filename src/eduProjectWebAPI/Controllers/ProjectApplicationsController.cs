@@ -285,6 +285,7 @@ namespace eduProjectWebAPI.Controllers
                 {
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
                     var project = await projects.GetAsync(model.ProjectId);
+                    var profile = project.CollaboratorProfiles.Where(p => p.CollaboratorProfileId == model.CollaboratorProfileId).First();
 
                     var projectApplications = (await GetByApplicantId(currentUserId)).Value;
 
@@ -295,7 +296,9 @@ namespace eduProjectWebAPI.Controllers
                             collaboratorProfileIds.Add(c.CollaboratorProfileDisplayModel.CollaboratorProfileId);
 
                     // user can apply if they aren't project author and if they didn't apply already
-                    if (project.AuthorId != currentUserId && !collaboratorProfileIds.Contains(model.CollaboratorProfileId))
+                    if (project.AuthorId != currentUserId &&
+                        !collaboratorProfileIds.Contains(model.CollaboratorProfileId) &&
+                        profile.ApplicationsOpen)
                     {
                         ProjectApplication application = new ProjectApplication();
                         model.ApplicantId = currentUserId;
