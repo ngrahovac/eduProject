@@ -38,7 +38,7 @@
         display: flex;
         text-align: left;
         margin: 0;
-        margin-bottom:-10px;
+        margin-bottom: -10px;
     }
 
     #buttonTags {
@@ -48,8 +48,8 @@
 
     .table {
         margin-top: 2rem;
-        
     }
+
         .table tr:hover {
             cursor: pointer;
             background: #029acf;
@@ -59,7 +59,6 @@
     .selected-row {
         /*background-color: rgba(0, 251, 255, 0.3) !important;*/
         background-color: #029acf;
-       
     }
 
     .tags {
@@ -97,9 +96,9 @@
             @if (ProjectDisplayModel == null)
             {
                 <div class="d-flex justify-content-center">
-                  <div class="spinner-border text-info" role="status">
-                    <span class="sr-only"></span>
-                  </div>      
+                    <div class="spinner-border text-info" role="status">
+                        <span class="sr-only"></span>
+                    </div>
                 </div>
             }
             else
@@ -145,6 +144,7 @@
                     </div>
                 </div>
 
+                /*
                 @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
                 {
                     <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" /> }
@@ -156,15 +156,20 @@
                     <AuthorActiveProjectView AuthorActiveProjectDisplayModel="ProjectDisplayModel" /> }
                 else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
-                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />}
+                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />}*/
+                <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" />
+                <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" />
+
+
+
                 @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
                 {
-        <div class="buttons">
-            <button class="btn btn-outline-info" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
-        </div>
-                       
-                   
-                 }
+                    <div class="buttons">
+                        <button class="btn btn-outline-info" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
+                    </div>
+
+
+                }
                 else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
                 {
                     <div class="buttons">

@@ -28,8 +28,6 @@ namespace eduProjectModel.Input
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public ICollection<int> CollaboratorIds { get; set; } = new HashSet<int>();
-
         public ICollection<string> TagNames { get; set; } = new HashSet<string>();
 
         [MinLength(1, ErrorMessage = "Nije naveden niti jedan profil traženog saradnika.")]
@@ -110,9 +108,6 @@ namespace eduProjectModel.Input
             project.Tags.Clear();
             foreach (var tagName in TagNames)
                 project.Tags.Add(Tag.tags.Values.Where(tag => tag.Name.Equals(tagName)).First());
-
-            foreach (var id in CollaboratorIds)
-                project.CollaboratorIds.Add(id);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace eduProjectWebAPI.Data
                 {
                     await ReadCollaboratorProfilesInfo(command, id, project);
                     await ReadTagsInfo(command, id, project);
-                    await ReadCollaboratorIds(command, id, project);
+                    //await ReadCollaboratorIds(command, id, project);
                 }
 
                 await connection.CloseAsync();
@@ -271,7 +271,7 @@ namespace eduProjectWebAPI.Data
                 }
             }
         }
-
+        /*
         private async Task ReadCollaboratorIds(MySqlCommand command, int id, Project project)
         {
             command.CommandText = @"SELECT user_id
@@ -297,7 +297,7 @@ namespace eduProjectWebAPI.Data
                 }
             }
         }
-
+        */
         public async Task AddAsync(Project project)
         {
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
@@ -568,12 +568,12 @@ namespace eduProjectWebAPI.Data
                 }
 
                 await UpdateCollaboratorProfilesInfo(command, updatedProject);
-
+                /*
                 if (updatedProject.CollaboratorIds.Count > 0)
                 {
                     await UpdateCollaboratorsInfo(command, updatedProject);
                 }
-
+                */
                 await UpdateTagsInfo(command, updatedProject);
 
                 await connection.CloseAsync();
@@ -870,9 +870,13 @@ namespace eduProjectWebAPI.Data
                 await command.ExecuteNonQueryAsync();
             }
         }
-
+        /*
         private async Task UpdateCollaboratorsInfo(MySqlCommand command, Project project)
         {
+            var existingProject = await GetAsync(project.ProjectId);
+            var existingCollaborators = existingProject.CollaboratorIds;
+            var newIds = project.CollaboratorIds.Where(id => !existingCollaborators.Contains(id));
+
             command.CommandText = @"INSERT INTO project_collaborator
                                     (project_id, user_id)
                                     VALUES
@@ -899,7 +903,7 @@ namespace eduProjectWebAPI.Data
                 await command.ExecuteNonQueryAsync();
             }
         }
-
+        */
         public async Task DeleteAsync(Project project)
         {
             using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
@@ -910,7 +914,7 @@ namespace eduProjectWebAPI.Data
                 };
 
                 await connection.OpenAsync();
-
+                /*
                 command.CommandText = @"DELETE FROM project_collaborator WHERE project_id = @id";
                 command.Parameters.Add(new MySqlParameter
                 {
@@ -918,7 +922,7 @@ namespace eduProjectWebAPI.Data
                     DbType = DbType.Int32,
                     Value = project.ProjectId
                 });
-                await command.ExecuteNonQueryAsync();
+                await command.ExecuteNonQueryAsync();*/
 
                 command.CommandText = @"DELETE FROM project_tag WHERE project_id = @id";
                 await command.ExecuteNonQueryAsync();

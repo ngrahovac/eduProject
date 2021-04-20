@@ -1,0 +1,108 @@
+﻿@page "/applications/author/{AuthorId:int}"
+@inject ApiService ApiService
+@inject Microsoft.JSInterop.IJSRuntime js
+@inject IModalService Modal
+
+<h3>Pristigle prijave</h3>
+
+<table class="table" id="received-applications">
+    <thead>
+        <tr>
+            <td>Ime i prezime</td>
+            <td>Email</td>
+            <td>Komentar prijavljenog</td>
+            <td>Naziv projekta</td>
+            <td>Profil</td>
+            <td>Status</td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < applications.Count(); ++i)
+        {
+            int index = i;
+            var a = applications.ElementAt(index);
+
+            <tr @onclick="@(() => { selectedApplicationId = a.ApplicationId; ApplicationSelected("received-applications", "", a.ApplicationId, index); })">
+                <td><a href=@($"/users/{a.ApplicantId}")>@a.ApplicantFullName</a></td>
+                <td>@a.ApplicantEmail</td>
+                <td>@a.ApplicantComment</td>
+                <td><a href=@($"/projects/{a.ProjectId}")>@a.ProjectName</a></td>
+                <td>@a.ActivityName</td>
+                <td>@(a.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@* ukinuti button ako je -1 *@
+
+<button class="button" @onclick="@(() => DeleteApplication())">Obriši</button>
+<button class="button" @onclick="@(() => ChangeApplicationStatus())">Promijeni status</button>
+
+
+
+@code {
+
+    [Parameter]
+    public int AuthorId { get; set; }
+
+    private int selectedApplicationId = 0;
+
+    private ICollection<ApplicationDisplayModel> applications = new List<ApplicationDisplayModel>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("resetujemo indeks");
+            selectedApplicationId = 0;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        applications = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications2/author/{AuthorId}");
+    }
+
+    public async Task ApplicationSelected(string tableToHighlight, string tableToClear, int id, int index)
+    {
+        string[] tablesToClear = { tableToClear };
+        await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
+        selectedApplicationId = id;
+    }
+
+    public async Task ChangeApplicationStatus()
+    {
+        // iskoci popup, polje za unos komentara i promjenu statusa
+        // ako je status isti, ne desava se nista
+
+
+        if (selectedApplicationId > 0)
+        {
+            var applicationDisplayModel = applications.First(a => a.ApplicationId == selectedApplicationId);
+            var inputModel = new ProjectApplicationInputModel();
+            inputModel.FromDisplayModel(applicationDisplayModel);
+
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(ReceivedApplicationsStatusChange.model), inputModel);
+            var modal = Modal.Show<ReceivedApplicationsStatusChange>("Izmjena statusa prijave", parameters);
+            var result = await modal.Result;
+
+            if (!result.Cancelled)
+            {
+                //await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
+                Console.WriteLine("UPDATEUJEMO PRIJAVU");
+            }
+        }
+    }
+
+    public async Task DeleteApplication()
+    {
+        if (selectedApplicationId > 0)
+        {
+            var application = applications.First(a => a.ApplicationId == selectedApplicationId);
+
+        }
+    }
+
+}
