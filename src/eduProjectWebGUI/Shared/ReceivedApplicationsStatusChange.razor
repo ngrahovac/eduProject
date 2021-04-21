@@ -15,6 +15,7 @@
     </InputSelect>
 
     <InputText @bind-Value="@model.AuthorComment"></InputText>
+    @* ako je model.ProjectApplicationStatus == original status, disableuj dugme jer nije napravljena nikakva izmjena*@
     <button type="submit">Sačuvaj</button>
 </EditForm>
 @code {
@@ -22,17 +23,24 @@
     [Parameter]
     public ProjectApplicationInputModel model { get; set; }
 
+    private ProjectApplicationStatus originalStatus;
+
     [CascadingParameter]
     BlazoredModalInstance ModalInstance { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-
+        originalStatus = model.ProjectApplicationStatus;
     }
 
     public async Task SaveApplicationChanges()
     {
-        Console.WriteLine($"{model.ApplicationId}\n{model.ApplicantId}\n{model.ApplicantComment}\n{model.AuthorComment}\n{model.ProjectApplicationStatus}\n{model.CollaboratorProfileId}");
+        Console.WriteLine($"id prijave: {model.ApplicationId}\n" +
+            $"id prijavljenog: {model.ApplicantId}\n" +
+            $"komentar prij: {model.ApplicantComment}\n" +
+            $"komentar autora: {model.AuthorComment}\n" +
+            $"status: {model.ProjectApplicationStatus}\n" +
+            $"id profila: {model.CollaboratorProfileId}");
         ModalInstance.Close();
     }
 }
