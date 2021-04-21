@@ -16,6 +16,8 @@ namespace eduProjectWebAPI.Data
 
         public Task<ICollection<ProjectApplication>> GetByProjectIdAsync(int projectId);
 
+        public Task<ICollection<ProjectApplication>> GetByAuthorIdAsync(int authorId);
+
         public Task UpdateAsync(ProjectApplication application);
 
         public Task DeleteAsync(ProjectApplication application);

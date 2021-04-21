@@ -1,0 +1,46 @@
+﻿
+<EditForm Model="@model" OnValidSubmit="@SaveApplicationChanges">
+    <InputSelect @bind-Value="@model.ProjectApplicationStatus">
+        @foreach (var s in Enum.GetValues(typeof(ProjectApplicationStatus)))
+        {
+            if ((ProjectApplicationStatus)s == model.ProjectApplicationStatus)
+            {
+                <option selected value="@s">@s</option>
+            }
+            else
+            {
+                <option value="@s">@s</option>
+            }
+        }
+    </InputSelect>
+
+    <InputText @bind-Value="@model.AuthorComment"></InputText>
+    @* ako je model.ProjectApplicationStatus == original status, disableuj dugme jer nije napravljena nikakva izmjena*@
+    <button type="submit">Sačuvaj</button>
+</EditForm>
+@code {
+
+    [Parameter]
+    public ProjectApplicationInputModel model { get; set; }
+
+    private ProjectApplicationStatus originalStatus;
+
+    [CascadingParameter]
+    BlazoredModalInstance ModalInstance { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        originalStatus = model.ProjectApplicationStatus;
+    }
+
+    public async Task SaveApplicationChanges()
+    {
+        Console.WriteLine($"id prijave: {model.ApplicationId}\n" +
+            $"id prijavljenog: {model.ApplicantId}\n" +
+            $"komentar prij: {model.ApplicantComment}\n" +
+            $"komentar autora: {model.AuthorComment}\n" +
+            $"status: {model.ProjectApplicationStatus}\n" +
+            $"id profila: {model.CollaboratorProfileId}");
+        ModalInstance.Close();
+    }
+}

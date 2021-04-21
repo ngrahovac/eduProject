@@ -19,11 +19,7 @@ namespace eduProjectModel.Display
 
         public CollaboratorProfileApplicationsDisplayModel(CollaboratorProfile profile, ICollection<ProjectApplication> applications, ICollection<Tuple<int, string, string>> modelData)
         {
-            CollaboratorProfileDisplayModel = new CollaboratorProfileDisplayModel()
-            {
-                Description = profile.Description,
-                CollaboratorProfileId = profile.CollaboratorProfileId
-            };
+            CollaboratorProfileDisplayModel = new CollaboratorProfileDisplayModel(profile);
 
             ApplicationDisplayModels = applications.Select(a => new ApplicationDisplayModel(a, modelData.Where(t => t.Item1 == a.ApplicantId).First())).ToList();
         }

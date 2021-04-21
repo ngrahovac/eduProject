@@ -29,17 +29,20 @@ namespace eduProjectWebAPI.Controllers
         private readonly IUsersRepository users;
         private readonly IFacultiesRepository faculties;
         private readonly IUserSettingsRepository settings;
+        private readonly IProjectApplicationsRepository applications;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly UserManager<ApplicationUser> userManager;
 
 
         public ProjectsController(IProjectsRepository projects, IUsersRepository users,
-            IFacultiesRepository faculties, IUserSettingsRepository settings, IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
+            IFacultiesRepository faculties, IUserSettingsRepository settings, IProjectApplicationsRepository applications,
+            IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
         {
             this.projects = projects;
             this.users = users;
             this.faculties = faculties;
             this.settings = settings;
+            this.applications = applications;
             this.httpContextAccessor = httpContextAccessor;
             this.userManager = userManager;
         }
@@ -133,26 +136,39 @@ namespace eduProjectWebAPI.Controllers
             ProjectDisplayModel model;
             ICollection<Tag> userTags = (await settings.GetAsync(visitor.UserId)).UserTags;
 
-            if (project.ProjectStatus == ProjectStatus.Active)
+            //if (project.ProjectStatus == ProjectStatus.Active)
+            //{
+            var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Where(v => v != null).Distinct();
+            var facultiesList = new List<Faculty>();
+            foreach (var fid in facultyIds)
             {
-                var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Where(v => v != null).Distinct();
-                var facultiesList = new List<Faculty>();
-                foreach (var fid in facultyIds)
+                facultiesList.Add(await faculties.GetAsync((int)fid));
+            }
+
+            //var collaborators = null;
+            var projectApplications = await applications.GetByProjectIdAsync(project.ProjectId);
+            var selectedApplicantIds = projectApplications.Where(a => a.ProjectApplicationStatus == ProjectApplicationStatus.Accepted).Select(a => a.ApplicantId);
+            var selectedApplicants = new List<User>();
+            foreach (var id in selectedApplicantIds)
+            {
+                var user = await users.GetAsync(id);
+                selectedApplicants.Add(user);
+            }
+
+            model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, selectedApplicants, facultiesList);
+
+            // checking if current user had already applied to any of the collaborator profiles
+            var userApplicationsForThisProject = (await applications.GetByApplicantIdAsync(currentUserId)).Where(a => a.ProjectId == project.ProjectId);
+            if (userApplicationsForThisProject.Count() != 0)
+            {
+                // the user had already applied to some profiles
+                foreach (var a in userApplicationsForThisProject)
                 {
-                    facultiesList.Add(await faculties.GetAsync((int)fid));
+                    var profile = model.GetCollaboratorProfileDisplayModelById(a.CollaboratorProfileId);
+                    profile.AlreadyApplied = true;
                 }
-
-                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, null, facultiesList);
             }
-            else
-            {
-                var collaboratorIds = project.CollaboratorIds;
-                List<User> collaborators = new List<User>();
-                foreach (int collabId in collaboratorIds)
-                    collaborators.Add(await users.GetAsync(collabId));
 
-                model = new ProjectDisplayModel(project, author, visitor, isDisplayForAuthor, collaborators);
-            }
 
             if (!model.Recommended)
             {

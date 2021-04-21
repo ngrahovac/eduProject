@@ -18,7 +18,6 @@ namespace eduProjectModel.Display
 
         public StudentProfileDisplayModel(StudentProfile profile, Faculty faculty) : base(profile)
         {
-            CollaboratorProfileId = profile.CollaboratorProfileId;
             StudyCycle = profile.StudyCycle;
             StudyYear = profile.StudyYear;
 

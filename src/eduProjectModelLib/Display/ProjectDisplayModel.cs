@@ -31,7 +31,7 @@ namespace eduProjectModel.Display
         public ProjectDisplayModel() { }
 
         public ProjectDisplayModel(Project project, User author, User visitor, bool isDisplayForAuthor,
-                                   ICollection<User> collaborators = null, ICollection<Faculty> faculties = null)
+                                   ICollection<User> collaborators, ICollection<Faculty> faculties)
         {
             IsDisplayForAuthor = isDisplayForAuthor;
             IsProjectActive = project.ProjectStatus == ProjectStatus.Active;
@@ -48,59 +48,68 @@ namespace eduProjectModel.Display
             foreach (var tag in project.Tags)
                 Tags.Add(tag);
 
-            if (IsProjectActive)
+            foreach (var profile in project.CollaboratorProfiles)
             {
-                foreach (var profile in project.CollaboratorProfiles)
+                Faculty faculty = profile.FacultyId == null ? null : faculties.Where(f => f.FacultyId == profile.FacultyId).First();
+                if (profile is StudentProfile sp)
                 {
-                    Faculty faculty = profile.FacultyId == null ? null : faculties.Where(f => f.FacultyId == profile.FacultyId).First();
-                    if (profile is StudentProfile sp)
-                    {
-                        var model = new StudentProfileDisplayModel(sp, faculty);
+                    var model = new StudentProfileDisplayModel(sp, faculty);
 
-                        if (visitor is Student s)
+                    if (visitor is Student s)
+                    {
+                        if (sp.FacultyId == null ||
+                            sp.FacultyId == s.FacultyId && sp.StudyProgramId == null && sp.StudyProgramSpecializationId == null ||
+                            sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == null ||
+                            sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == null ||
+                            sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == s.StudyYear)
                         {
-                            if (sp.FacultyId == null ||
-                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == null && sp.StudyProgramSpecializationId == null ||
-                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == null ||
-                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == null ||
-                                sp.FacultyId == s.FacultyId && sp.StudyProgramId == s.StudyProgramId && sp.StudyProgramSpecializationId == s.StudyProgramSpecializationId && sp.StudyYear == s.StudyYear)
-                            {
-                                model.Recommended = true;
-                                Recommended = true;
-                            }
+                            model.Recommended = true;
+                            Recommended = true;
                         }
-
-                        StudentProfileDisplayModels.Add(model);
                     }
-                    else if (profile is FacultyMemberProfile fmp)
-                    {
-                        var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
 
-                        if (visitor is FacultyMember fm)
+                    StudentProfileDisplayModels.Add(model);
+                }
+                else if (profile is FacultyMemberProfile fmp)
+                {
+                    var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
+
+                    if (visitor is FacultyMember fm)
+                    {
+                        if (fmp.FacultyId == null ||
+                            fmp.FacultyId == fm.FacultyId)
                         {
-                            if (fmp.FacultyId == null ||
-                                fmp.FacultyId == fm.FacultyId)
-                            {
-                                model.Recommended = true;
-                                Recommended = true;
-                            }
+                            model.Recommended = true;
+                            Recommended = true;
                         }
-
-                        FacultyMemberProfileDisplayModels.Add(model);
                     }
 
-                    if (author.UserId == visitor.UserId)
-                    {
-                        Recommended = false;
-                    }
+                    FacultyMemberProfileDisplayModels.Add(model);
+                }
+
+                if (author.UserId == visitor.UserId)
+                {
+                    Recommended = false;
                 }
             }
-            else
-            {
-                CollaboratorDisplayModels = collaborators.Select(u => new CollaboratorDisplayModel(u)).ToList();
-                StudentProfileDisplayModels = null;
-                FacultyMemberProfileDisplayModels = null;
-            }
+
+            CollaboratorDisplayModels = collaborators.Select(u => new CollaboratorDisplayModel(u)).ToList();
         }
+
+
+        public CollaboratorProfileDisplayModel GetCollaboratorProfileDisplayModelById(int id)
+        {
+            if (StudentProfileDisplayModels.Select(p => p.CollaboratorProfileId).Contains(id))
+            {
+                return StudentProfileDisplayModels.Where(p => p.CollaboratorProfileId == id).First();
+            }
+            else if (FacultyMemberProfileDisplayModels.Select(p => p.CollaboratorProfileId).Contains(id))
+            {
+                return FacultyMemberProfileDisplayModels.Where(p => p.CollaboratorProfileId == id).First();
+            }
+
+            return null;
+        }
+
     }
 }

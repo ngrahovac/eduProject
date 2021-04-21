@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
@@ -298,5 +299,51 @@ namespace eduProjectWebAPI.Data
             }
         }
 
+        public async Task<ICollection<ProjectApplication>> GetByAuthorIdAsync(int authorId)
+        {
+            var projectIds = new List<int>();
+            var applications = new List<ProjectApplication>();
+
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    Connection = connection,
+                    CommandText = @"SELECT project_id FROM project WHERE user_id = @authorId"
+                };
+
+                command.Parameters.Clear();
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@authorId",
+                    DbType = DbType.Int32,
+                    Value = authorId
+                });
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            int id = reader.GetInt32(0);
+                            projectIds.Add(id);
+                        }
+                    }
+                }
+
+                await connection.CloseAsync();
+            }
+
+            foreach (var id in projectIds)
+            {
+                var projectApplications = await GetByProjectIdAsync(id);
+                applications = applications.Union(projectApplications).ToList();
+            }
+
+            return applications;
+        }
     }
 }

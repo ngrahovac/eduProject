@@ -1,4 +1,5 @@
-﻿using eduProjectModel.Domain;
+﻿using eduProjectModel.Display;
+using eduProjectModel.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,17 @@ namespace eduProjectModel.Input
             application.ApplicantComment = ApplicantComment;
             application.ProjectApplicationStatus = ProjectApplicationStatus;
             application.ApplicantId = ApplicantId;
+        }
+
+        public void FromDisplayModel(ApplicationDisplayModel model)
+        {
+            ApplicantId = model.ApplicantId;
+            ApplicationId = model.ApplicationId;
+            ProjectApplicationStatus = model.ProjectApplicationStatus;
+            ApplicantComment = model.ApplicantComment;
+            AuthorComment = model.AuthorComment;
+            ProjectId = model.ProjectId;
+            CollaboratorProfileId = model.CollaboratorProfileId;
         }
 
     }
