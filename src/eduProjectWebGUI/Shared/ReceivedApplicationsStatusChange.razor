@@ -1,6 +1,13 @@
 ﻿
+<style>
+    .form-control{
+        margin-bottom:0.5rem;
+    }
+</style>
+
+
 <EditForm Model="@model" OnValidSubmit="@SaveApplicationChanges">
-    <InputSelect @bind-Value="@model.ProjectApplicationStatus">
+    <InputSelect class="form-control" @bind-Value="@model.ProjectApplicationStatus">
         @foreach (var s in Enum.GetValues(typeof(ProjectApplicationStatus)))
         {
             if ((ProjectApplicationStatus)s == model.ProjectApplicationStatus)
@@ -14,9 +21,14 @@
         }
     </InputSelect>
 
-    <InputText @bind-Value="@model.AuthorComment"></InputText>
+    <InputText class="form-control"  @bind-Value="@model.AuthorComment"></InputText>
     @* ako je model.ProjectApplicationStatus == original status, disableuj dugme jer nije napravljena nikakva izmjena*@
-    <button type="submit">Sačuvaj</button>
+
+    @if(model.ProjectApplicationStatus != originalStatus)
+    {
+        <button class="btn btn-outline-info float-right" type="submit">Sačuvaj</button>
+    }
+    
 </EditForm>
 @code {
 
