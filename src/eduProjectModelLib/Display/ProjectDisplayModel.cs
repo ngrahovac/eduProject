@@ -24,6 +24,7 @@ namespace eduProjectModel.Display
         public ICollection<StudentProfileDisplayModel> StudentProfileDisplayModels { get; set; } = new HashSet<StudentProfileDisplayModel>();
         public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; } = new HashSet<FacultyMemberProfileDisplayModel>();
         public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = new HashSet<CollaboratorDisplayModel>();
+
         public bool Recommended { get; set; }
 
         public bool AcceptsApplications => HasProfileWithApplicationsOpen();
@@ -118,6 +119,14 @@ namespace eduProjectModel.Display
         {
             return StudentProfileDisplayModels.Where(c => c.ApplicationsOpen).Count() > 0 ||
                 FacultyMemberProfileDisplayModels.Where(c => c.ApplicationsOpen).Count() > 0;
+        }
+
+        public ICollection<CollaboratorProfileDisplayModel> GetCollaboratorProfileDisplayModels()
+        {
+            List<CollaboratorProfileDisplayModel> models = new List<CollaboratorProfileDisplayModel>();
+            models.Union(StudentProfileDisplayModels);
+            models.Union(FacultyMemberProfileDisplayModels);
+            return models;
         }
     }
 }
