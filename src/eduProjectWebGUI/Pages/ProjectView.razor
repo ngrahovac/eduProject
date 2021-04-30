@@ -152,12 +152,6 @@
                 <CollaboratorsOverview CollaboratorDisplayModels="@ProjectDisplayModel.CollaboratorDisplayModels"></CollaboratorsOverview>
 
 
-                @* Onemoguciti prijavu na profile koji trenutno ne primaju prijave (polje ApplicationsOpen je false)
-                    i profile na koje se korisnik vec prijavio (polje AlreadyApplied je true)
-                    i vizuelno naznaciti koji su to profili - npr. disable red profila koji ne prima prijave, ofarbati nekom bojom itd.,
-                    disable dugme za prijavu ili nesto drugo*@
-
-
                 @if (!ProjectDisplayModel.IsForAuthor)
                 {
                     <div class="buttons">
