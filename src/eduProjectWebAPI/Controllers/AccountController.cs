@@ -323,13 +323,13 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
         {
-            if (await IsUserAdmin())
-            {
-                var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
-                return Ok(models);
-            }
-            else
-                return Forbid();
+            //if (await IsUserAdmin())
+            //{
+            var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
+            return Ok(models);
+            //}
+            //else
+            //    return Forbid();
         }
 
         [AllowAnonymous]

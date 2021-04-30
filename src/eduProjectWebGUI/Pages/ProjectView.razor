@@ -144,43 +144,33 @@
                     </div>
                 </div>
 
-                /*
-                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" /> }
-                else if (!ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" /> }
-                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <AuthorActiveProjectView AuthorActiveProjectDisplayModel="ProjectDisplayModel" /> }
-                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <AuthorClosedProjectView AuthorClosedProjectDisplayModel="ProjectDisplayModel" />}*/
-                <VisitorActiveProjectView VisitorActiveProjectDisplayModel="ProjectDisplayModel" />
-                <VisitorClosedProjectView VisitorClosedProjectDisplayModel="ProjectDisplayModel" />
+
+                <CollaboratorProfilesOverview StudentProfileDisplayModels="@ProjectDisplayModel.StudentProfileDisplayModels"
+                                              FacultyMemberProfileDisplayModels="@ProjectDisplayModel.FacultyMemberProfileDisplayModels"
+                                              IsProjectRecommended="@ProjectDisplayModel.Recommended"></CollaboratorProfilesOverview>
+
+                <CollaboratorsOverview CollaboratorDisplayModels="@ProjectDisplayModel.CollaboratorDisplayModels"></CollaboratorsOverview>
 
 
+                @* Onemoguciti prijavu na profile koji trenutno ne primaju prijave (polje ApplicationsOpen je false)
+                    i profile na koje se korisnik vec prijavio (polje AlreadyApplied je true)
+                    i vizuelno naznaciti koji su to profili - npr. disable red profila koji ne prima prijave, ofarbati nekom bojom itd.,
+                    disable dugme za prijavu ili nesto drugo*@
 
-                @if (ProjectDisplayModel.IsProjectActive && !ProjectDisplayModel.IsDisplayForAuthor)
+
+                @if (!ProjectDisplayModel.IsForAuthor)
                 {
                     <div class="buttons">
                         <button class="btn btn-outline-info" @onclick="ShowApplicationSubmitPopup">Prijavi se</button>
                     </div>
 
-
                 }
-                else if (ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
+                else
                 {
                     <div class="buttons">
                         <button class="btn btn-outline-info" style="margin-left:4px;" @onclick="ShowReceivedApplicationsPopup">Odaberi saradnike</button>
                         <button class="btn btn-outline-info" style="margin-left:4px;" @onclick="EditProject">Izmijeni</button>
                         <button class="btn btn-outline-primary" style="margin-left:4px;" @onclick="ShowProjectDeleteWarning">Izbriši</button>
-                    </div> }
-                else if (!ProjectDisplayModel.IsProjectActive && ProjectDisplayModel.IsDisplayForAuthor)
-                {
-                    <div class="buttons">
-                        <button class="btn btn-outline-primary" @onclick="ShowProjectDeleteWarning">Izbriši</button>
                     </div>
                 }
             }

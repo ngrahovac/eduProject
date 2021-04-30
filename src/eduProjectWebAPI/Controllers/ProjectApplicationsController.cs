@@ -296,6 +296,7 @@ namespace eduProjectWebAPI.Controllers
                             collaboratorProfileIds.Add(c.CollaboratorProfileDisplayModel.CollaboratorProfileId);
 
                     // user can apply if they aren't project author and if they didn't apply already
+                    // and the profile is open for applying
                     if (project.AuthorId != currentUserId &&
                         !collaboratorProfileIds.Contains(model.CollaboratorProfileId) &&
                         profile.ApplicationsOpen)

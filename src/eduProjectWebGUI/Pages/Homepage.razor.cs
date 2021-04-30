@@ -41,7 +41,7 @@ namespace eduProjectWebGUI.Pages
             if (queryString["authored"] == "true")
             {
                 Title = "Moji projekti";
-                projectDisplayModels = projectDisplayModels.Where(m => m.IsDisplayForAuthor == true).ToList();
+                projectDisplayModels = projectDisplayModels.Where(m => m.IsForAuthor == true).ToList();
             }
 
             if (queryString["query"] != null)

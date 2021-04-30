@@ -8,7 +8,7 @@ namespace eduProjectModel.Display
     [Serializable]
     public class ProjectDisplayModel
     {
-        public bool IsDisplayForAuthor { get; set; }
+        public bool IsForAuthor { get; set; }
         public bool IsProjectActive { get; set; }
 
         public int ProjectId { get; set; }
@@ -26,6 +26,8 @@ namespace eduProjectModel.Display
         public ICollection<CollaboratorDisplayModel> CollaboratorDisplayModels { get; set; } = new HashSet<CollaboratorDisplayModel>();
         public bool Recommended { get; set; }
 
+        public bool AcceptsApplications => HasProfileWithApplicationsOpen();
+
         public Dictionary<string, string> Links { get; set; } = new Dictionary<string, string>();
 
         public ProjectDisplayModel() { }
@@ -33,7 +35,7 @@ namespace eduProjectModel.Display
         public ProjectDisplayModel(Project project, User author, User visitor, bool isDisplayForAuthor,
                                    ICollection<User> collaborators, ICollection<Faculty> faculties)
         {
-            IsDisplayForAuthor = isDisplayForAuthor;
+            IsForAuthor = isDisplayForAuthor;
             IsProjectActive = project.ProjectStatus == ProjectStatus.Active;
 
             ProjectId = project.ProjectId;
@@ -111,5 +113,11 @@ namespace eduProjectModel.Display
             return null;
         }
 
+
+        private bool HasProfileWithApplicationsOpen()
+        {
+            return StudentProfileDisplayModels.Where(c => c.ApplicationsOpen).Count() > 0 ||
+                FacultyMemberProfileDisplayModels.Where(c => c.ApplicationsOpen).Count() > 0;
+        }
     }
 }

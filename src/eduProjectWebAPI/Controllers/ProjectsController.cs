@@ -136,8 +136,6 @@ namespace eduProjectWebAPI.Controllers
             ProjectDisplayModel model;
             ICollection<Tag> userTags = (await settings.GetAsync(visitor.UserId)).UserTags;
 
-            //if (project.ProjectStatus == ProjectStatus.Active)
-            //{
             var facultyIds = project.CollaboratorProfiles.Select(p => p.FacultyId).Where(v => v != null).Distinct();
             var facultiesList = new List<Faculty>();
             foreach (var fid in facultyIds)
@@ -145,7 +143,6 @@ namespace eduProjectWebAPI.Controllers
                 facultiesList.Add(await faculties.GetAsync((int)fid));
             }
 
-            //var collaborators = null;
             var projectApplications = await applications.GetByProjectIdAsync(project.ProjectId);
             var selectedApplicantIds = projectApplications.Where(a => a.ProjectApplicationStatus == ProjectApplicationStatus.Accepted).Select(a => a.ApplicantId);
             var selectedApplicants = new List<User>();
