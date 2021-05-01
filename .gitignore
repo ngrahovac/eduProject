@@ -509,3 +509,6 @@ MigrationBackup/
 .ionide/
 
 # End of https://www.toptal.com/developers/gitignore/api/aspnetcore,windows,visualstudio
+
+## Custom
+src/eduProjectWebAPI/Resources/Images/*
