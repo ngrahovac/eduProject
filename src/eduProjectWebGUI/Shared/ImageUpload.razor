@@ -1,0 +1,51 @@
+﻿<label class="label-margin">Fotografija</label>
+@if (UserSettingsInputModel != null)
+{
+    <div>
+        <img src="@(UserSettingsInputModel.PhotoLink != null ? (@"https://localhost:44345/Resources/Images/" + UserSettingsInputModel.PhotoLink) : "Winston.png")" style="width:300px" />
+    </div>
+    <br />
+}
+<input type="file" @ref="_input" @onchange="HandleSelectedFile" accept=".jpg, .jpeg, png" />
+
+@code {
+
+    private ElementReference _input;
+
+    [Parameter]
+    public string ImgUrl { get; set; }
+
+    [Inject]
+    ApiService ApiService { get; set; }
+
+    [Inject]
+    HttpClient HttpClient { get; set; }
+
+    [Inject]
+    ILocalStorageService localStorage { get; set; }
+
+    [Inject]
+    IFileReaderService FileReaderService { get; set; }
+
+    [Parameter]
+    public UserSettingsInputModel UserSettingsInputModel { get; set; }
+
+    private async Task HandleSelectedFile()
+    {
+        var files = await FileReaderService.CreateReference(_input).EnumerateFilesAsync();
+        var file = files.ElementAt(0);
+
+        var fileInfo = await file.ReadFileInfoAsync();
+        using (var ms = await file.CreateMemoryStreamAsync(4 * 1024))
+        {
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data");
+            content.Add(new StreamContent(ms, Convert.ToInt32(ms.Length)), "image", fileInfo.Name);
+
+            var response = await HttpClient.PostAsync("files/images", content);
+
+            if (response.IsSuccessStatusCode)
+                UserSettingsInputModel.PhotoLink = await response.Content.ReadAsStringAsync();
+        }
+    }
+}

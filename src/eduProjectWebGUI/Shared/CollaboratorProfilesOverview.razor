@@ -2,107 +2,101 @@
 @inject ProjectApplicationInputModel model
 
 <div class="section">
-    
-    @if(FacultyMemberProfileDisplayModels.Count() > 0)
-    {
-        <div class="collaborator-profiles-table">
-        <table class="table table-hover table-bordered" id="faculty-member-profiles">
-            <caption>Profili nastavnog osoblja</caption>
-            <thead class="thead-dark">
-                <tr>
-                    <th>Fakultet</th>
-                    <th>Naučna oblast</th>
-                    <th>Opis aktivnosti</th>
-                </tr>
-            </thead>
-            
-                @for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
-                {
-                    int index = i;
-                    FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
 
-                    if (IsProjectRecommended && profile.Recommended)
-                    {
-                        <tr class="recommended-profile"
-                            @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-                            <td>@profile.FacultyName</td>
-                            <td>@profile.StudyFieldName</td>
-                            <td>@profile.Description</td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-                            <td>@profile.FacultyName</td>
-                            <td>@profile.StudyFieldName</td>
-                            <td>@profile.Description</td>
-                        </tr>
-                    }
-                }
-            
-        </table>
-    </div>
-    }
-
-    
-    @if(StudentProfileDisplayModels.Count() > 0)
+    @if (FacultyMemberProfileDisplayModels.Count() > 0)
     {
-        <div class="collaborator-profiles-table">
-        <table class="table table-hover table-bordered" id="student-profiles">
-            <caption>Profili studenata</caption>
-            <thead class="thead-dark">
-                <tr>
-                    <th>Fakultet</th>
-                    <th>Ciklus</th>
-                    <th>Studijski program</th>
-                    <th>Studijski smjer</th>
-                    <th>Godina</th>
-                    <th>Opis aktivnosti</th>
-                </tr>
-            </thead>
-            
-            @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
+<div class="collaborator-profiles-table">
+    <table class="table table-hover table-bordered" id="faculty-member-profiles">
+        <caption>Profili nastavnog osoblja</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>Fakultet</th>
+                <th>Naučna oblast</th>
+                <th>Opis aktivnosti</th>
+            </tr>
+        </thead>
+
+        @for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
+        {
+            int index = i;
+            FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
+
+            if (IsProjectRecommended && profile.Recommended)
             {
-                int index = i;
-                StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
+<tr class="recommended-profile"
+    @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
+    <td>@profile.FacultyName</td>
+    <td>@profile.StudyFieldName</td>
+    <td>@profile.Description</td>
+</tr>
+ }
+else
+{
+<tr @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
+    <td>@profile.FacultyName</td>
+    <td>@profile.StudyFieldName</td>
+    <td>@profile.Description</td>
+</tr>
+}
+}
 
-                @if (IsProjectRecommended && profile.Recommended)
-                {
-                    <tr class="recommended-profile" @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-                        <td>@profile.FacultyName</td>
-                        <td>@profile.StudyCycle</td>
-                        <td>@profile.StudyProgramName</td>
-                        <td>@profile.StudyProgramSpecializationName</td>
-                        <td>@profile.StudyYear</td>
-                        <td>@profile.Description</td>
+    </table>
+</div>}
 
 
-                    </tr>
-                }
-                else
-                {
-                    <tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-                        <td>@profile.FacultyName</td>
-                        <td>@profile.StudyCycle</td>
-                        <td>@profile.StudyProgramName</td>
-                        <td>@profile.StudyProgramSpecializationName</td>
-                        <td>@profile.StudyYear</td>
-                        <td>@profile.Description</td>
-                    </tr>
-                }
+    @if (StudentProfileDisplayModels.Count() > 0)
+    {
+<div class="collaborator-profiles-table">
+    <table class="table table-hover table-bordered" id="student-profiles">
+        <caption>Profili studenata</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>Fakultet</th>
+                <th>Ciklus</th>
+                <th>Studijski program</th>
+                <th>Studijski smjer</th>
+                <th>Godina</th>
+                <th>Opis aktivnosti</th>
+            </tr>
+        </thead>
 
-            }
-        </table>
-    </div>
-    }
+        @for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
+        {
+            int index = i;
+            StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
 
-    
+@if (IsProjectRecommended && profile.Recommended)
+{
+<tr class="recommended-profile" @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
+    <td>@profile.FacultyName</td>
+    <td>@profile.StudyCycle</td>
+    <td>@profile.StudyProgramName</td>
+    <td>@profile.StudyProgramSpecializationName</td>
+    <td>@profile.StudyYear</td>
+    <td>@profile.Description</td>
+
+
+</tr>
+ }
+else
+{
+<tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
+    <td>@profile.FacultyName</td>
+    <td>@profile.StudyCycle</td>
+    <td>@profile.StudyProgramName</td>
+    <td>@profile.StudyProgramSpecializationName</td>
+    <td>@profile.StudyYear</td>
+    <td>@profile.Description</td>
+</tr>
+}}
+    </table>
+</div>}
+
+
 </div>
 
 
-@code {
-
-    [Parameter]
+@code { [Parameter]
     public bool IsProjectRecommended { get; set; }
 
     [Parameter]
@@ -111,7 +105,16 @@
     [Parameter]
     public ICollection<FacultyMemberProfileDisplayModel> FacultyMemberProfileDisplayModels { get; set; }
 
+    [Parameter]
+    public ProjectDisplayModel ProjectDisplayModel { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine(ProjectDisplayModel);
+        var profiles = ProjectDisplayModel.GetCollaboratorProfileDisplayModels();
+        Console.WriteLine(ProjectDisplayModel.StudentProfileDisplayModels.Count);
+        Console.WriteLine(profiles.Count);
+    }
     public async Task CollaboratorProfileSelected(string tableToHighlight, string tableToClear, int collaboratorProfileId, int index)
     {
         string[] tablesToClear = { tableToClear };
@@ -131,5 +134,4 @@
         {
             model.CollaboratorProfileId = 0;
         }
-    }
-}
+    } }

@@ -143,5 +143,13 @@ namespace eduProjectWebAPI.Controllers
             return NoContent(); // TODO: Change to 201
         }
 
+        [HttpGet("{id}/tags")]
+        public async Task<ActionResult<ICollection<Tag>>> GetUserTags(int userId)
+        {
+            Debug.WriteLine("helo");
+            var userSettings = await settings.GetAsync(userId);
+            return userSettings.UserTags.ToList();
+
+        }
     }
 }

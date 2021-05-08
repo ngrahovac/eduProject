@@ -124,8 +124,8 @@ namespace eduProjectModel.Display
         public ICollection<CollaboratorProfileDisplayModel> GetCollaboratorProfileDisplayModels()
         {
             List<CollaboratorProfileDisplayModel> models = new List<CollaboratorProfileDisplayModel>();
-            models.Union(StudentProfileDisplayModels);
-            models.Union(FacultyMemberProfileDisplayModels);
+            models = models.Union(StudentProfileDisplayModels).ToList();
+            models = models.Union(FacultyMemberProfileDisplayModels).ToList();
             return models;
         }
     }

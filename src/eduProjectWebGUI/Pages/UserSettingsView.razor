@@ -39,126 +39,128 @@
         margin-top: 0.7rem;
         margin-left: 0.5rem;
     }
- 
 
-    .h3-subtitle{
-        margin-top:0;
+
+    .h3-subtitle {
+        margin-top: 0;
     }
 
-    hr{
-        margin-top:4rem;
+    hr {
+        margin-top: 4rem;
     }
 </style>
 
 @if (userSettingsDisplayModel == null)
 {
-    <div class="d-flex justify-content-center">
-        <div class="spinner-border text-info" role="status">
-            <span class="sr-only"></span>
-        </div>
-    </div> }
+<div class="d-flex justify-content-center">
+    <div class="spinner-border text-info" role="status">
+        <span class="sr-only"></span>
+    </div>
+</div> }
 else
 {
 
-    <div class="container">
-        <div class="center-image">
-            <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
-                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
-                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
-            </svg>
+<div class="container">
+    <div class="center-image">
+        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
+            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z" />
+            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z" />
+        </svg>
+    </div>
+
+    <h3>Podaci naloga</h3>
+    <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
+    <button class="btn btn-outline-info float-right" @onclick="@UpdateAccountInformation">Sačuvaj</button>
+    <hr />
+
+    @if (userProfileInputModel.UserAccountType is UserAccountType.Student)
+    {
+<h3 class="h3-subtitle">Podaci o studiranju</h3>}
+else
+{
+<h3>Podaci o zaposlenju</h3>}
+    <UserInformationView UserProfileInputModel="@userProfileInputModel"
+                         faculties="@faculties"
+                         studyFields="@studyFields"
+                         Editing="true"></UserInformationView>
+
+    <button class="btn btn-outline-info float-right" @onclick="@UpdateUserInformation">Sačuvaj</button>
+    <hr />
+
+
+    <h3 class="h3-subtitle">Podaci profila</h3>
+    <EditForm Model="@userSettingsInputModel">
+        <ImageUpload UserSettingsInputModel="@userSettingsInputModel"></ImageUpload>
+        <br />
+        <label class="label-margin">Biografija</label>
+        <InputTextArea class="form-control" @bind-Value="@userSettingsInputModel.Bio"></InputTextArea>
+        <label class="label-margin">Cv</label>
+        <InputText class="form-control" @bind-Value="@userSettingsInputModel.CvLink"></InputText>
+        <label class="label-margin">Website</label>
+        <InputText class="form-control" @bind-Value="@userSettingsInputModel.Website"></InputText>
+        <label class="label-margin">Linkedin profil</label>
+        <InputText class="form-control" @bind-Value="@userSettingsInputModel.LinkedinProfile"></InputText>
+        <label class="label-margin">ResearchGate profil</label>
+        <InputText class="form-control" @bind-Value="@userSettingsInputModel.ResearchgateProfile"></InputText>
+
+
+        <div class="input-group mb-3" style="margin-top:15px;">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <InputCheckbox @bind-Value="@userSettingsInputModel.EmailVisible">
+                    </InputCheckbox>
+                </div>
+            </div>
+            <label class="form-control">Vidljiv email</label>
         </div>
 
-        <h3>Podaci naloga</h3>
-        <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
-        <button class="btn btn-outline-info float-right" @onclick="@UpdateAccountInformation">Sačuvaj</button>
-        <hr />
 
-        @if (userProfileInputModel.UserAccountType is UserAccountType.Student)
-        {
-            <h3 class="h3-subtitle">Podaci o studiranju</h3>}
-        else
-        {
-            <h3>Podaci o zaposlenju</h3>}
-        <UserInformationView UserProfileInputModel="@userProfileInputModel"
-                             faculties="@faculties"
-                             studyFields="@studyFields"
-                             Editing="true"></UserInformationView>
-
-        <button class="btn btn-outline-info float-right" @onclick="@UpdateUserInformation">Sačuvaj</button>
-        <hr />
-
-
-        <h3 class="h3-subtitle">Podaci profila</h3>
-        <EditForm Model="@userSettingsInputModel">
-            <label class="label-margin">Biografija</label>
-            <InputTextArea class="form-control" @bind-Value="@userSettingsInputModel.Bio"></InputTextArea>
-            <label class="label-margin">Cv</label>
-            <InputText class="form-control" @bind-Value="@userSettingsInputModel.CvLink"></InputText>
-            <label class="label-margin">Website</label>
-            <InputText class="form-control" @bind-Value="@userSettingsInputModel.Website"></InputText>
-            <label class="label-margin">Linkedin profil</label>
-            <InputText class="form-control" @bind-Value="@userSettingsInputModel.LinkedinProfile"></InputText>
-            <label class="label-margin">ResearchGate profil</label>
-            <InputText class="form-control" @bind-Value="@userSettingsInputModel.ResearchgateProfile"></InputText>
-
-
-            <div class="input-group mb-3" style="margin-top:15px;">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <InputCheckbox @bind-Value="@userSettingsInputModel.EmailVisible">
-                        </InputCheckbox>
-                    </div>
+        <div class="input-group mb-3" style="margin-top:5px;">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <InputCheckbox @bind-Value="@userSettingsInputModel.PhoneVisible">
+                    </InputCheckbox>
                 </div>
-                <label class="form-control">Vidljiv email</label>
             </div>
+            <label class="form-control">Vidljiv telefon</label>
+        </div>
 
-
-            <div class="input-group mb-3" style="margin-top:5px;">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <InputCheckbox @bind-Value="@userSettingsInputModel.PhoneVisible">
-                        </InputCheckbox>
-                    </div>
+        <div class="input-group mb-3" style="margin-top:5px;">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <InputCheckbox @bind-Value="@userSettingsInputModel.ProjectsVisible">
+                    </InputCheckbox>
                 </div>
-                <label class="form-control">Vidljiv telefon</label>
             </div>
-
-            <div class="input-group mb-3" style="margin-top:5px;">
-                <div class="input-group-prepend">
-                    <div class="input-group-text">
-                        <InputCheckbox @bind-Value="@userSettingsInputModel.ProjectsVisible">
-                        </InputCheckbox>
-                    </div>
-                </div>
-                <label class="form-control">Vidljivi projekti</label>
-            </div>
+            <label class="form-control">Vidljivi projekti</label>
+        </div>
 
 
-             <label class="label-margin">Tagovi</label>
-            <TagsOverview Editing="true" TagNames="@userSettingsInputModel.UserTagNames"></TagsOverview>
+        <label class="label-margin">Tagovi</label>
+        <TagsOverview Editing="true" TagNames="@userSettingsInputModel.UserTagNames"></TagsOverview>
 
-            <BlazoredTypeahead SearchMethod="@FilterTags"
-                               @bind-Value="@AddedTag"
-                               Context="tag">
-                <SelectedTemplate>
-                    @tag.Name
-                </SelectedTemplate>
-                <ResultTemplate>
-                    @tag.Name
-                </ResultTemplate>
-                <NotFoundTemplate>
-                    Nema rezultata.
-                </NotFoundTemplate>
-            </BlazoredTypeahead>
+        <BlazoredTypeahead SearchMethod="@FilterTags"
+                           @bind-Value="@AddedTag"
+                           Context="tag">
+            <SelectedTemplate>
+                @tag.Name
+            </SelectedTemplate>
+            <ResultTemplate>
+                @tag.Name
+            </ResultTemplate>
+            <NotFoundTemplate>
+                Nema rezultata.
+            </NotFoundTemplate>
+        </BlazoredTypeahead>
 
-            <button class="btn btn-outline-info float-right btn-save" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
-            <button class="btn btn-outline-primary float-right btn-save" @onclick="@CancelUpdateSettings">Odustani</button>
+        <button class="btn btn-outline-info float-right btn-save" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
+        <button class="btn btn-outline-primary float-right btn-save" @onclick="@CancelUpdateSettings">Odustani</button>
 
 
 
-        </EditForm>
+    </EditForm>
 
-    </div>}
+</div>}
 
 
 

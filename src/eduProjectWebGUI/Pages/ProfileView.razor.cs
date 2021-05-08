@@ -17,6 +17,8 @@ namespace eduProjectWebGUI.Pages
         [Parameter]
         public int UserId { get; set; }
 
+        private string imgUrl = "Winston.jpg";
+
         [Inject]
         ApiService ApiService { get; set; }
 
@@ -30,6 +32,7 @@ namespace eduProjectWebGUI.Pages
             try
             {
                 ProfileDisplayModel = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
+                imgUrl = ProfileDisplayModel.AccountPhoto != null ? (@"https://localhost:44345/Resources/Images/" + ProfileDisplayModel.AccountPhoto) : "Winston.jpg";
 
                 //TODO: Add redirect if not found
             }

@@ -12,6 +12,7 @@ using eduProjectWebGUI.Services;
 using eduProjectModel.Input;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using Tewr.Blazor.FileReader;
 
 namespace eduProjectWebGUI
 {
@@ -41,6 +42,8 @@ namespace eduProjectWebGUI
 
             //TEST
             builder.Services.AddScoped<ApiAuthenticationStateProvider>();
+
+            builder.Services.AddFileReaderService(o => o.UseWasmSharedBuffer = true);
 
             await builder.Build().RunAsync();
         }
