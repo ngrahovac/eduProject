@@ -1,0 +1,65 @@
+﻿@page "/newsEdit"
+
+<style>
+
+    body {
+        padding-top: 7rem;
+    }
+
+    .container {
+        margin-bottom: 60px;
+    }
+
+    .h3-title {
+        color: gray;
+        text-align: center;
+    }
+
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 40%;
+        position: absolute;
+    }
+
+    .content {
+        padding-top: 1rem;
+        padding-bottom: 7rem;
+    }
+
+</style>
+
+
+<div class="container">
+
+    <h3 class="h3-title">Postavljanje novosti</h3>
+
+    <EditForm OnValidSubmit="@AddNews" Model="@model">
+
+        <label>Naslov</label>
+        <InputText  @bind-Value="@model.Title" class="form-control"></InputText>
+
+        
+        <label style="margin-top: 1rem;">Sadržaj</label>
+        <InputTextArea  @bind-Value="@model.Content" class="form-control content" wrap="soft"  ></InputTextArea>
+
+
+    </EditForm>
+
+    <button class="btn btn-outline-info float-right" style="margin-top:1rem;"> Postavi </button>
+
+
+</div>
+
+
+@code {
+
+    NewsInputModel model = new NewsInputModel();
+
+    public async Task AddNews()
+    {
+
+    }
+
+}
