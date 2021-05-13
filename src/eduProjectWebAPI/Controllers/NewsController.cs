@@ -54,5 +54,20 @@ namespace eduProjectWebAPI.Controllers
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ICollection<NewsDisplayModel>>> Delete(int id)
+        {
+            try
+            {
+                var news = await newsRepository.GetByIdAsync(id);
+                await newsRepository.DeleteAsync(news);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
+        }
     }
 }

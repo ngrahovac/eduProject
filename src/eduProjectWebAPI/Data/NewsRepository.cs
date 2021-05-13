@@ -56,6 +56,32 @@ namespace eduProjectWebAPI.Data
             }
         }
 
+        public async Task DeleteAsync(News news)
+        {
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    CommandText = @"DELETE FROM news
+                                    WHERE news_id = @id",
+                    Connection = connection
+                };
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@id",
+                    DbType = DbType.Int32,
+                    Value = news.Id
+                });
+
+                await connection.OpenAsync();
+
+                await command.ExecuteNonQueryAsync();
+
+                await connection.CloseAsync();
+            }
+        }
+
         public async Task<ICollection<News>> GetAllAsync()
         {
             var news = new List<News>();
@@ -87,6 +113,44 @@ namespace eduProjectWebAPI.Data
             }
 
             return news;
+        }
+
+        public async Task<News> GetByIdAsync(int id)
+        {
+            News news = null;
+
+            using (var connection = new MySqlConnection(dbConnectionParameters.ConnectionString))
+            {
+                MySqlCommand command = new MySqlCommand
+                {
+                    CommandText = @"SELECT news_id, title, content, date
+                                    FROM news
+                                    WHERE news_id = @id",
+                    Connection = connection
+                };
+
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@id",
+                    DbType = DbType.Int32,
+                    Value = id
+                });
+
+                await connection.OpenAsync();
+
+                using (var reader = await command.ExecuteReaderAsync())
+                {
+                    if (reader.HasRows)
+                    {
+                        await reader.ReadAsync();
+                        news = GetNewsFromRow(reader);
+                    }
+                }
+
+                await connection.CloseAsync();
+
+                return news;
+            }
         }
 
         private News GetNewsFromRow(MySqlDataReader reader)
