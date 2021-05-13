@@ -2,6 +2,17 @@
 @inject ProjectApplicationInputModel model
 
 <style>
+
+    .list-group-flush{
+        background-color:none;
+        color:black;
+    }
+    .list-group-item {
+        background-color: transparent;
+        color: black;
+        border: 0px;
+        padding: 0rem 0.5rem;
+    }
 </style>
 
 <div class="section">
@@ -9,76 +20,78 @@
     @if (ProjectDisplayModels.AcceptsApplications == true)
     {
 
-<div class="collaborator-profiles-table">
-    <table class="table table-hover table-bordered">
-        <caption>Preporučeni profili</caption>
-        <thead class="thead-dark">
-            <tr>
-                <th>Aplikacije otvorene</th>
-                <th>Opis pozicije</th>
-            </tr>
-        </thead>
+        <div class="collaborator-profiles-table">
+            <table class="table table-hover table-bordered">    
+                <caption>Traženi profili</caption>
+                <thead class="thead-dark">
+                    <tr>
+                        <th></th>
+                        <th>Opis pozicije</th>
+                        <th>Informacije</th>
+                    </tr>
+                </thead>
 
-        @foreach (var profile in profileList)
-        {
-@if (profile.Recommended == true && profile.ApplicationsOpen == true)
-{
-<tr bgcolor="palegreen">
-    <td style="background=purple">@profile.ApplicationsOpen</td>
-    <td style="background=purple">@profile.Description</td>
-</tr>
-               }}
+                @foreach (var profile in profileList)
+                {
+                    @if (profile.Recommended == true && profile.ApplicationsOpen == true)
+                    {
+                        <tr bgcolor="#c9fdc9">
+                            <td style="color:darkgreen; text-align:center; vertical-align:middle;"  >PREPORUČENO</td>
+                            <td>@profile.Description</td>
+                            <td>
+                                <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">Student</li>
+                                  <li class="list-group-item">Elektrotehnički fakultet</li>
+                                  <li class="list-group-item">Softversko inženjerstvo</li>
+                                  <li class="list-group-item">3.godina</li>                                  
+                                </ul>
+                            </td>
+                        </tr>
+                        }
+                 }
 
+                @foreach (var profile in profileList)
+                        {
+                            @if (profile.Recommended == false && profile.ApplicationsOpen == true)
+                            {
+                                <tr >
+                                    <td></td>
+                                    <td>@profile.Description</td>
+                                    <td>
+                                        <ul class="list-group list-group-flush">
+                                          <li class="list-group-item">Nastavno osoblje</li>
+                                          <li class="list-group-item">Mašinski fakultet</li>                                                                           
+                                        </ul>
+                                    </td>
+                                </tr>
+                                }
+                         }
 
-
-    </table>
-</div>
-
-                <div class="collaborator-profiles-table">
-                    <table class="table table-hover table-bordered">
-                        <caption>Ostali profili</caption>
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>Aplikacije otvorene</th>
-                                <th>Opis pozicije</th>
+                 @foreach (var profile in profileList)
+                  {
+                      @if (profile.AlreadyApplied == true || profile.ApplicationsOpen == false)
+                       {
+                            <tr bgcolor="LightGray" data-toggle="tooltip" data-placement="right" title="Zatvoren profil">
+                                <td></td>
+                                <td>@profile.Description</td>
+                                <td></td>
                             </tr>
-                        </thead>
-                        @foreach (var profile in profileList)
-                        {
-        @if (profile.Recommended == false && profile.ApplicationsOpen == true)
-        {
-<tr bgcolor="LemonChiffon" disable>
-    <td>@profile.ApplicationsOpen</td>
-    <td>@profile.Description</td>
-</tr>
-               }}
-
-                    </table>
-                </div>
-
-                                <div class="collaborator-profiles-table">
-                                    <table class="table table-hover table-bordered">
-                                        <caption>Popunjeni profili</caption>
-                                        <thead class="thead-dark">
-                                            <tr>
-                                                <th>Aplikacije otvorene</th>
-                                                <th>Opis pozicije</th>
-                                            </tr>
-                                        </thead>
-
-                                        @foreach (var profile in profileList)
-                                        {
-                        @if (profile.AlreadyApplied == true || profile.ApplicationsOpen == false)
-                        {
-    <tr bgcolor="LightPink">
-        <td>@profile.ApplicationsOpen</td>
-        <td>@profile.Description</td>
-    </tr>
-           }}
+                       }
+                  }
 
 
-                                    </table>
-                                </div> } @*@if(FacultyMemberProfileDisplayModels.Count() > 0)
+
+            </table>
+        </div>
+
+     
+
+                               
+     } 
+    
+    
+    
+    @*@if(FacultyMemberProfileDisplayModels.Count() > 0)
                                 {
                                     <div class="collaborator-profiles-table">
                                     <table class="table table-hover table-bordered" id="faculty-member-profiles">
