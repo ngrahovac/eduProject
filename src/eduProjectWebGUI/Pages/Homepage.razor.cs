@@ -6,6 +6,7 @@ using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using Microsoft.AspNetCore.Components;
 using eduProjectWebGUI.Utils;
+using Blazored.LocalStorage;
 
 namespace eduProjectWebGUI.Pages
 {
@@ -13,6 +14,9 @@ namespace eduProjectWebGUI.Pages
     {
         [Parameter]
         public string QueryString { get; set; }
+
+        [Inject]
+        public ILocalStorageService LocalStorage { get; set; }
 
         public string Title { get; set; } = "";
 
