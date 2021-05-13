@@ -20,9 +20,14 @@ namespace eduProjectWebGUI.Pages
 
         private SearchParameters searchParameters = new SearchParameters();
 
+        private ICollection<Tag> userTags;
+
         protected override async Task OnInitializedAsync()
         {
             projectDisplayModels = (await ApiService.GetAsync<ICollection<ProjectDisplayModel>>("/projects")).ToList();
+            var userId = await LocalStorage.ExtractUserId();
+            var settings = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{userId}/settings");
+            userTags = settings.UserTags;
 
             var queryString = NavigationManager.QueryString();
 
