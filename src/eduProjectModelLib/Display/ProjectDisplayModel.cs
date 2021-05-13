@@ -128,5 +128,11 @@ namespace eduProjectModel.Display
             models = models.Union(FacultyMemberProfileDisplayModels).ToList();
             return models;
         }
+
+        public bool HasRecommendedProfile()
+        {
+            return StudentProfileDisplayModels.Where(p => p.Recommended).Count() > 0
+                || FacultyMemberProfileDisplayModels.Where(p => p.Recommended).Count() > 0;
+        }
     }
 }
