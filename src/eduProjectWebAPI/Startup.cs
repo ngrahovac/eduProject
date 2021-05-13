@@ -18,6 +18,8 @@ using System.Text;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace eduProjectWebAPI
 {
@@ -121,6 +123,14 @@ namespace eduProjectWebAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Images")),
+                RequestPath = new PathString(@"/Resources/Images")
+            });
 
             app.UseAuthentication();
 
