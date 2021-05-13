@@ -1,4 +1,5 @@
 ﻿@page "/newsEdit"
+@inject ApiService ApiService
 
 <style>
 
@@ -27,7 +28,6 @@
         padding-top: 1rem;
         padding-bottom: 7rem;
     }
-
 </style>
 
 
@@ -38,16 +38,16 @@
     <EditForm OnValidSubmit="@AddNews" Model="@model">
 
         <label>Naslov</label>
-        <InputText  @bind-Value="@model.Title" class="form-control"></InputText>
+        <InputText @bind-Value="@model.Title" class="form-control"></InputText>
 
-        
+
         <label style="margin-top: 1rem;">Sadržaj</label>
-        <InputTextArea  @bind-Value="@model.Content" class="form-control content" wrap="soft"  ></InputTextArea>
+        <InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
 
 
+        <button class="btn btn-outline-info float-right" style="margin-top:1rem;" type="submit"> Postavi </button>
     </EditForm>
 
-    <button class="btn btn-outline-info float-right" style="margin-top:1rem;"> Postavi </button>
 
 
 </div>
@@ -59,7 +59,7 @@
 
     public async Task AddNews()
     {
-
+        await ApiService.PostAsync<NewsInputModel>("/news", model);
     }
 
 }
