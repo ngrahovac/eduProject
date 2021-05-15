@@ -1,19 +1,24 @@
-﻿@page "/newsEdit"
+﻿@page "/admin/news"
+@layout AdminLayout
 @inject ApiService ApiService
+@inject IJSRuntime JsRuntime;
 
 <style>
 
-    body {
-        padding-top: 7rem;
-    }
+   
 
     .container {
         margin-bottom: 60px;
+        padding-top:2rem;
     }
 
     .h3-title {
         color: gray;
         text-align: center;
+    }
+
+    .h3-tree-title {
+        color: gray;
     }
 
     .spinner-border {
@@ -33,7 +38,8 @@
 
 <div class="container">
 
-    <h3 class="h3-title">Postavljanje novosti</h3>
+    <h3 class="h3-title">Administrator</h3>
+    <h3 class="h3-tree-title">Postavljanje novosti</h3>
 
     <EditForm OnValidSubmit="@AddNews" Model="@model">
 
@@ -60,6 +66,8 @@
     public async Task AddNews()
     {
         await ApiService.PostAsync<NewsInputModel>("/news", model);
+
+        await JsRuntime.InvokeVoidAsync("alert", "Uspješno je postavljen oglas."); // Alert
     }
 
 }

@@ -1,4 +1,4 @@
-﻿@page "/newsview"
+﻿@page "/news"
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
@@ -20,12 +20,36 @@
         top: 40%;
         position: absolute;
     }
+    .time-period {
+        display: flex;
+        flex-wrap: wrap;
+        color: #1E75D9;
+        position: absolute;
+        right: 10px;
+        bottom: 5px;
+    }
+    .h3-title {
+        color: gray;
+        text-align: center;
+        margin-bottom:1.5rem;
+    }
+    .list-group-item-action{
+        margin-bottom:0.5rem;
+        border:1px solid lightgray;
+        border-top-width:1px;
+        border-radius:4px;
+    }
+
+    .list-group-item + .list-group-item {
+        border-top-width: 1px;
+    }
 
 </style>
 
-<h3>NewsPage</h3>
+
 
 <div class="container">
+    
 
       @if (newsDisplayModels.Count() == 0)
     {
@@ -37,12 +61,25 @@
       }
       else
       {
-          @foreach (var model in newsDisplayModels)
-          {
-              <h1>@model.Title</h1>
-              <h3>@model.Content</h3>
-              <h1>-----------------------------------</h1>
-          }
+          <h3 class="h3-title">Novosti</h3>
+           @foreach (var model in newsDisplayModels)
+           {
+                <a class="list-group-item list-group-item-action">
+                     <div class="d-flex w-100 justify-content-between">
+                         <h4 class="mb-1" style="font-weight:bold;">@model.Title</h4>
+                     </div>
+                     <p class="mb-1">@model.Content</p>
+                     <div class="time-period">
+                        @model.Date
+                     </div>
+                </a>
+
+               
+           }
+         
+
+
+         
 
 
       }
