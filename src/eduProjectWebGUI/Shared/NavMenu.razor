@@ -2,6 +2,7 @@
 @inject ILocalStorageService LocalStorage
 @inject IAuthService AuthService
 
+
 <style>
     .nav-item{
         cursor:pointer;
@@ -26,6 +27,12 @@
 
             <div class="collapse navbar-collapse" id="navbarColor02">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/newsview", true))">Novosti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">Preporučeno</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/create", true))">
                             Novi projekat

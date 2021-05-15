@@ -1,0 +1,63 @@
+﻿@page "/newsview"
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+
+<style>
+
+    body {
+        padding-top: 7rem;
+    }
+
+    .container {
+        margin-bottom: 60px;
+    }
+
+    .spinner-border {
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        top: 40%;
+        position: absolute;
+    }
+
+</style>
+
+<h3>NewsPage</h3>
+
+<div class="container">
+
+      @if (newsDisplayModels.Count() == 0)
+    {
+         <div class="d-flex justify-content-center">
+              <div class="spinner-border text-info" role="status">
+                <span class="sr-only"></span>
+              </div>      
+         </div>
+      }
+      else
+      {
+          @foreach (var model in newsDisplayModels)
+          {
+              <h1>@model.Title</h1>
+              <h3>@model.Content</h3>
+              <h1>-----------------------------------</h1>
+          }
+
+
+      }
+    
+
+</div>
+
+
+@code {
+
+    public ICollection<NewsDisplayModel> newsDisplayModels = new List<NewsDisplayModel>();
+    protected override async Task OnInitializedAsync()
+    {
+         newsDisplayModels = (await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news")).ToList();
+    }
+
+
+}
