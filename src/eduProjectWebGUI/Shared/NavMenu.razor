@@ -1,7 +1,7 @@
 ﻿@inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 @inject IAuthService AuthService
-
+@inject ApiService ApiService
 
 <style>
     .nav-item{
@@ -18,7 +18,9 @@
 <AuthorizeView>
     <Authorized>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
+
+                <a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
+                      
 
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -44,6 +46,30 @@
                     <li class="nav-item">
                         <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?authored=true", true))">Moji projekti</a>
                     </li>
+                  
+
+                    @if(receivedNotifications.Count > 0 && !IsDisabledReceived)
+                    {
+                        <li class="nav-item" @onclick="ReceivedNotificationClick" data-toggle="tooltip" data-placement="bottom" title="Obavještenje na mojem projektu" >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" fill="coral" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                            </svg>
+                        </li>
+                    }
+                     
+                    @if(sentNotifications.Count > 0 && !IsDisabledSent)
+                    {
+                        <li class="nav-item" @onclick="SentNotificationClick" style="margin-left:0.5rem;" data-toggle="tooltip" data-placement="bottom" title="Obavještenje o poslanim prijavama">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="48" fill="coral" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+                              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                              <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                            </svg>
+                        </li>
+                    }
+                    
+
+
                 </ul>
 
                 <div class="nav-item my-1 mx-2">
@@ -94,7 +120,51 @@
 
 @code
 {
+    
+    public int AuthorId { get; set; }
     private string queryString;
+    private ICollection<int> receivedNotifications = new List<int>();
+    private ICollection<int> sentNotifications = new List<int>();
+    private bool IsDisabledReceived;
+    private bool IsDisabledSent;
+
+    
+
+    protected override async Task OnInitializedAsync()
+    {
+        int AuthorID = (int)(await LocalStorage.ExtractUserId());
+
+        receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/1/applications");
+        sentNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/user/1/applications");
+
+        //receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications");
+        //await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+
+        if(receivedNotifications.Count == 0) IsDisabledReceived=true;
+        else IsDisabledReceived = false;
+
+        if(sentNotifications.Count == 0) IsDisabledSent=true;
+        else IsDisabledSent = false;
+
+        
+    }
+
+    private async void ReceivedNotificationClick()
+    {
+         IsDisabledReceived = true;
+         NavigationManager.NavigateTo("/applications/author/1");
+
+        //await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+    }
+
+     private async void SentNotificationClick()
+    {
+         IsDisabledSent = true;
+        NavigationManager.NavigateTo("/news");
+         //NavigationManager.NavigateTo("/user/1/applications");
+
+        //await ApiService.DeleteAsync($"notifications/user/{AuthorId}/applications");
+    }
 
     private async Task Search()
     {

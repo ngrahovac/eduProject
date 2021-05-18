@@ -21,8 +21,9 @@
         }
     </InputSelect>
 
+    <p style="margin-bottom:0.25rem;">Komentar autora</p>
     <InputText class="form-control"  @bind-Value="@model.AuthorComment"></InputText>
-    @* ako je model.ProjectApplicationStatus == original status, disableuj dugme jer nije napravljena nikakva izmjena*@
+   
 
     @if(model.ProjectApplicationStatus != originalStatus)
     {

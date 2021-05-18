@@ -13,7 +13,7 @@ namespace eduProjectWebGUI.Pages
         {
             var result = await LocalStorage.ExtractUserId();
             if (result != null)
-                Navigation.NavigateTo("/newsview");
+                Navigation.NavigateTo("/news");
         }
 
         public async Task LoginToSystemAsync()
@@ -26,7 +26,7 @@ namespace eduProjectWebGUI.Pages
             var result = await AuthService.Login(loginInputModel);
 
             if (result.Successful)
-                Navigation.NavigateTo("/newsview");
+                Navigation.NavigateTo("/news");
             else
                 Console.WriteLine(result.Error);
         }
