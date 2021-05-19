@@ -81,7 +81,9 @@
                                 int index = i;
                                 var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
 
-                                <tr @onclick="@(async () =>
+                                 @if(sentNotifications.Select(t => t).Where(n => n == applicationModel.ApplicationId).Count() >= 1)
+                                 {
+                                     <tr bgcolor="Burlywood" @onclick="@(async () =>
                                             {
                                                 selectedApplicationId = applicationModel.ApplicationId;
                                                 tablesToClear.Clear();
@@ -91,11 +93,34 @@
                                                 var arr = tablesToClear.ToArray();
                                                 await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
                                             })">
-                                    <td>@applicationModel.ApplicationId</td>
-                                    <td>@applicationModel.ApplicantComment</td>
-                                    <td>@applicationModel.AuthorComment</td>
-                                    <td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
-                                </tr>
+                                        <td>@applicationModel.ApplicationId</td>
+                                        <td>@applicationModel.ApplicantComment</td>
+                                        <td>@applicationModel.AuthorComment</td>
+                                        <td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
+                                    </tr>
+                                 }
+                                 else
+                                 {
+                                     <tr @onclick="@(async () =>
+                                            {
+                                                selectedApplicationId = applicationModel.ApplicationId;
+                                                tablesToClear.Clear();
+                                                foreach (var item in allTables)
+                                                    tablesToClear.Add(item);
+                                                tablesToClear.Remove($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
+                                                var arr = tablesToClear.ToArray();
+                                                await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
+                                            })">
+                                        <td>@applicationModel.ApplicationId</td>
+                                        <td>@applicationModel.ApplicantComment</td>
+                                        <td>@applicationModel.AuthorComment</td>
+                                        <td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
+                                    </tr>
+                                 }
+                              
+                                
+
+                                
                             }
                         </tbody>
                     </table>

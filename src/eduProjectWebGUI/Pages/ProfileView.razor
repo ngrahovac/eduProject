@@ -175,9 +175,6 @@ else
             {
 <div class="btn-group">
 
-    <a class="btn btn-outline-info" style="margin-top:5px;" @onclick="@(async () =>
-                                                              {
-                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})">Moje prijave</a>
 
     <a class="btn btn-outline-info" style="margin-top:5px;" @onclick="@(() => NavigationManager.NavigateTo($"/users/{UserId}/settings", true))">Opcije</a>
 

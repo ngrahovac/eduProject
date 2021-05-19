@@ -17,6 +17,9 @@ namespace eduProjectWebGUI.Pages
 
         private HashSet<string> allTables = new HashSet<string>();
         private List<string> tablesToClear = new List<string>();
+        private ICollection<int> sentNotifications = new List<int>();
+
+
 
         public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; } = new List<ProjectApplicationsDisplayModel>();
 
@@ -25,6 +28,8 @@ namespace eduProjectWebGUI.Pages
             try
             {
                 ProjectApplicationsDisplayModels = (await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}")).ToList();
+                sentNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/user/{UserId}/applications");
+                //await ApiService.DeleteAsync($"notifications/user/{UserId}/applications");
 
                 foreach (var model in ProjectApplicationsDisplayModels)
                 {
