@@ -58,7 +58,11 @@ namespace eduProjectModel.Display
                 {
                     var model = new StudentProfileDisplayModel(sp, faculty);
 
-                    if (visitor is Student s)
+                    if (author.UserId == visitor.UserId)
+                    {
+                        model.Recommended = false;
+                    }
+                    else if (visitor is Student s)
                     {
                         if (sp.FacultyId == null ||
                             sp.FacultyId == s.FacultyId && sp.StudyProgramId == null && sp.StudyProgramSpecializationId == null ||
@@ -77,7 +81,11 @@ namespace eduProjectModel.Display
                 {
                     var model = new FacultyMemberProfileDisplayModel(fmp, faculty);
 
-                    if (visitor is FacultyMember fm)
+                    if (author.UserId == visitor.UserId)
+                    {
+                        model.Recommended = false;
+                    }
+                    else if (visitor is FacultyMember fm)
                     {
                         if (fmp.FacultyId == null ||
                             fmp.FacultyId == fm.FacultyId)
@@ -90,10 +98,6 @@ namespace eduProjectModel.Display
                     FacultyMemberProfileDisplayModels.Add(model);
                 }
 
-                if (author.UserId == visitor.UserId)
-                {
-                    Recommended = false;
-                }
             }
 
             CollaboratorDisplayModels = collaborators.Select(u => new CollaboratorDisplayModel(u)).ToList();
