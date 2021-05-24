@@ -17,6 +17,7 @@ using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -179,6 +180,9 @@ namespace eduProjectWebAPI.Controllers
                     }
                 }
             }
+
+            if (model.IsForAuthor)
+                model.Recommended = false;
 
             return model;
         }
