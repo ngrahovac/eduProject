@@ -68,5 +68,32 @@ namespace eduProjectModel.Display
 
             return model;
         }
+
+        public override string ToString()
+        {
+            string result = "Tip profila: student, ";
+            if (FacultyName != null)
+            {
+                result += $"fakultet: {FacultyName}, ";
+                if (StudyCycle != null)
+                {
+                    result += $"ciklus: {(int)StudyCycle}, ";
+                    if (StudyProgramName != null)
+                    {
+                        result += $"studijski program: {StudyProgramName}, ";
+                        if (StudyProgramSpecializationName != null)
+                        {
+                            result += $"smjer: {StudyProgramSpecializationName}, ";
+                            if (StudyYear != null)
+                            {
+                                result += $"godina: {(int)StudyYear}, ";
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result[0..^2];
+        }
     }
 }

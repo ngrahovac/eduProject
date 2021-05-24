@@ -24,5 +24,10 @@ namespace eduProjectModel.Display
             Description = profile.Description;
             ApplicationsOpen = profile.ApplicationsOpen;
         }
+
+        public override string ToString()
+        {
+            return base.ToString();
+        }
     }
 }

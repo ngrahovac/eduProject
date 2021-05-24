@@ -52,7 +52,7 @@ namespace eduProjectWebGUI.Services
             var savedToken = await localStorage.GetItemAsync<string>("authToken");
 
             if (string.IsNullOrWhiteSpace(savedToken))
-                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
+                return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));  // empty claims principal means the user is not authenticated
 
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", savedToken);
 
@@ -94,7 +94,7 @@ namespace eduProjectWebGUI.Services
                 }
                 else
                     claims.Add(new Claim(ClaimTypes.Role, roles.ToString()));
-                
+
                 keyValuePairs.Remove(ClaimTypes.Role);
 
                 //if something around here breaks, this call was originally outside of this if branch, if this information is of any value
