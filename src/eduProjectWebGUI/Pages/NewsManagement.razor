@@ -5,69 +5,75 @@
 
 <style>
 
-   
 
-    .container {
-        margin-bottom: 60px;
-        padding-top:2rem;
-    }
 
-    .h3-title {
-        color: gray;
-        text-align: center;
-    }
+	.container {
+		margin-bottom: 60px;
+		padding-top: 2rem;
+	}
 
-    .h3-tree-title {
-        color: gray;
-    }
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
 
-    .spinner-border {
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        top: 40%;
-        position: absolute;
-    }
+	.h3-tree-title {
+		color: gray;
+	}
 
-    .content {
-        padding-top: 1rem;
-        padding-bottom: 7rem;
-    }
+	.spinner-border {
+		width: 60px;
+		height: 60px;
+		text-align: center;
+		top: 40%;
+		position: absolute;
+	}
+
+	.content {
+		padding-top: 1rem;
+		padding-bottom: 7rem;
+	}
 </style>
 
 
-<div class="container">
 
-    <h3 class="h3-title">Administrator</h3>
-    <h3 class="h3-tree-title">Postavljanje novosti</h3>
+<AuthorizeView Context="authContext">
+	<Authorized>
+		<div class="container">
 
-    <EditForm OnValidSubmit="@AddNews" Model="@model">
+			<h3 class="h3-title">Administrator</h3>
+			<h3 class="h3-tree-title">Postavljanje novosti</h3>
 
-        <label>Naslov</label>
-        <InputText @bind-Value="@model.Title" class="form-control"></InputText>
+			<EditForm OnValidSubmit="@AddNews" Model="@model">
 
-
-        <label style="margin-top: 1rem;">Sadržaj</label>
-        <InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
-
-
-        <button class="btn btn-outline-info float-right" style="margin-top:1rem;" type="submit"> Postavi </button>
-    </EditForm>
+				<label>Naslov</label>
+				<InputText @bind-Value="@model.Title" class="form-control"></InputText>
 
 
+				<label style="margin-top: 1rem;">Sadržaj</label>
+				<InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
 
-</div>
+
+				<button class="btn btn-outline-info float-right" style="margin-top:1rem;" type="submit"> Postavi </button>
+			</EditForm>
+		</div>
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
 
 
 @code {
 
-    NewsInputModel model = new NewsInputModel();
+	NewsInputModel model = new NewsInputModel();
 
-    public async Task AddNews()
-    {
-        await ApiService.PostAsync<NewsInputModel>("/news", model);
+	public async Task AddNews()
+	{
+		await ApiService.PostAsync<NewsInputModel>("/news", model);
 
-        await JsRuntime.InvokeVoidAsync("alert", "Uspješno je postavljen oglas."); // Alert
-    }
+		await JsRuntime.InvokeVoidAsync("alert", "Uspješno je postavljen oglas."); // Alert
+	}
 
 }

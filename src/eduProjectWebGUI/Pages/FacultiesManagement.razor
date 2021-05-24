@@ -5,257 +5,258 @@
 
 <style>
 
-    .container {
-        padding-top:2rem;
-    }
+	.container {
+		padding-top: 2rem;
+	}
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
 
-    ul {
-        margin-left: 20px;
-    }
+	ul {
+		margin-left: 20px;
+	}
 
-    li {
-        list-style-type: none;
-        margin: 10px 0 10px 10px;
-        position: relative;
-    }
+	li {
+		list-style-type: none;
+		margin: 10px 0 10px 10px;
+		position: relative;
+	}
 
-        li:before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: -20px;
-            border-left: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            width: 20px;
-            height: 15px;
-        }
+		li:before {
+			content: "";
+			position: absolute;
+			top: -10px;
+			left: -20px;
+			border-left: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			width: 20px;
+			height: 15px;
+		}
 
-        li:after {
-            position: absolute;
-            content: "";
-            top: 5px;
-            left: -20px;
-            border-left: 1px solid #ddd;
-            border-top: 1px solid #ddd;
-            width: 20px;
-            height: 100%;
-        }
+		li:after {
+			position: absolute;
+			content: "";
+			top: 5px;
+			left: -20px;
+			border-left: 1px solid #ddd;
+			border-top: 1px solid #ddd;
+			width: 20px;
+			height: 100%;
+		}
 
-        li:last-child:after {
-            display: none;
-        }
+		li:last-child:after {
+			display: none;
+		}
 
-    span {
-        display: block;
-        border: 1px solid #ddd;
-        padding: 10px;
-        color: #888;
-        text-decoration: none;
-    }
+	span {
+		display: block;
+		border: 1px solid #ddd;
+		padding: 10px;
+		color: #888;
+		text-decoration: none;
+	}
 
-        span:hover, span:focus {
-            background: #eee;
-            color: #000;
-            border: 1px solid #eee;
-            cursor: grab;
-        }
+		span:hover, span:focus {
+			background: #eee;
+			color: #000;
+			border: 1px solid #eee;
+			cursor: grab;
+		}
 
-    .h3-tree-title {
-        color: gray;
-    }
+	.h3-tree-title {
+		color: gray;
+	}
 
-    .h3-title {
-        color: gray;
-        text-align: center;
-    }
-    .h3-faculty-title {
-        margin-top: 5rem;
-        margin-bottom: -1rem;
-        color: gray;
-    }
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
+
+	.h3-faculty-title {
+		margin-top: 5rem;
+		margin-bottom: -1rem;
+		color: gray;
+	}
 
 
-    .label-margin {
-        margin-bottom: 0px;
-        margin-top: 1.5rem;
-    }
+	.label-margin {
+		margin-bottom: 0px;
+		margin-top: 1.5rem;
+	}
 
-    .list-group-item-dark {
-        background: #373a3c;
-        color:white;
-        font-weight:bold;
-    }
-    .list-group-item-dark:hover{
-        cursor:pointer;
-        color:white;
-        text-decoration:none;
-    }
-    .table{
-        margin-bottom:0rem;
-    }
-    .list-group{
-        margin-bottom:1rem;
-    }
+	.list-group-item-dark {
+		background: #373a3c;
+		color: white;
+		font-weight: bold;
+	}
 
-    .spinner-border {
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        top: 40%;
-        position: absolute;
-    }
+		.list-group-item-dark:hover {
+			cursor: pointer;
+			color: white;
+			text-decoration: none;
+		}
+
+	.table {
+		margin-bottom: 0rem;
+	}
+
+	.list-group {
+		margin-bottom: 1rem;
+	}
+
+	.spinner-border {
+		width: 60px;
+		height: 60px;
+		text-align: center;
+		top: 40%;
+		position: absolute;
+	}
 </style>
 
+<AuthorizeView Context="authContext">
+	<Authorized>
+
+		@if (faculties == null)
+				{
+  <div class="d-flex justify-content-center">
+   <div class="spinner-border text-info" role="status">
+	<span class="sr-only"></span>
+   </div>
+  </div>
+		}
+				else
+				{
+  <div class="container">
+   <h3 class="h3-title">Administrator</h3>
+   <h3 class="h3-tree-title">Fakulteti</h3>
+   <ul class="wtree">
+				@foreach (var f in faculties)
+				{
+		<li>
+		 <span>@f.Name</span>
+		 <ul>
+							@foreach (var sp in f.StudyPrograms)
+							{
+			  <li>
+			   <span>@sp.Name [Ciklus: @sp.Cycle] [Trajanje: @sp.DurationYears] </span>
+			   <ul>
+										@if (sp.StudyProgramSpecializations.Count != 0)
+										{
+											@foreach (var sps in sp.StudyProgramSpecializations)
+											{
+						<li>
+						 <span>@sps.Name </span>
+						</li>
+											}
+										}
+			   </ul>
+			  </li>
+							}
+		 </ul>
+		</li>
+				}
+   </ul>
 
 
 
-@if (faculties == null)
-    {
-    <div class="d-flex justify-content-center">
-      <div class="spinner-border text-info" role="status">
-        <span class="sr-only"></span>
-      </div>      
-    </div>
-    }
-else
-{
-    <div class="container">
-    <h3 class="h3-title">Administrator</h3>
-    <h3 class="h3-tree-title">Fakulteti</h3>
-    <ul class="wtree">
-        @foreach (var f in faculties)
-            {
-            <li>
-                <span>@f.Name</span>  
-                <ul>
-                        @foreach (var sp in f.StudyPrograms)
-                            {
-                            <li>
-                                <span>@sp.Name [Ciklus: @sp.Cycle] [Trajanje: @sp.DurationYears] </span>
-                                <ul> 
-                                    @if (sp.StudyProgramSpecializations.Count != 0)
-                                        {    
-                                        @foreach (var sps in sp.StudyProgramSpecializations)
-                                            {
-                                            <li>
-                                                <span>@sps.Name </span>
-                                            </li>
-                                            }
-                                        }
-                                </ul>                        
-                            </li>
-                            }
-                </ul>
-            </li>
-            }
-    </ul>
-   
+   <h3 class="h3-faculty-title">Dodavanje fakulteta</h3>
+
+   <EditForm OnValidSubmit="@AddFaculty" Model="@model">
+	<label class="label-margin">Naziv</label>
+	<InputText @bind-Value="@model.Name" class="form-control"></InputText>
+
+	<label class="label-margin">Adresa</label>
+	<InputText @bind-Value="@model.Address" class="form-control"></InputText>
+
+	<h4 class="h3-tree-title" style="margin-top:1rem;">Dodani studijski programi</h4>
+				@foreach (var prog in model.StudyProgramInputModels)
+				{
+		<table class="table table-bordered">
+		 <thead class="thead-dark">
+		  <tr>
+		   <th>Naziv</th>
+		   <th>Ciklus</th>
+		   <th>Trajanje</th>
+		   <th width="30px">Akcija</th>
+		  </tr>
+		 </thead>
+		 <tbody>
+		  <tr>
+		   <td>@prog.Name</td>
+		   <td>@prog.Cycle</td>
+		   <td>@prog.DurationYears</td>
+		   <td><button class="btn btn-outline-dark" @onclick="@(() => model.StudyProgramInputModels.Remove(prog))" style="width:100%">Ukloni</button></td>
+		  </tr>
+		 </tbody>
+		</table>
+		<div class="list-group">
+		 <a class="list-group-item list-group-item-dark dark" aria-disabled="true"> Studijski smjerovi  </a>
+						@foreach (var spec in prog.StudyProgramSpecializationInputModels)
+						{
+			 <a class="list-group-item list-group-item-action disabled" aria-disabled="true">@spec.Name</a>
+						}
 
 
-        <h3 class="h3-faculty-title">Dodavanje fakulteta</h3>
+		</div>
+				}
+   </EditForm>
 
-<EditForm OnValidSubmit="@AddFaculty" Model="@model">
-    <label class="label-margin">Naziv</label>
-    <InputText  @bind-Value="@model.Name" class="form-control"></InputText>
+   <button class="btn btn-outline-info float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
+   <button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
+  </div>
+		}
 
-    <label class="label-margin">Adresa</label>
-    <InputText @bind-Value="@model.Address" class="form-control"></InputText>
-
-    <h4 class="h3-tree-title" style="margin-top:1rem;">Dodani studijski programi</h4>
-    @foreach (var prog in model.StudyProgramInputModels)
-    {
-        <table class="table table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Naziv</th>
-                    <th>Ciklus</th>
-                    <th>Trajanje</th>
-                    <th width="30px">Akcija</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>@prog.Name</td>
-                    <td>@prog.Cycle</td>
-                    <td>@prog.DurationYears</td>
-                    <td><button class="btn btn-outline-dark" @onclick="@(() => model.StudyProgramInputModels.Remove(prog))" style="width:100%">Ukloni</button></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="list-group">
-             <a class="list-group-item list-group-item-dark dark" aria-disabled="true"> Studijski smjerovi  </a>
-             @foreach (var spec in prog.StudyProgramSpecializationInputModels)
-             { 
-                <a class="list-group-item list-group-item-action disabled" aria-disabled="true">@spec.Name</a>
-             }
-            
-
-        </div>
-                    }
-</EditForm>
-
-         <button class="btn btn-outline-info float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
-            <button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
-    </div>
-
-
-    
-
-
-}
-
-
-
-
-
-
-
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
 
 @code
-{ FacultyInputModel model = new FacultyInputModel();
+{
+	FacultyInputModel model = new FacultyInputModel();
 
-    ICollection<Faculty> faculties;
+	ICollection<Faculty> faculties;
 
-    protected override async Task OnInitializedAsync()
-    {
-        faculties = await ApiService.GetAsync<ICollection<Faculty>>("/faculties");
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		faculties = await ApiService.GetAsync<ICollection<Faculty>>("/faculties");
+	}
 
-    public async Task AddFaculty()
-    {
-        Console.WriteLine("Dodan fakultet sa sljedecim podacima:");
-        Console.WriteLine($"Naziv: {model.Name}");
-        Console.WriteLine($"Adresa: {model.Address}");
-        Console.WriteLine($"Broj studijskih programa: {model.StudyProgramInputModels.Count()}");
-        foreach (var prog in model.StudyProgramInputModels)
-        {
-            Console.WriteLine($"Naziv programa: {prog.Name}");
-            Console.WriteLine($"Ciklus: {prog.Cycle}");
-            Console.WriteLine($"Trajanje: {prog.DurationYears}");
-            Console.WriteLine($"Broj studijskih smjerova: {prog.StudyProgramSpecializationInputModels.Count()}");
+	public async Task AddFaculty()
+	{
+		Console.WriteLine("Dodan fakultet sa sljedecim podacima:");
+		Console.WriteLine($"Naziv: {model.Name}");
+		Console.WriteLine($"Adresa: {model.Address}");
+		Console.WriteLine($"Broj studijskih programa: {model.StudyProgramInputModels.Count()}");
+		foreach (var prog in model.StudyProgramInputModels)
+		{
+			Console.WriteLine($"Naziv programa: {prog.Name}");
+			Console.WriteLine($"Ciklus: {prog.Cycle}");
+			Console.WriteLine($"Trajanje: {prog.DurationYears}");
+			Console.WriteLine($"Broj studijskih smjerova: {prog.StudyProgramSpecializationInputModels.Count()}");
 
-            foreach (var spec in prog.StudyProgramSpecializationInputModels)
-            {
-                Console.WriteLine($"Naziv smjera: {spec.Name}");
-            }
-        }
-    }
+			foreach (var spec in prog.StudyProgramSpecializationInputModels)
+			{
+				Console.WriteLine($"Naziv smjera: {spec.Name}");
+			}
+		}
+	}
 
-    public async Task AddProgram()
-    {
-        var parameters = new ModalParameters();
-        parameters.Add(nameof(AddStudyProgramPopup.FacultyInputModel), model);
+	public async Task AddProgram()
+	{
+		var parameters = new ModalParameters();
+		parameters.Add(nameof(AddStudyProgramPopup.FacultyInputModel), model);
 
-        
-        var modal = Modal.Show<AddStudyProgramPopup>("Dodavanje studijskog programa", parameters);
-        var result = await modal.Result;
-        if (!result.Cancelled)
-            base.StateHasChanged();
 
-    } }
+		var modal = Modal.Show<AddStudyProgramPopup>("Dodavanje studijskog programa", parameters);
+		var result = await modal.Result;
+		if (!result.Cancelled)
+			base.StateHasChanged();
+
+	}
+		}
