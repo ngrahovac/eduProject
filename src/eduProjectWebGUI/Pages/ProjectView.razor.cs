@@ -5,6 +5,7 @@ using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using System;
@@ -46,7 +47,25 @@ namespace eduProjectWebGUI.Pages
                 {
                     model.ProjectApplicationStatus = ProjectApplicationStatus.OnHold;
                     model.ProjectId = ProjectId;
-                    await ApiService.PostAsync("/applications", model);
+                    try
+                    {
+                        var response = await ApiService.PostAsync("/applications", model);
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            //NavigationManager.NavigateTo("/homepage", true);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+
                 }
 
                 messageForm.Close();
@@ -79,30 +98,56 @@ namespace eduProjectWebGUI.Pages
 
             if (!result.Cancelled)
             {
-                await ApiService.DeleteAsync($"projects/{ProjectId}");
-                NavigationManager.NavigateTo("/homepage?authored=true");
-            }
-        }
+                try
+                {
+                    var response = await ApiService.DeleteAsync($"projects/{ProjectId}");
+                    var parameters2 = new ModalParameters();
+                    parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                    Modal.Show<InfoPopup>("Obavještenje", parameters2);
 
-        async Task ShowReceivedApplicationsPopup()
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(ProjectId), ProjectId);
-            Modal.Show<ReceivedApplicationsOverview>("Pristigle prijave", parameters);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        // NavigationManager.NavigateTo("/homepage?authored=true");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var parameters2 = new ModalParameters();
+                    parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                    Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                }
+            }
         }
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                ProjectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+                var response = await ApiService.GetAsync<ProjectDisplayModel>($"projects/{ProjectId}");
+                var code = response.Item2;
 
-                if (ProjectDisplayModel.Title.Equals("Not Found"))
-                    NavigationManager.NavigateTo("/404"); //TODO: Update status check
+                if (!code.IsSuccessCode())
+                {
+                    if (code.ShouldRedirectTo404())
+                        NavigationManager.NavigateTo("/404");
+
+                    else
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+                }
+                else
+                {
+                    ProjectDisplayModel = response.Item1;
+                }
             }
             catch (Exception ex)
             {
-                NavigationManager.NavigateTo("/404");
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 

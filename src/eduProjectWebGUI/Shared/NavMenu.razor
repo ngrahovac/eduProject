@@ -150,8 +150,8 @@
 		await base.OnInitializedAsync();
 		timer = new System.Threading.Timer(async (object stateInfo) =>
 		{
-			receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorID}/applications");
-			sentNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/user/{AuthorID}/applications");
+			receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorID}/applications")).Item1;
+			sentNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/user/{AuthorID}/applications")).Item1;
 			number += 1;
 			if (receivedNotifications.Count == 0) IsDisabledReceived = true;
 			else IsDisabledReceived = false;
@@ -160,7 +160,7 @@
 			else IsDisabledSent = false;
 
 			StateHasChanged(); // MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
-		}, new System.Threading.AutoResetEvent(false), 2000, 60000);
+		}, new System.Threading.AutoResetEvent(false), 2000, 1000000);
 
 		//receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications");
 		//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");

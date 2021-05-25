@@ -104,7 +104,7 @@
 	StudyFieldInputModel model = new StudyFieldInputModel();
 	protected override async Task OnInitializedAsync()
 	{
-		fields = (await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields")).Values.ToList();
+		fields = (await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields")).Item1.Values.ToList();
 
 	}
 

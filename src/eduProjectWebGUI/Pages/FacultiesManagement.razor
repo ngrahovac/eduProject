@@ -224,7 +224,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		faculties = await ApiService.GetAsync<ICollection<Faculty>>("/faculties");
+		faculties = (await ApiService.GetAsync<ICollection<Faculty>>("/faculties")).Item1;
 	}
 
 	public async Task AddFaculty()

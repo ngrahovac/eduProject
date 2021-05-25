@@ -34,7 +34,6 @@ namespace eduProjectWebAPI.Controllers
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly UserManager<ApplicationUser> userManager;
 
-
         public ProjectsController(IProjectsRepository projects, IUsersRepository users,
             IFacultiesRepository faculties, IUserSettingsRepository settings, IProjectApplicationsRepository applications,
             IHttpContextAccessor httpContextAccessor, UserManager<ApplicationUser> userManager)
@@ -206,8 +205,11 @@ namespace eduProjectWebAPI.Controllers
 
                     foreach (var collaboratorProfileInputModel in model.CollaboratorProfileInputModels)
                     {
-                        var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).First();
-                        facultiesList.Add(faculty);
+                        if (collaboratorProfileInputModel.FacultyName != null)
+                        {
+                            var faculty = allFaculties.Where(x => x.Name.Equals(collaboratorProfileInputModel.FacultyName)).First();
+                            facultiesList.Add(faculty);
+                        }
                     }
 
                     model.MapTo(project, facultiesList);

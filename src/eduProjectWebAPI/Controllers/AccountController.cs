@@ -296,7 +296,7 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
         {
             //admin check here

@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
+using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
@@ -35,22 +38,46 @@ namespace eduProjectWebGUI.Pages
         {
             try
             {
-                userSettingsDisplayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
-                userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
+                // detaljna provjera za ovaj api call
+                // da sprijecimo posjecivanje stranice sa idjem koji nije korisnikov
+                var response = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
+                var code = response.Item2;
 
-                var accountDisplayModel = await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}");
-                registerInputModel = new RegisterInputModel(accountDisplayModel);
-                tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
-                faculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
-                studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Values;
+                if (!code.IsSuccessCode())
+                {
+                    if (code.ShouldRedirectTo404())
+                        NavigationManager.NavigateTo("/404");
 
-                var profileDisplayModel = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
-                userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
-                userProfileInputModel.UserId = UserId;
+                    else
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+                }
+                else
+                {
+                    // korisnik je autorizovan da dohvati svoj account i ostale informacije
+                    // ako bude problema u nastavku koda i dohvatanju ostalih komponenti, propada se na exception prozor
+                    userSettingsDisplayModel = response.Item1;
+                    userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
+
+                    var accountDisplayModel = (await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}")).Item1;
+                    registerInputModel = new RegisterInputModel(accountDisplayModel);
+                    tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Item1.Values.ToList();
+                    faculties = (await ApiService.GetAsync<ICollection<Faculty>>($"faculties")).Item1;
+                    studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Item1.Values;
+
+                    var profileDisplayModel = (await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}")).Item1;
+                    userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
+                    userProfileInputModel.UserId = UserId;
+                }
             }
             catch (Exception ex)
             {
-                NavigationManager.NavigateTo("/404");
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 
@@ -61,18 +88,53 @@ namespace eduProjectWebGUI.Pages
 
         private async Task UpdateUserInformation()
         {
-            await ApiService.PutAsync($"/users/{UserId}", userProfileInputModel);
+            try
+            {
+                var response = await ApiService.PutAsync($"/users/{UserId}", userProfileInputModel);
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
 
         private async Task UpdateAccountInformation()
         {
-            await ApiService.PutAsync($"/account/{UserId}", registerInputModel);
+            try
+            {
+                var response = await ApiService.PutAsync($"/account/{UserId}", registerInputModel);
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
 
         private async Task UpdateSettings()
         {
-            await ApiService.PutAsync($"/users/{UserId}/settings", userSettingsInputModel);
-            //NavigationManager.NavigateTo($"/users/{UserId}/settings", true);
+            try
+            {
+                var response = await ApiService.PutAsync($"/users/{UserId}/settings", userSettingsInputModel);
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
 
         private async Task CancelUpdateSettings()

@@ -2,6 +2,7 @@
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
 @inject IAuthService AuthService
+@inject IModalService Modal
 
 <style>
 
@@ -92,7 +93,28 @@
 	public ICollection<NewsDisplayModel> newsDisplayModels = new List<NewsDisplayModel>();
 	protected override async Task OnInitializedAsync()
 	{
-		newsDisplayModels = (await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news")).ToList();
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				var parameters = new ModalParameters();
+				parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+				Modal.Show<InfoPopup>("Obavještenje", parameters);
+			}
+			else
+			{
+				newsDisplayModels = response.Item1.ToList();
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 	}
 
 

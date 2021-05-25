@@ -49,10 +49,9 @@ namespace eduProjectWebAPI.Controllers
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
 
                     User user = await users.GetAsync(id);
-                    var userSettings = await settings.GetAsync(user.UserId);
-
                     if (user == null)
                         return NotFound();
+                    var userSettings = await settings.GetAsync(user.UserId);
 
                     var userAccount = await userManager.FindByIdAsync(user.UserId.ToString());
 

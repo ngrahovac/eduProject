@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -91,6 +93,39 @@ namespace eduProjectWebGUI.Utils
             }
             //_____________________________________________
             return claims;
+        }
+
+        public static bool IsSuccessCode(this HttpStatusCode code)
+        {
+            return (int)code < 400;
+        }
+
+        public static bool ShouldRedirectTo404(this HttpStatusCode code)
+        {
+            return code == HttpStatusCode.NotFound || code == HttpStatusCode.Unauthorized || code == HttpStatusCode.Forbidden;
+        }
+        public static string GetMessage(this HttpStatusCode code)
+        {
+            string message = "";
+
+            switch (code)
+            {
+                case HttpStatusCode.OK:
+                case HttpStatusCode.Created:
+                case HttpStatusCode.NoContent:
+                    message = "Akcija je uspiješno izvršena";
+                    break;
+                case HttpStatusCode.NotFound:
+                case HttpStatusCode.Unauthorized:
+                case HttpStatusCode.Forbidden:
+                    message = "Stranica ne postoji";
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    message = "Desila se greška prilikom obrade zahtjeva. Molimo pokušajte kasnije ili kontaktirajte administratora";
+                    break;
+            }
+
+            return message;
         }
     }
 }

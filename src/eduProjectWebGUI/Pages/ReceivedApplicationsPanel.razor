@@ -2,6 +2,7 @@
 @inject ApiService ApiService
 @inject Microsoft.JSInterop.IJSRuntime js
 @inject IModalService Modal
+@inject NavigationManager NavigationManager
 
 
 
@@ -112,12 +113,6 @@
 </AuthorizeView>
 
 
-
-
-
-
-
-
 @code {
 
 	[Parameter]
@@ -140,9 +135,36 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		applications = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications2/author/{AuthorId}");
-		receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications");
-		//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications2/author/{AuthorId}");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				applications = response.Item1;
+				receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications")).Item1;
+				//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 
 	}
 
@@ -151,8 +173,6 @@
 		@* ne highlightuje se red koji kliknem... *@
 		string[] tablesToClear = { tableToClear };
 		await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
-
-
 	}
 
 	public async Task ChangeApplicationStatus()
@@ -172,8 +192,19 @@
 
 			if (!result.Cancelled)
 			{
-				//await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
-				Console.WriteLine("PRIJAVA UPDATEOVANA\n");
+				try
+				{
+					var response = await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
+					parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+				catch (Exception ex)
+				{
+					var parameters2 = new ModalParameters();
+					parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+					Modal.Show<InfoPopup>("Obavještenje", parameters2);
+				}
 			}
 
 

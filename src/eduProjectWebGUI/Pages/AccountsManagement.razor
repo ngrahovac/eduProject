@@ -1,4 +1,5 @@
 ﻿@page "/admin/accounts"
+@using System.Net
 @layout AdminLayout
 @inject IModalService Modal
 @inject ApiService ApiService
@@ -108,9 +109,8 @@
    <table class="table table-hover table-bordered">
 	<thead class="thead-dark">
 	 <tr>
-	  <th scope="col">Id</th>
 	  <th scope="col">Korisničko ime</th>
-	  <th scope="col">Status</th>
+	  <th scope="col">Nalog suspendovan</th>
 	 </tr>
 	</thead>
 	<tbody>
@@ -118,7 +118,6 @@
 					{
 						int index = i;
 		 <tr>
-		  <th scope="row">@accountDisplayModels.ElementAt(index).AccountId</th>
 		  <td>@accountDisplayModels.ElementAt(index).Username</td>
 		  <td>
 		   <div class="custom-control custom-switch text-center">
@@ -148,7 +147,8 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		accountDisplayModels = await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account");
+		accountDisplayModels = (await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account")).Item1;
+
 		accountInputModels = new List<AccountManagementInputModel>();
 		for (int i = 0; i < accountDisplayModels.Count; ++i)
 			accountInputModels.Add(new AccountManagementInputModel
@@ -161,20 +161,27 @@
 
 	private async Task UpdateAccounts()
 	{
-		Console.WriteLine("Stanje je sljedece");
+		bool error = false;
+
 		for (int i = 0; i < accountInputModels.Count; ++i)
 		{
-			accountInputModels.ElementAt(i).ActiveStatus = !accountInputModels.ElementAt(i).ActiveStatus;
-			Console.WriteLine(accountInputModels.ElementAt(i).ActiveStatus);
+			var model = accountInputModels.ElementAt(i);
+			var result = await ApiService.PutAsync<AccountManagementInputModel>($"account/{model.AccountId}", model);
+			if (!result.IsSuccessStatusCode)
+			{
+				var parameters = new ModalParameters();
+				parameters.Add(nameof(InfoPopup.Message), result.StatusCode.GetMessage());
+				Modal.Show<InfoPopup>("", parameters);
+				error = true;
+				break;
+			}
 		}
 
-
-		/*
-		for (int i = 0; i < accountInputModels.Count; ++i)
+		if (!error)
 		{
-			await ApiService.PostAsync<AccountManagementInputModel>("/account", accountInputModels.ElementAt(i));
+			var parameters2 = new ModalParameters();
+			parameters2.Add(nameof(InfoPopup.Message), HttpStatusCode.OK.GetMessage());
+			Modal.Show<InfoPopup>("", parameters2);
 		}
-		*/
-
 	}
 } 

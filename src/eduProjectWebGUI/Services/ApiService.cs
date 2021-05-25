@@ -68,7 +68,7 @@ namespace eduProjectWebGUI.Services
             return result;
         }
 
-        public async Task<T> GetAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
+        public async Task<Tuple<T, HttpStatusCode>> GetAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
@@ -90,7 +90,7 @@ namespace eduProjectWebGUI.Services
                 PropertyNameCaseInsensitive = true
             };
 
-            return await JsonSerializer.DeserializeAsync<T>(stream, options);
+            return new Tuple<T, HttpStatusCode>(await JsonSerializer.DeserializeAsync<T>(stream, options), responseMessage.StatusCode);
         }
     }
 }
