@@ -34,7 +34,7 @@
 	}
 </style>
 
-<AuthorizeView Context="authContext">
+<AuthorizeView Context="authContext" Roles="Admin">
 	<Authorized>
 		@if (fields == null)
 				{

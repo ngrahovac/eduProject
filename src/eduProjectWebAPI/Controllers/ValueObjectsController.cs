@@ -2,6 +2,7 @@
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
@@ -29,15 +30,10 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpGet("/tags")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Dictionary<string, Tag>>> GetTags()
         {
-            /*
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {*/
+
             Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
 
             using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
@@ -69,19 +65,13 @@ namespace eduProjectWebAPI.Controllers
             }
 
             return tags;
-            //}
         }
 
+
         [HttpGet("/fields")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<Dictionary<string, StudyField>>> GetStudyFields()
         {
-            /*
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {*/
             Dictionary<string, StudyField> studyFields = new Dictionary<string, StudyField>();
 
             using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
@@ -113,85 +103,55 @@ namespace eduProjectWebAPI.Controllers
             }
 
             return studyFields;
-            //}
         }
 
 
         [HttpGet("/faculties")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
-        {/*
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {*/
+        {
             return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
                                                              // }
         }
 
+
         [HttpPost("/fields")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddStudyField(StudyFieldInputModel model)
         {
-            //TODO: Add auth check
-            if (await IsUserAdmin())
+            try
             {
-                try
-                {
-                    StudyField newField = new StudyField();
-                    model.MapTo(newField);
+                StudyField newField = new StudyField();
+                model.MapTo(newField);
 
-                    await studyFields.AddAsync(newField);
+                await studyFields.AddAsync(newField);
 
-                    //TODO: Change to Created
-                    return Ok();
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
-                }
+                return NoContent();
             }
-            else
-                return Forbid();
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
         }
+
 
         [HttpPost("/faculties")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> AddFaculty(FacultyInputModel model)
         {
-            //TODO: Add auth check
-            if (await IsUserAdmin())
+            try
             {
-                try
-                {
-                    Faculty newFaculty = new Faculty();
-                    model.MapTo(newFaculty);
+                Faculty newFaculty = new Faculty();
+                model.MapTo(newFaculty);
 
-                    await faculties.AddAsync(newFaculty);
+                await faculties.AddAsync(newFaculty);
 
-                    //TODO: Change to Created
-                    return Ok();
-                }
-                catch (Exception e)
-                {
-                    return BadRequest(e.Message + "\n" + e.StackTrace);
-                }
+                return NoContent();
             }
-            else
-                return Forbid();
-        }
-
-        private async Task<bool> IsUserAdmin()
-        {
-            int? currentUserId = HttpContext.Request.ExtractUserId();
-
-            if (currentUserId != null)
+            catch (Exception e)
             {
-                var user = await userManager.FindByIdAsync(currentUserId.ToString());
-
-                return await userManager.IsInRoleAsync(user, "Admin");
+                return BadRequest(e.Message + "\n" + e.StackTrace);
             }
-            else
-                return false; //Other alternative?
         }
     }
 }

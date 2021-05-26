@@ -15,11 +15,13 @@ using eduProjectWebAPI.Services;
 using System.Collections.Generic;
 using eduProjectModel.Display;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -73,11 +75,7 @@ namespace eduProjectWebAPI.Controllers
             return BadRequest(ModelState);
         }
 
-
-
-        // ZORANE treba nam metoda za update emaila i lozinke postojeceg usera, dodala sam AccountId u RegisterInputModel
-        // ZORANE zasto je ovo get action metoda? bruh
-
+        [Authorize(Roles = "Admin, User")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(RegisterInputModel model)
         {
@@ -102,7 +100,6 @@ namespace eduProjectWebAPI.Controllers
             return BadRequest();
         }
 
-
         [HttpGet]
         [Route("[action]")]
         [AllowAnonymous]
@@ -125,6 +122,7 @@ namespace eduProjectWebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             try
@@ -180,14 +178,6 @@ namespace eduProjectWebAPI.Controllers
                     if (!ids.Contains(i.ToString()))
                         return i.ToString();
             }
-        }
-
-        //TEST for fetching current logged in user ID and UserName
-        [Route("[action]")]
-        [HttpGet]
-        public IActionResult WhoAmI()
-        {
-            return Content(User.FindFirstValue(ClaimTypes.NameIdentifier) + " " + User.FindFirstValue(ClaimTypes.Name));
         }
 
         [AllowAnonymous]
@@ -295,44 +285,34 @@ namespace eduProjectWebAPI.Controllers
             return Ok(new LoginResult { Successful = true, Token = new JwtSecurityTokenHandler().WriteToken(token), loggedUserId = id });
         }
 
-        [AllowAnonymous]
+
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
         {
-            //admin check here
-            if (await IsUserAdmin())
+            var user = await userManager.FindByIdAsync(id.ToString());
+
+            if (user != null)
             {
-                var user = await userManager.FindByIdAsync(id.ToString());
+                user.ActiveStatus = model.ActiveStatus;
 
-                if (user != null)
-                {
-                    user.ActiveStatus = model.ActiveStatus;
+                await userManager.UpdateAsync(user);
 
-                    await userManager.UpdateAsync(user);
-
-                    return Ok();
-                }
-                else
-                    return BadRequest();
+                return Ok();
             }
             else
-                return Forbid();
+                return BadRequest();
         }
 
-        [AllowAnonymous]
+
         [HttpGet]
         public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
         {
-            //if (await IsUserAdmin())
-            //{
             var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
             return Ok(models);
-            //}
-            //else
-            //    return Forbid();
         }
 
-        [AllowAnonymous]
+
+        [Authorize(Roles = "Admin, User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<AccountDisplayModel>> GetById(int id)
         {
@@ -343,21 +323,5 @@ namespace eduProjectWebAPI.Controllers
             return new AccountDisplayModel(userAccount);
         }
 
-
-
-
-        private async Task<bool> IsUserAdmin()
-        {
-            int? currentUserId = HttpContext.Request.ExtractUserId();
-
-            if (currentUserId != null)
-            {
-                var user = await userManager.FindByIdAsync(currentUserId.ToString());
-
-                return await userManager.IsInRoleAsync(user, "Admin");
-            }
-            else
-                return false; //Other alternative?
-        }
     }
 }
