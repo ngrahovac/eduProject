@@ -2,6 +2,7 @@
 @layout AdminLayout
 @inject IModalService Modal
 @inject ApiService ApiService
+@inject NavigationManager  NavigationManager
 
 <style>
 
@@ -104,19 +105,64 @@
 	StudyFieldInputModel model = new StudyFieldInputModel();
 	protected override async Task OnInitializedAsync()
 	{
-		fields = (await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields")).Item1.Values.ToList();
+		try
+		{
+			var response = await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				fields = response.Item1.Values.ToList();
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 
 	}
 
 
 	public async Task AddStudyField()
 	{
-		await ApiService.PostAsync("/fields", model);
-		fields.Add(new StudyField
+		try
 		{
-			Name = model.Name,
-			Description = model.Description
-		});
+			var response = await ApiService.PostAsync("/fields", model);
+
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
+			{
+				fields.Add(new StudyField
+				{
+					Name = model.Name,
+					Description = model.Description
+				});
+				//NavigationManager.NavigateTo("/homepage", true);
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 
 	}
 }

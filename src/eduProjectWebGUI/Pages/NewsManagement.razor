@@ -2,6 +2,7 @@
 @layout AdminLayout
 @inject ApiService ApiService
 @inject IJSRuntime JsRuntime;
+@inject IModalService Modal
 
 <style>
 
@@ -70,9 +71,25 @@
 
 	public async Task AddNews()
 	{
-		await ApiService.PostAsync<NewsInputModel>("/news", model);
+		try
+		{
+			var response = await ApiService.PostAsync<NewsInputModel>("/news", model);
 
-		await JsRuntime.InvokeVoidAsync("alert", "Uspješno je postavljen oglas."); // Alert
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
+			{
+				//NavigationManager.NavigateTo("/homepage", true);
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 	}
 
 }

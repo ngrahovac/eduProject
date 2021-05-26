@@ -2,6 +2,7 @@
 @layout AdminLayout
 @inject IModalService Modal
 @inject ApiService ApiService
+@inject NavigationManager NavigationManager
 
 <style>
 
@@ -201,11 +202,14 @@
 
 
 		</div>
+
+
 				}
+	<button class="btn btn-outline-info float-right" type="submit" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
+	<button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
    </EditForm>
 
-   <button class="btn btn-outline-info float-right" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
-   <button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
+
   </div>
 		}
 
@@ -224,26 +228,56 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		faculties = (await ApiService.GetAsync<ICollection<Faculty>>("/faculties")).Item1;
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<Faculty>>("/faculties");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				faculties = response.Item1;
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 	}
 
 	public async Task AddFaculty()
 	{
-		Console.WriteLine("Dodan fakultet sa sljedecim podacima:");
-		Console.WriteLine($"Naziv: {model.Name}");
-		Console.WriteLine($"Adresa: {model.Address}");
-		Console.WriteLine($"Broj studijskih programa: {model.StudyProgramInputModels.Count()}");
-		foreach (var prog in model.StudyProgramInputModels)
+		try
 		{
-			Console.WriteLine($"Naziv programa: {prog.Name}");
-			Console.WriteLine($"Ciklus: {prog.Cycle}");
-			Console.WriteLine($"Trajanje: {prog.DurationYears}");
-			Console.WriteLine($"Broj studijskih smjerova: {prog.StudyProgramSpecializationInputModels.Count()}");
+			var response = await ApiService.PostAsync<FacultyInputModel>("/faculties", model);
 
-			foreach (var spec in prog.StudyProgramSpecializationInputModels)
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
 			{
-				Console.WriteLine($"Naziv smjera: {spec.Name}");
+				//NavigationManager.NavigateTo("/homepage", true);
 			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
 		}
 	}
 

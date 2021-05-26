@@ -3,6 +3,7 @@
 @layout AdminLayout
 @inject IModalService Modal
 @inject ApiService ApiService
+@inject NavigationManager NavigationManager
 
 <style>
 
@@ -147,16 +148,44 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		accountDisplayModels = (await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account")).Item1;
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account");
+			var code = response.Item2;
 
-		accountInputModels = new List<AccountManagementInputModel>();
-		for (int i = 0; i < accountDisplayModels.Count; ++i)
-			accountInputModels.Add(new AccountManagementInputModel
+			if (!code.IsSuccessCode())
 			{
-				AccountId = accountDisplayModels.ElementAt(i).AccountId,
-				ActiveStatus = false
-			});
-		loaded = true;
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				accountDisplayModels = response.Item1;
+				accountInputModels = new List<AccountManagementInputModel>();
+
+				for (int i = 0; i < accountDisplayModels.Count; ++i)
+					accountInputModels.Add(new AccountManagementInputModel
+					{
+						AccountId = accountDisplayModels.ElementAt(i).AccountId,
+						ActiveStatus = false
+					});
+
+				loaded = true;
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
 	}
 
 	private async Task UpdateAccounts()
