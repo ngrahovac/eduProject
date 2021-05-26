@@ -59,7 +59,7 @@ namespace eduProjectWebGUI.Pages
                 {
                     // korisnik je autorizovan da dohvati svoj account i ostale informacije
                     // ako bude problema u nastavku koda i dohvatanju ostalih komponenti, propada se na exception prozor
-                    userSettingsDisplayModel = response.Item1;
+                    /*userSettingsDisplayModel = response.Item1;
                     userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
 
                     var accountDisplayModel = (await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}")).Item1;
@@ -70,7 +70,51 @@ namespace eduProjectWebGUI.Pages
 
                     var profileDisplayModel = (await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}")).Item1;
                     userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
-                    userProfileInputModel.UserId = UserId;
+                    userProfileInputModel.UserId = UserId;*/
+
+                    userSettingsDisplayModel = response.Item1;
+                    userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
+
+                    var responseAccountDisplayModel = await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}");
+                    var responseAccountDisplayModelCode = responseAccountDisplayModel.Item2;
+
+                    if (!responseAccountDisplayModelCode.IsSuccessCode())
+                    {
+                        if (responseAccountDisplayModelCode.ShouldRedirectTo404())
+                            NavigationManager.NavigateTo("/404");
+                        else
+                        {
+                            var parameters = new ModalParameters();
+                            parameters.Add(nameof(InfoPopup.Message), responseAccountDisplayModelCode.GetMessage());
+                            Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        }
+                    }
+                    else
+                    {
+                        var accountDisplayModel = responseAccountDisplayModel.Item1;
+                        registerInputModel = new RegisterInputModel(accountDisplayModel);
+
+                        var responseFaculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
+                        var responseFields = await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields");
+                        var responseTags = await ApiService.GetAsync<Dictionary<string, Tag>>($"tags");
+
+                        if (!responseFaculties.Item2.IsSuccessCode() || !responseFields.Item2.IsSuccessCode() || !responseTags.Item2.IsSuccessCode())
+                        {
+                            var parameters = new ModalParameters();
+                            parameters.Add(nameof(InfoPopup.Message), "Problem pri dohvatanju podataka");
+                            Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        }
+                        else
+                        {
+                            faculties = responseFaculties.Item1;
+                            studyFields = responseFields.Item1.Values;
+                            tags = responseTags.Item1.Values.ToList();
+
+                            var profileDisplayModel = (await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}")).Item1;
+                            userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
+                            userProfileInputModel.UserId = UserId;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
