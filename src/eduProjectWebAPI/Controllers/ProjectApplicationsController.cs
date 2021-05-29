@@ -4,6 +4,8 @@ using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -19,6 +22,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("/applications")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProjectApplicationsController : ControllerBase
     {
         private readonly IProjectsRepository projects;
@@ -42,15 +46,9 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ApplicationDisplayModel>> GetById(int id)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     var projectApplication = await applications.GetAsync(id);
 
                     if (projectApplication == null)
@@ -73,23 +71,16 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(ProjectApplicationInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     int authorId = (await projects.GetAsync(model.ProjectId)).AuthorId;
 
                     if (model.ApplicantId == currentUserId || authorId == currentUserId)
@@ -108,23 +99,16 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpGet("project/{projectId}")]
         public async Task<ActionResult<ProjectApplicationsDisplayModel>> GetByProject(int projectId)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     var project = await projects.GetAsync(projectId);
 
                     if (project == null)
@@ -166,24 +150,16 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return BadRequest(e.StackTrace);
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpGet("author/{authorId}")]
         public async Task<ActionResult<ICollection<ProjectApplicationsDisplayModel>>> GetByProjectAuthor(int authorId)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     if (authorId == currentUserId)
                     {
@@ -217,22 +193,16 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpGet("applicant/{applicantId}")]
         public async Task<ActionResult<ICollection<ProjectApplicationsDisplayModel>>> GetByApplicantId(int applicantId)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
+                    //int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)); - throws exception here: value cannot be null
                     int currentUserId = (int)HttpContext.Request.ExtractUserId();
 
                     if (applicantId == currentUserId)
@@ -254,7 +224,6 @@ namespace eduProjectWebAPI.Controllers
                                     $"{applicant.FirstName} {applicant.LastName}", email));
                             }
 
-
                             models.Add(new ProjectApplicationsDisplayModel(project, usersApplications.Where(a => a.ProjectId == id).ToList(), modelData));
                         }
 
@@ -267,23 +236,16 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateAsync(ProjectApplicationInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     var project = await projects.GetAsync(model.ProjectId);
                     var profile = project.CollaboratorProfiles.Where(p => p.CollaboratorProfileId == model.CollaboratorProfileId).First();
 
@@ -316,23 +278,16 @@ namespace eduProjectWebAPI.Controllers
                 catch (Exception e)
                 {
                     //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
-                    return BadRequest(e.StackTrace);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAsync(int id)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
                     var application = await applications.GetAsync(id);
 
                     if (application.ApplicantId == currentUserId)
@@ -347,9 +302,8 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
     }
 }

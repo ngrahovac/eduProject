@@ -9,6 +9,8 @@ using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +20,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("/users")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UsersController : ControllerBase
     {
         private readonly IProjectsRepository projects;
@@ -37,22 +40,16 @@ namespace eduProjectWebAPI.Controllers
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProfileDisplayModel>> GetById(int id)
-        {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
+        { 
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     User user = await users.GetAsync(id);
                     if (user == null)
                         return NotFound();
-                    var userSettings = await settings.GetAsync(user.UserId);
 
+                    var userSettings = await settings.GetAsync(user.UserId);
                     var userAccount = await userManager.FindByIdAsync(user.UserId.ToString());
 
                     if (!userAccount.ActiveStatus)
@@ -92,62 +89,85 @@ namespace eduProjectWebAPI.Controllers
                     //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
+            
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(UserProfileInputModel model)
         {
-            var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
-
-            User user = null;
-
-            if (model.UserAccountType is UserAccountType.Student)
+            try
             {
-                Student s = new Student();
-                model.MapTo(s, faculty);
-                user = s;
+                var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
+
+                User user = null;
+
+                if (model.UserAccountType is UserAccountType.Student)
+                {
+                    Student s = new Student();
+                    model.MapTo(s, faculty);
+                    user = s;
+                }
+                else if (model.UserAccountType is UserAccountType.FacultyMember)
+                {
+                    FacultyMember fm = new FacultyMember();
+                    model.MapTo(fm, faculty);
+                    user = fm;
+                }
+
+                var usersIds = await userManager.Users.Select(u => int.Parse(u.Id)).ToListAsync();
+
+                int userId = usersIds.Count == 0 ? 1 : usersIds.Max();
+                user.UserId = userId;
+
+                await users.AddAsync(user);
+
+                return NoContent(); // TODO: Change to 201
             }
-            else if (model.UserAccountType is UserAccountType.FacultyMember)
+            catch (Exception e)
             {
-                FacultyMember fm = new FacultyMember();
-                model.MapTo(fm, faculty);
-                user = fm;
+                return BadRequest(e.Message + "\n" + e.StackTrace);
             }
-
-            var usersIds = await userManager.Users.Select(u => int.Parse(u.Id)).ToListAsync();
-
-            int userId = usersIds.Count == 0 ? 1 : usersIds.Max();
-            user.UserId = userId;
-            await users.AddAsync(user);
-            return NoContent(); // TODO: Change to 201
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult> Update(int id, UserProfileInputModel model)
         {
-            var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
-            var existingUser = await users.GetAsync(id);
-
-            if (existingUser is Student s)
+            try
             {
-                model.MapTo(s, faculty);
-            }
-            else if (existingUser is FacultyMember fm)
-            {
-                model.MapTo(fm, faculty);
-            }
+                var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.FacultyName).First();
+                var existingUser = await users.GetAsync(id);
 
-            await users.UpdateAsync(existingUser);
-            return NoContent(); // TODO: Change to 201
+                if (existingUser is Student s)
+                {
+                    model.MapTo(s, faculty);
+                }
+                else if (existingUser is FacultyMember fm)
+                {
+                    model.MapTo(fm, faculty);
+                }
+
+                await users.UpdateAsync(existingUser);
+                return NoContent(); // TODO: Change to 201
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
         }
 
         [HttpGet("{id}/tags")]
         public async Task<ActionResult<ICollection<Tag>>> GetUserTags(int userId)
         {
-            Debug.WriteLine("helo");
-            var userSettings = await settings.GetAsync(userId);
-            return userSettings.UserTags.ToList();
+            try
+            {
+                Debug.WriteLine("helo");
+                var userSettings = await settings.GetAsync(userId);
+                return userSettings.UserTags.ToList();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message + "\n" + e.StackTrace);
+            }
 
         }
     }

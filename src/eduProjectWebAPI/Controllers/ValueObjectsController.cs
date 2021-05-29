@@ -2,6 +2,7 @@
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,10 +31,9 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpGet("/tags")]
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
         public async Task<ActionResult<Dictionary<string, Tag>>> GetTags()
         {
-
             Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
 
             using (var connection = new MySqlConnection(dbConnectionString.ConnectionString))
@@ -69,7 +69,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpGet("/fields")]
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
         public async Task<ActionResult<Dictionary<string, StudyField>>> GetStudyFields()
         {
             Dictionary<string, StudyField> studyFields = new Dictionary<string, StudyField>();
@@ -107,7 +107,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpGet("/faculties")]
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
         {
             return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
@@ -116,7 +116,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpPost("/fields")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> AddStudyField(StudyFieldInputModel model)
         {
             try
@@ -136,7 +136,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpPost("/faculties")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<ActionResult> AddFaculty(FacultyInputModel model)
         {
             try

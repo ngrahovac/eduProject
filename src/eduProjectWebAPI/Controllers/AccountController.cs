@@ -21,7 +21,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(Roles = "Admin, User", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -75,11 +75,10 @@ namespace eduProjectWebAPI.Controllers
             return BadRequest(ModelState);
         }
 
-        [Authorize(Roles = "Admin, User")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(RegisterInputModel model)
         {
-            int? currentUserId = HttpContext.Request.ExtractUserId();
+            int? currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (currentUserId != null)
             {
@@ -97,7 +96,7 @@ namespace eduProjectWebAPI.Controllers
                     return Ok();
             }
 
-            return BadRequest();
+            return NotFound();
         }
 
         [HttpGet]
@@ -122,7 +121,6 @@ namespace eduProjectWebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             try
@@ -287,6 +285,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
         {
             var user = await userManager.FindByIdAsync(id.ToString());
@@ -300,23 +299,23 @@ namespace eduProjectWebAPI.Controllers
                 return Ok();
             }
             else
-                return BadRequest();
+                return NotFound();
         }
 
 
         [HttpGet]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
         {
             var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
             return Ok(models);
         }
 
-
-        [Authorize(Roles = "Admin, User")]
         [HttpGet("{id}")]
         public async Task<ActionResult<AccountDisplayModel>> GetById(int id)
         {
             var userAccount = await userManager.FindByIdAsync($"{id}");
+
             if (userAccount == null)
                 return NotFound();
 

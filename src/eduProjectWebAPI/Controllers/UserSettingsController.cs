@@ -3,6 +3,8 @@ using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using eduProjectWebAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,6 +17,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("/users/{userId}/settings")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class UserSettingsController : ControllerBase
     {
         private readonly IUserSettingsRepository settings;
@@ -27,15 +30,9 @@ namespace eduProjectWebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<UserSettingsDisplayModel>> Get(int userId)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     if (userId == currentUserId)
                     {
@@ -49,23 +46,17 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
 
         [HttpPut]
         public async Task<ActionResult> Update(int userId, UserSettingsInputModel model)
         {
-            if (HttpContext.Request.ExtractUserId() == null)
-            {
-                return Unauthorized();
-            }
-            else
-            {
                 try
                 {
-                    int currentUserId = (int)HttpContext.Request.ExtractUserId();
+                    int currentUserId = int.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
                     if (userId == currentUserId)
                     {
@@ -83,9 +74,9 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
-            }
         }
     }
 }

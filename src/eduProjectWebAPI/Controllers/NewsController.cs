@@ -4,7 +4,6 @@ using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    
     public class NewsController : ControllerBase
     {
         private readonly INewsRepository newsRepository;
@@ -26,6 +25,7 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> Create(NewsInputModel model)
         {
             try
@@ -36,7 +36,7 @@ namespace eduProjectWebAPI.Controllers
 
                 await newsRepository.AddAsync(news);
 
-                return Ok();
+                return NoContent();
             }
             catch (Exception e)
             {
@@ -45,7 +45,7 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin, User")]
+        [Authorize(Roles = "Admin, User", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ICollection<NewsDisplayModel>>> GetAll()
         {
             try
@@ -61,6 +61,7 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ICollection<NewsDisplayModel>>> Delete(int id)
         {
             try
