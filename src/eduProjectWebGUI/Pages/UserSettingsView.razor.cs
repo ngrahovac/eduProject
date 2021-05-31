@@ -130,39 +130,7 @@ namespace eduProjectWebGUI.Pages
             return tags.Where(t => t.Name.StartsWith(searchText));
         }
 
-        private async Task UpdateUserInformation()
-        {
-            try
-            {
-                var response = await ApiService.PutAsync($"/users/{UserId}", userProfileInputModel);
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                Modal.Show<InfoPopup>("Obavještenje", parameters);
-            }
-            catch (Exception ex)
-            {
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-                Modal.Show<InfoPopup>("Obavještenje", parameters);
-            }
-        }
 
-        private async Task UpdateAccountInformation()
-        {
-            try
-            {
-                var response = await ApiService.PutAsync($"/account/{UserId}", registerInputModel);
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                Modal.Show<InfoPopup>("Obavještenje", parameters);
-            }
-            catch (Exception ex)
-            {
-                var parameters = new ModalParameters();
-                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-                Modal.Show<InfoPopup>("Obavještenje", parameters);
-            }
-        }
 
         private async Task UpdateSettings()
         {

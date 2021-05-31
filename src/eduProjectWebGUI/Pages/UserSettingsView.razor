@@ -74,8 +74,8 @@
    </div>
 
    <h3>Podaci naloga</h3>
-   <AccountInformationView RegisterInputModel="@registerInputModel"></AccountInformationView>
-   <button class="btn btn-outline-info float-right" @onclick="@UpdateAccountInformation">Sačuvaj</button>
+   <AccountInformationView RegisterInputModel="@registerInputModel" UserId="@UserId"></AccountInformationView>
+
    <hr />
 
 			@if (userProfileInputModel.UserAccountType is UserAccountType.Student)
@@ -89,9 +89,8 @@
    <UserInformationView UserProfileInputModel="@userProfileInputModel"
 								 faculties="@faculties"
 								 studyFields="@studyFields"
-								 Editing="true"></UserInformationView>
-
-   <button class="btn btn-outline-info float-right" @onclick="@UpdateUserInformation">Sačuvaj</button>
+								 Editing="true"
+								 UserId="UserId"></UserInformationView>
    <hr />
 
 
@@ -162,8 +161,6 @@
 
 	<button class="btn btn-outline-info float-right btn-save" @onclick="@UpdateSettings">Sačuvaj izmjene</button>
 	<button class="btn btn-outline-primary float-right btn-save" @onclick="@CancelUpdateSettings">Odustani</button>
-
-
 
    </EditForm>
 

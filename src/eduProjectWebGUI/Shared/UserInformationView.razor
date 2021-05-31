@@ -1,6 +1,8 @@
-﻿
+﻿@inject ApiService ApiService
+@inject IModalService Modal
+
 <div class="section">
-	<EditForm Model="@UserProfileInputModel">
+	<EditForm Model="@UserProfileInputModel" OnValidSubmit="@UpdateUserInformation">
 		<DataAnnotationsValidator />
 
 

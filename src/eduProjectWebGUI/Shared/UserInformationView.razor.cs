@@ -1,6 +1,7 @@
 ﻿using Blazored.Modal;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
@@ -30,6 +31,9 @@ namespace eduProjectWebGUI.Shared
         [Parameter] public bool editingProfile { get; set; }
         [Parameter] public int profileIndex { get; set; }
         //[Parameter] public ICollection<Tag> tags { get; set; } = new List<Tag>();
+
+        [Parameter]
+        public int UserId { get; set; }
 
         private ICollection<string> cycles = new List<string>();
         private ICollection<StudyProgram> programs = new List<StudyProgram>();
@@ -192,43 +196,23 @@ namespace eduProjectWebGUI.Shared
         {
             base.StateHasChanged();
         }
-        /*
-    private async void SaveUserProfile()
-    {
-        Console.WriteLine("Saving..\n");
-        foreach (var prop in typeof(UserProfileInputModel).GetProperties())
+
+        private async Task UpdateUserInformation()
         {
-            Console.WriteLine($"{prop.Name} ima vrijednost {prop.GetValue(UserProfileInputModel)}\n");
+            try
+            {
+                var response = await ApiService.PutAsync($"/users/{UserId}", UserProfileInputModel);
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
-
-        if (!editingProfile)
-        {
-            Console.WriteLine($"Adding {collaboratorProfileInputModel.CollaboratorProfileType}");
-            collaboratorProfileInputModel.ExistingProfile = false;
-            ProjectInputModel.CollaboratorProfileInputModels.Add(collaboratorProfileInputModel);
-            collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-
-            yearStr = string.Empty;
-            cycleStr = string.Empty;
-
-            await BlazoredModal.Close();
-        }
-        else
-        {
-            Console.WriteLine($"Editing {collaboratorProfileInputModel.CollaboratorProfileType}");
-            collaboratorProfileInputModel.ExistingProfile = false;
-            ProjectInputModel.CollaboratorProfileInputModels.RemoveAt(profileIndex);
-            ProjectInputModel.CollaboratorProfileInputModels.Insert(profileIndex, collaboratorProfileInputModel);
-
-            collaboratorProfileInputModel = new CollaboratorProfileInputModel();
-
-            yearStr = string.Empty;
-            cycleStr = string.Empty;
-
-            await BlazoredModal.Close();
-        }
-        
-    }*/
 
 
     }
