@@ -49,7 +49,7 @@ namespace eduProjectWebGUI.Utils
             return Convert.FromBase64String(base64);
         }
 
-        private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+        public static ICollection<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();
             var payload = jwt.Split('.')[1];
@@ -92,7 +92,7 @@ namespace eduProjectWebGUI.Utils
                 claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
             }
             //_____________________________________________
-            return claims;
+            return claims.ToList();
         }
 
         public static bool IsSuccessCode(this HttpStatusCode code)
@@ -119,6 +119,9 @@ namespace eduProjectWebGUI.Utils
                 case HttpStatusCode.Unauthorized:
                 case HttpStatusCode.Forbidden:
                     message = "Stranica ne postoji";
+                    break;
+                case HttpStatusCode.BadRequest:
+                    message = "Došlo je do greške prilikom slanja zahtjeva. Molimo pokušajte ponovo.";
                     break;
                 case HttpStatusCode.InternalServerError:
                     message = "Desila se greška prilikom obrade zahtjeva. Molimo pokušajte kasnije ili kontaktirajte administratora";
