@@ -31,7 +31,7 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [HttpGet("/tags")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
+        [AllowAnonymous]
         public async Task<ActionResult<Dictionary<string, Tag>>> GetTags()
         {
             Dictionary<string, Tag> tags = new Dictionary<string, Tag>();
@@ -69,7 +69,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpGet("/fields")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
+        [AllowAnonymous]
         public async Task<ActionResult<Dictionary<string, StudyField>>> GetStudyFields()
         {
             Dictionary<string, StudyField> studyFields = new Dictionary<string, StudyField>();
@@ -107,7 +107,7 @@ namespace eduProjectWebAPI.Controllers
 
 
         [HttpGet("/faculties")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin, User")]
+        [AllowAnonymous]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
         {
             return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
