@@ -2,6 +2,7 @@
 using eduProjectModel.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -10,9 +11,13 @@ namespace eduProjectModel.Input
     public class UserProfileInputModel
     {
         public int UserId { get; set; }
+        [Required]
         public UserAccountType UserAccountType { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public string FacultyName { get; set; }
         public int? Cycle { get; set; }
         public string StudyProgramName { get; set; }

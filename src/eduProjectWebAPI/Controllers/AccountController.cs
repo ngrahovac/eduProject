@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using eduProjectModel.Display;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using eduProjectWebAPI.Data;
+using Microsoft.EntityFrameworkCore.Scaffolding;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -27,52 +29,82 @@ namespace eduProjectWebAPI.Controllers
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
         private readonly IConfiguration configuration;
+        private readonly IFacultiesRepository faculties;
+        private readonly IUsersRepository users;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
+            IFacultiesRepository faculties, IUsersRepository users)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
             this.configuration = configuration;
+            this.faculties = faculties;
+            this.users = users;
         }
 
         [AllowAnonymous]
         [Route("[action]")]
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterInputModel model)
+        public async Task<IActionResult> Register(RegistrationInputModel2 model)
         {
-            if (ModelState.IsValid)
+            var newUser = new ApplicationUser
             {
-                var newUser = new ApplicationUser
+                UserName = model.RegisterInputModel.Email,
+                Email = model.RegisterInputModel.Email,
+                ActiveStatus = true
+            };
+
+            newUser.Id = GetNextAvailableUserId();
+            var result = await userManager.CreateAsync(newUser, model.RegisterInputModel.Password);
+
+            if (result.Succeeded)
+            {
+                try
                 {
-                    UserName = model.Email,
-                    Email = model.Email,
-                    ActiveStatus = true
-                };
+                    // popunjavanje user dijela
 
-                newUser.Id = GetNextAvailableUserId();
-                var result = await userManager.CreateAsync(newUser, model.Password);
+                    var faculty = (await faculties.GetAllAsync()).Where(f => f.Name == model.UserProfileInputModel.FacultyName).First();
 
-                if (result.Succeeded)
-                {
-                    try
+                    if (model.UserProfileInputModel.UserAccountType == UserAccountType.Student)
                     {
-                        var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(newUser);
-                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, token = confirmationToken }, Request.Scheme);
-
-                        MailSender.SendActivationEmail(model.Email, confirmationLink);
-                        return Ok("Na Vašu email adresu je poslan link za aktivaciju naloga.");
+                        var student = new Student();
+                        model.UserProfileInputModel.MapTo(student, faculty);
+                        student.UserId = int.Parse(newUser.Id);
+                        await users.AddAsync(student);
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        Console.WriteLine(ex.Message);
+                        var facultyMember = new FacultyMember();
+                        model.UserProfileInputModel.MapTo(facultyMember, faculty);
+                        facultyMember.UserId = int.Parse(newUser.Id);
+                        var poruka = "";
+                        try
+                        {
+                            await users.AddAsync(facultyMember);
+                        }
+                        catch (Exception ex)
+                        {
+                            poruka = "kurcina";
+                        }
+                        return Ok(poruka);
                     }
+
+                    var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(newUser);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = newUser.Id, token = confirmationToken }, Request.Scheme);
+
+                    MailSender.SendActivationEmail(model.RegisterInputModel.Email, confirmationLink);
+                    return Ok("Na Vašu email adresu je poslan link za aktivaciju naloga.");
                 }
-
-                foreach (var error in result.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    return BadRequest(ex);
+                }
             }
-
-            return BadRequest(ModelState);
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut("{id}")]

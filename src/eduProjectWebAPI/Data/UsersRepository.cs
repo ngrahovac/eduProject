@@ -231,13 +231,16 @@ namespace eduProjectWebAPI.Data
             });
 
             await command.ExecuteNonQueryAsync();
+            int id = (int)command.LastInsertedId;
 
             if (user is Student s)
             {
+                s.UserId = id;
                 await AddStudentData(command, s);
             }
             else if (user is FacultyMember fm)
             {
+                fm.UserId = id;
                 await AddFacultyMemberData(command, fm);
             }
 
