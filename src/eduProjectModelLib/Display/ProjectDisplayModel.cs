@@ -88,7 +88,8 @@ namespace eduProjectModel.Display
                     else if (visitor is FacultyMember fm)
                     {
                         if (fmp.FacultyId == null ||
-                            fmp.FacultyId == fm.FacultyId)
+                            fmp.FacultyId == fm.FacultyId && fmp.StudyField == null ||
+                            fmp.FacultyId == fm.FacultyId && fmp.StudyField == fm.StudyField)
                         {
                             model.Recommended = true;
                             Recommended = true;
