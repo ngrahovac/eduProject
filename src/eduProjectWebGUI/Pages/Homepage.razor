@@ -1,4 +1,4 @@
-﻿@page "/homepage/{queryString}"
+﻿ @page "/homepage/{queryString}"
 @page "/homepage"
 @inject ApiService ApiService
 @inject NavigationManager NavigationManager
@@ -94,13 +94,17 @@
 	<Authorized>
 
 		<div class="container">
-			@if (projectDisplayModels.Count() == 0)
+			@if (projectDisplayModels == null)
 				{
    <div class="d-flex justify-content-center">
 	<div class="spinner-border text-info" role="status">
 	 <span class="sr-only"></span>
 	</div>
    </div>
+			}
+				else if (projectDisplayModels.Count() == 0)
+				{
+   <h3>Trenutno nema traženih projekata.</h3>
 			}
 				else
 				{

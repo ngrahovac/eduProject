@@ -55,6 +55,19 @@
 	<Authorized>
 
 		<div class="container">
+			@if (ProjectApplicationsDisplayModels == null)
+				{
+   <div class="d-flex justify-content-center">
+	<div class="spinner-border text-info" role="status">
+	 <span class="sr-only"></span>
+	</div>
+   </div>
+			}
+				else if (ProjectApplicationsDisplayModels.Count() == 0)
+				{
+   <h3>Trenutno nema poslanih prijava.</h3>
+			}
+
 			<h3 class="h3-title">Poslane prijave</h3>
 
 			@foreach (var projectModel in ProjectApplicationsDisplayModels)

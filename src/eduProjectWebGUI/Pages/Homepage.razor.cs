@@ -23,7 +23,7 @@ namespace eduProjectWebGUI.Pages
 
         public string Title { get; set; } = "";
 
-        private ICollection<ProjectDisplayModel> projectDisplayModels = new List<ProjectDisplayModel>();
+        private ICollection<ProjectDisplayModel> projectDisplayModels;
 
         private SearchParameters searchParameters = new SearchParameters();
 

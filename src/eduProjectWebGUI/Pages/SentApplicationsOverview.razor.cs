@@ -22,7 +22,7 @@ namespace eduProjectWebGUI.Pages
 
 
 
-        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; } = new List<ProjectApplicationsDisplayModel>();
+        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -75,7 +75,7 @@ namespace eduProjectWebGUI.Pages
                     else
                     {
                         ProjectApplicationsDisplayModels = responseDisplayModels.Item1.ToList();
-                        
+
                         foreach (var model in ProjectApplicationsDisplayModels)
                         {
                             model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
