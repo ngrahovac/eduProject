@@ -20,15 +20,15 @@ namespace eduProjectWebGUI.Pages
         private List<string> tablesToClear = new List<string>();
         private ICollection<int> sentNotifications = new List<int>();
 
-
-
-        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; }
+        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                var response = await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}");
+                var response = await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"applications/applicant/{UserId}");
+                sentNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/user/{UserId}/applications")).Item1;
+                await ApiService.DeleteAsync($"/notifications/user/{UserId}/applications");
                 var code = response.Item2;
 
                 if (!code.IsSuccessCode())
@@ -45,56 +45,15 @@ namespace eduProjectWebGUI.Pages
                 }
                 else
                 {
-                    /*ProjectApplicationsDisplayModels = (await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}")).Item1.ToList();
-                    sentNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/user/{UserId}/applications")).Item1;
-                    //await ApiService.DeleteAsync($"notifications/user/{UserId}/applications"); - vec bilo zakomentarisano
-
+                    ProjectApplicationsDisplayModels = response.Item1.ToList();
+                    Console.WriteLine($"Ima {ProjectApplicationsDisplayModels.Count()} prijava");
                     foreach (var model in ProjectApplicationsDisplayModels)
                     {
                         model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
                                                                                   .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId)
                                                                                   .Contains(UserId)).ToList();
-                    }*/
-                    var responseDisplayModels = await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}");
-                    var responseDisplayModelsCode = responseDisplayModels.Item2;
-
-                    var responseSentNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/user/{UserId}/applications");
-                    var responseSentNotificationsCode = responseSentNotifications.Item2;
-
-                    if (!responseDisplayModelsCode.IsSuccessCode())
-                    {
-                        if (responseDisplayModelsCode.ShouldRedirectTo404())
-                            NavigationManager.NavigateTo("/404");
-                        else
-                        {
-                            var parameters = new ModalParameters();
-                            parameters.Add(nameof(InfoPopup.Message), responseDisplayModelsCode.GetMessage());
-                            Modal.Show<InfoPopup>("Obavještenje", parameters);
-                        }
                     }
-                    else
-                    {
-                        ProjectApplicationsDisplayModels = responseDisplayModels.Item1.ToList();
-
-                        foreach (var model in ProjectApplicationsDisplayModels)
-                        {
-                            model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
-                                                                                      .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId)
-                                                                                      .Contains(UserId)).ToList();
-                        }
-                    }
-
-                    if (!responseSentNotificationsCode.IsSuccessCode())
-                    {
-                        var parameters = new ModalParameters();
-                        parameters.Add(nameof(InfoPopup.Message), responseSentNotificationsCode.GetMessage());
-                        Modal.Show<InfoPopup>("Obavještenje", parameters);
-                    }
-                    else
-                        sentNotifications = responseSentNotifications.Item1;
                 }
-
-
             }
             catch (Exception ex)
             {
