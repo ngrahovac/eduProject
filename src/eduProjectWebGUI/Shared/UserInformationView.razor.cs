@@ -78,6 +78,11 @@ namespace eduProjectWebGUI.Shared
             {
                 UserProfileInputModel.FacultyName = null;
             }
+            UserProfileInputModel.Cycle = null;
+            UserProfileInputModel.StudyProgramName = null;
+            UserProfileInputModel.StudyProgramSpecializationName = null;
+            UserProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task CycleSelected(string cycleStr)
@@ -98,6 +103,10 @@ namespace eduProjectWebGUI.Shared
             {
                 UserProfileInputModel.Cycle = null;
             }
+            UserProfileInputModel.StudyProgramName = null;
+            UserProfileInputModel.StudyProgramSpecializationName = null;
+            UserProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task ProgramSelected(string programName)
@@ -120,6 +129,9 @@ namespace eduProjectWebGUI.Shared
             {
                 UserProfileInputModel.StudyProgramName = null;
             }
+            UserProfileInputModel.StudyProgramSpecializationName = null;
+            UserProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task YearSelected(string yearStr)
@@ -135,6 +147,8 @@ namespace eduProjectWebGUI.Shared
             {
                 UserProfileInputModel.StudyYear = null;
             }
+            UserProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task SpecializationSelected(string specializationName)

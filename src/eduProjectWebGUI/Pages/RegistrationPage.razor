@@ -382,6 +382,11 @@ else
 		{
 			registrationModel.UserProfileInputModel.FacultyName = null;
 		}
+		registrationModel.UserProfileInputModel.Cycle = null;
+		registrationModel.UserProfileInputModel.StudyProgramName = null;
+		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+		registrationModel.UserProfileInputModel.StudyYear = null;
+		base.StateHasChanged();
 	}
 
 	private async Task CycleSelected(string cycleStr)
@@ -402,6 +407,10 @@ else
 		{
 			registrationModel.UserProfileInputModel.Cycle = null;
 		}
+		registrationModel.UserProfileInputModel.StudyProgramName = null;
+		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+		registrationModel.UserProfileInputModel.StudyYear = null;
+		base.StateHasChanged();
 	}
 
 	private async Task ProgramSelected(string programName)
@@ -424,6 +433,9 @@ else
 		{
 			registrationModel.UserProfileInputModel.StudyProgramName = null;
 		}
+		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+		registrationModel.UserProfileInputModel.StudyYear = null;
+		base.StateHasChanged();
 	}
 
 	private async Task YearSelected(string yearStr)
@@ -453,7 +465,7 @@ else
 		{
 			registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
 		}
+		registrationModel.UserProfileInputModel.StudyYear = null;
+		base.StateHasChanged();
 	}
-
-
 	}
