@@ -132,36 +132,6 @@
 				{
   <div class="container">
    <h3 class="h3-title">Administrator</h3>
-   <h3 class="h3-tree-title">Fakulteti</h3>
-   <ul class="wtree">
-				@foreach (var f in faculties)
-				{
-		<li>
-		 <span>@f.Name</span>
-		 <ul>
-							@foreach (var sp in f.StudyPrograms)
-							{
-			  <li>
-			   <span>@sp.Name [Ciklus: @sp.Cycle] [Trajanje: @sp.DurationYears] </span>
-			   <ul>
-										@if (sp.StudyProgramSpecializations.Count != 0)
-										{
-											@foreach (var sps in sp.StudyProgramSpecializations)
-											{
-						<li>
-						 <span>@sps.Name </span>
-						</li>
-											}
-										}
-			   </ul>
-			  </li>
-							}
-		 </ul>
-		</li>
-				}
-   </ul>
-
-
 
    <h3 class="h3-faculty-title">Dodavanje fakulteta</h3>
 
@@ -209,6 +179,40 @@
 	<button class="btn btn-outline-info float-right" type="submit" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
 	<button class="btn btn-outline-info float-right" type="button" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
    </EditForm>
+
+   <br />
+
+   <h3 style="margin-top: 50px;" class="h3-tree-title">Fakulteti</h3>
+   <ul class="wtree">
+				@foreach (var f in faculties)
+				{
+		<li>
+		 <span>@f.Name</span>
+		 <ul>
+							@foreach (var sp in f.StudyPrograms)
+							{
+			  <li>
+			   <span>@sp.Name [Ciklus: @sp.Cycle] [Trajanje: @sp.DurationYears] </span>
+			   <ul>
+										@if (sp.StudyProgramSpecializations.Count != 0)
+										{
+											@foreach (var sps in sp.StudyProgramSpecializations)
+											{
+						<li>
+						 <span>@sps.Name </span>
+						</li>
+											}
+										}
+			   </ul>
+			  </li>
+							}
+		 </ul>
+		</li>
+				}
+   </ul>
+
+
+
 
 
   </div>

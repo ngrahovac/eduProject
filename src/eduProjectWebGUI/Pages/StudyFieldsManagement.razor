@@ -47,9 +47,26 @@
 		}
 				else
 				{
+
   <div class="container">
    <h3 class="h3-title">Administrator</h3>
-   <h3 style="color:gray">Naučne oblasti</h3>
+
+   <h3 class="h3-faculty-title">Dodavanje naučne oblasti</h3>
+   <EditForm Model="@model" OnValidSubmit="@AddStudyField">
+	<DataAnnotationsValidator />
+
+	<label>Naziv oblasti</label>
+	<InputText class="form-control" @bind-Value="@model.Name"></InputText>
+	<p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
+
+	<label>Opis oblasti</label>
+	<InputText class="form-control" @bind-Value="@model.Description"></InputText>
+
+	<button type="submit" class="btn btn-outline-info float-right" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
+   </EditForm>
+
+
+   <h3 style="color:gray; margin-top:50px;">Naučne oblasti</h3>
    <div class="list-group">
 				@foreach (var field in fields)
 				{
@@ -68,19 +85,7 @@
 				}
    </div>
 
-   <h3 class="h3-faculty-title">Dodavanje naučne oblasti</h3>
-   <EditForm Model="@model" OnValidSubmit="@AddStudyField">
-	<DataAnnotationsValidator />
 
-	<label>Naziv oblasti</label>
-	<InputText class="form-control" @bind-Value="@model.Name"></InputText>
-	<p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
-
-	<label>Opis oblasti</label>
-	<InputText class="form-control" @bind-Value="@model.Description"></InputText>
-
-	<button type="submit" class="btn btn-outline-info float-right" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
-   </EditForm>
 
 
   </div>

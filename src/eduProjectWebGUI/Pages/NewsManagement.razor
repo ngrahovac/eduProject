@@ -45,14 +45,14 @@
 			<h3 class="h3-tree-title">Postavljanje novosti</h3>
 
 			<EditForm OnValidSubmit="@AddNews" Model="@model">
-
+				<DataAnnotationsValidator />
 				<label>Naslov</label>
 				<InputText @bind-Value="@model.Title" class="form-control"></InputText>
-
+				<p style="color:red"><ValidationMessage For="@(() => model.Title)" /></p>
 
 				<label style="margin-top: 1rem;">Sadržaj</label>
 				<InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
-
+				<p style="color:red"><ValidationMessage For="@(() => model.Title)" /></p>
 
 				<button class="btn btn-outline-info float-right" style="margin-top:1rem;" type="submit"> Postavi </button>
 			</EditForm>

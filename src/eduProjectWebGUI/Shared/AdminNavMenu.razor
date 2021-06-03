@@ -3,47 +3,58 @@
 @inject IAuthService AuthService
 
 <style>
-   body{
-       padding-bottom:10rem;
-   }
+	body {
+		padding-bottom: 10rem;
+	}
 
-    .nav-item{
-        cursor:pointer;
-    }
-    .nav-link {
-        cursor: pointer;
-    }
-    .navbar-brand{
-        cursor:pointer;
-    }
+	.nav-item {
+		cursor: pointer;
+	}
 
-    
+	.nav-link {
+		cursor: pointer;
+	}
+
+	.navbar-brand {
+		cursor: pointer;
+	}
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+	<a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 
-  <div class="collapse navbar-collapse" id="navbarColor03">
-    <ul class="navbar-nav mr-auto" style="margin-left:20px;">
-      <li class="nav-item" style="margin: 0; position: unset;">
-        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/accounts", true))">Nalozi
-          <span class="sr-only">(current)</span>
-        </a>
-      </li>
-      <li class="nav-item" style="margin: 0; position: unset;">
-        <a class="nav-link"@onclick="@(() => NavigationManager.NavigateTo("/admin/faculties", true))">Fakulteti</a>
-      </li>
-      <li class="nav-item" style="margin: 0; position: unset;">
-        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/fields", true))">Studijski programi</a>
-      </li>
-         <li class="nav-item" style="margin: 0; position: unset;">
-        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/news", true))">Postavljanje novosti</a>
-      </li>
-     
-    </ul>
-    
-  </div>
+	<div class="collapse navbar-collapse" id="navbarColor03">
+		<ul class="navbar-nav mr-auto" style="margin-left:20px;">
+			<li class="nav-item" style="margin: 0; position: unset;">
+				<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/accounts", true))">
+					Nalozi
+					<span class="sr-only">(current)</span>
+				</a>
+			</li>
+			<li class="nav-item" style="margin: 0; position: unset;">
+				<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/faculties", true))">Fakulteti</a>
+			</li>
+			<li class="nav-item" style="margin: 0; position: unset;">
+				<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/fields", true))">Naučne oblasti</a>
+			</li>
+			<li class="nav-item" style="margin: 0; position: unset;">
+				<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/admin/news", true))">Postavljanje novosti</a>
+			</li>
+
+
+		</ul>
+		<div class="nav-item">
+			<button class="btn btn-outline-primary" type="submit" @onclick="@(async () =>
+                                                                      {
+                                                                  await AuthService.Logout();
+                                                                  NavigationManager.NavigateTo("/account/login");
+                                                              })" style="margin-top:5px;">
+				Odjavi se
+			</button>
+		</div>
+
+	</div>
 </nav>
