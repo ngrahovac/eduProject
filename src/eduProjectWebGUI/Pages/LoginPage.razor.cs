@@ -1,4 +1,6 @@
-﻿using eduProjectModel.Input;
+﻿using Blazored.Modal;
+using eduProjectModel.Input;
+using eduProjectWebGUI.Shared;
 using eduProjectWebGUI.Utils;
 using System;
 using System.Linq;
@@ -26,19 +28,32 @@ namespace eduProjectWebGUI.Pages
 
         public async Task Login2()
         {
-            var result = await AuthService.Login(loginInputModel);
-
-            if (result.Successful)
+            try
             {
-                var token = result.Token;
-                var claims = ExtensionMethods.ParseClaimsFromJwt(token);
-                if (claims.First(c => c.Type == ClaimTypes.Role).Value == "Admin")
-                    Navigation.NavigateTo("/admin/accounts");
+                var result = await AuthService.Login(loginInputModel);
+
+                if (result.Successful)
+                {
+                    var token = result.Token;
+                    var claims = ExtensionMethods.ParseClaimsFromJwt(token);
+                    if (claims.First(c => c.Type == ClaimTypes.Role).Value == "Admin")
+                        Navigation.NavigateTo("/admin/accounts");
+                    else
+                        Navigation.NavigateTo("/news");
+                }
                 else
-                    Navigation.NavigateTo("/news");
+                {
+                    var parameters = new ModalParameters();
+                    parameters.Add(nameof(InfoPopup.Message), result.Error);
+                    Modal.Show<InfoPopup>("Obavještenje", parameters);
+                }
             }
-            else
-                Console.WriteLine(result.Error);
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
     }
 }

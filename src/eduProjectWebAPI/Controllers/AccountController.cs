@@ -284,12 +284,12 @@ namespace eduProjectWebAPI.Controllers
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
             if (!result.Succeeded)
-                return BadRequest("Invalid password");
+                return BadRequest("Korisničko ime ili lozinka nisu ispravni.");
 
             var user = await userManager.FindByEmailAsync(model.Email);
 
             if (!user.ActiveStatus)
-                return BadRequest("Account suspended");
+                return BadRequest("Vaš nalog je suspendovan. Za više informacija, molimo kontaktirajte administratora.");
 
             var id = user.Id.ToString();
 
