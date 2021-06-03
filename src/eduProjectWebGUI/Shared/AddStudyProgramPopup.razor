@@ -1,93 +1,94 @@
 ﻿@layout LoginLayout
 
 <style>
-    .btn-outline-dark{
-        width:100%;
-    }
-    span{
-        border:0px;
-    }
+	.btn-outline-dark {
+		width: 100%;
+	}
 
-    .float-right {
-        margin-top: 1rem;
-        margin-left:0.75rem;
-    }
-    .blazored-modal-close{
-        border:0;
-    }
- 
-    
+	span {
+		border: 0px;
+	}
+
+	.float-right {
+		margin-top: 1rem;
+		margin-left: 0.75rem;
+	}
+
+	.blazored-modal-close {
+		border: 0;
+	}
 </style>
 
 <EditForm Model="@model"
-          OnValidSubmit="@AddProgram">
-    <div class="mb-3">
-        <label>Naziv studijskog programa</label>
-        <InputText class="form-control" @bind-Value="@model.Name"></InputText>
-    </div>
+		  OnValidSubmit="@AddProgram">
+	<DataAnnotationsValidator />
+	<div class="mb-3">
+		<label>Naziv studijskog programa</label>
+		<InputText class="form-control" @bind-Value="@model.Name"></InputText>
+		<p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
+	</div>
 
-    <div class="mb-3">
-        <label>Ciklus</label>
-        <InputNumber class="form-control" @bind-Value="@model.Cycle"></InputNumber>
-    </div>
-    <div class="mb-3">
-         <label>Trajanje</label>
-         <InputNumber class="form-control" @bind-Value="@model.DurationYears"></InputNumber>
-    </div>
-    
-    
-   
+	<div class="mb-3">
+		<label>Ciklus</label>
+		<InputNumber class="form-control" @bind-Value="@model.Cycle"></InputNumber>
+		<p style="color:red"><ValidationMessage For="@(() => model.Cycle)" /></p>
+	</div>
+	<div class="mb-3">
+		<label>Trajanje</label>
+		<InputNumber class="form-control" @bind-Value="@model.DurationYears"></InputNumber>
+		<p><ValidationMessage For="@(() => model.DurationYears)" /></p>
+	</div>
 
+	<table class="table table-bordered">
+		<thead class="thead-dark">
+			<tr>
+				<th>Naziv smjera</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var spec in model.StudyProgramSpecializationInputModels)
+			{
+	   <tr>
+		<td>
+		 <InputText class="form-control" @bind-Value="@spec.Name"></InputText>
+		 <p style="color:red"><ValidationMessage For="@(() => spec.Name)" /></p>
+		</td>
+		<td><button class="btn btn-outline-primary" type="button" @onclick="@(() => model.StudyProgramSpecializationInputModels.Remove(spec))">Ukloni</button></td>
+	   </tr>
+			}
+  </tbody>
+ </table>
 
-    <table class="table table-bordered">
-        <thead class="thead-dark">
-            <tr>
-                <th>Naziv smjera</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var spec in model.StudyProgramSpecializationInputModels)
-            {
-                <tr>
-                    <td>
-                        <InputText class="form-control" @bind-Value="@spec.Name"></InputText>
-                    </td>
-                    <td><button class="btn btn-outline-primary" @onclick="@(() => model.StudyProgramSpecializationInputModels.Remove(spec))">Ukloni</button></td>
-                </tr>
-            }
-        </tbody>
-    </table>
+ <button type="submit" class="btn btn-outline-info float-right">
+  Sačuvaj program
+ </button>
 
-    <button type="submit" class="btn btn-outline-info float-right" >
-        Sačuvaj program
-    </button>
+ <button type="button" class="btn btn-outline-info float-right"
+			@onclick="@(() => model.StudyProgramSpecializationInputModels.Add(new StudyProgramSpecializationInputModel()))">
+  Dodaj smjer
+ </button>
 
-    <button type="button" class="btn btn-outline-info float-right" 
-            @onclick="@(() => model.StudyProgramSpecializationInputModels.Add(new StudyProgramSpecializationInputModel()))">
-        Dodaj smjer
-    </button>
-    
 </EditForm>
 
 @code {
 
-    [CascadingParameter]
-    BlazoredModalInstance BlazoredModal { get; set; }
+	[CascadingParameter]
+	BlazoredModalInstance BlazoredModal { get; set; }
 
-    [Parameter]
-    public FacultyInputModel FacultyInputModel { get; set; }
+	[Parameter]
+	public FacultyInputModel FacultyInputModel { get; set; }
 
-    StudyProgramInputModel model = new StudyProgramInputModel();
+	StudyProgramInputModel model = new StudyProgramInputModel();
 
-    protected override async Task OnInitializedAsync()
-    {
+	protected override async Task OnInitializedAsync()
+	{
 
-    }
+	}
 
-    public async Task AddProgram()
-    {
-        FacultyInputModel.StudyProgramInputModels.Add(model);
-        BlazoredModal.Close();
-    }
+	public async Task AddProgram()
+	{
+		FacultyInputModel.StudyProgramInputModels.Add(model);
+		BlazoredModal.Close();
+	}
 }

@@ -166,12 +166,13 @@
    <h3 class="h3-faculty-title">Dodavanje fakulteta</h3>
 
    <EditForm OnValidSubmit="@AddFaculty" Model="@model">
+	<DataAnnotationsValidator />
 	<label class="label-margin">Naziv</label>
 	<InputText @bind-Value="@model.Name" class="form-control"></InputText>
-
+	<p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
 	<label class="label-margin">Adresa</label>
 	<InputText @bind-Value="@model.Address" class="form-control"></InputText>
-
+	<p style="color:red"><ValidationMessage For="@(() => model.Address)" /></p>
 	<h4 class="h3-tree-title" style="margin-top:1rem;">Dodani studijski programi</h4>
 				@foreach (var prog in model.StudyProgramInputModels)
 				{
@@ -205,8 +206,8 @@
 
 
 				}
-	<button class="btn btn-outline-info float-right" type="submit" @onclick="@AddFaculty" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
-	<button class="btn btn-outline-info float-right" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
+	<button class="btn btn-outline-info float-right" type="submit" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj fakultet</button>
+	<button class="btn btn-outline-info float-right" type="button" @onclick="@AddProgram" style="margin-bottom:2rem;">Dodaj studijski program</button>
    </EditForm>
 
 
@@ -285,7 +286,6 @@
 	{
 		var parameters = new ModalParameters();
 		parameters.Add(nameof(AddStudyProgramPopup.FacultyInputModel), model);
-
 
 		var modal = Modal.Show<AddStudyProgramPopup>("Dodavanje studijskog programa", parameters);
 		var result = await modal.Result;
