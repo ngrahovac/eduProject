@@ -46,7 +46,7 @@ namespace eduProjectWebAPI
                     });
             });
 
-            services.AddCors();
+            //services.AddCors();
 
             services.AddControllers();
 

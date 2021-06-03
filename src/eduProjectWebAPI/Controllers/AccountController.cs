@@ -77,16 +77,15 @@ namespace eduProjectWebAPI.Controllers
                         var facultyMember = new FacultyMember();
                         model.UserProfileInputModel.MapTo(facultyMember, faculty);
                         facultyMember.UserId = int.Parse(newUser.Id);
-                        var poruka = "";
+
                         try
                         {
                             await users.AddAsync(facultyMember);
                         }
                         catch (Exception ex)
                         {
-                            poruka = "kurcina";
+                            return BadRequest();
                         }
-                        return Ok(poruka);
                     }
 
                     var confirmationToken = await userManager.GenerateEmailConfirmationTokenAsync(newUser);
@@ -316,18 +315,17 @@ namespace eduProjectWebAPI.Controllers
         }
 
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> UpdateAccountStatus(int id, AccountManagementInputModel model)
         {
+
             var user = await userManager.FindByIdAsync(id.ToString());
 
             if (user != null)
             {
                 user.ActiveStatus = model.ActiveStatus;
-
                 await userManager.UpdateAsync(user);
-
                 return Ok();
             }
             else
@@ -339,7 +337,15 @@ namespace eduProjectWebAPI.Controllers
         [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ICollection<AccountDisplayModel>>> GetAllAccounts()
         {
-            var models = await userManager.Users.Select(u => new AccountDisplayModel(u)).ToListAsync();
+            var users = await userManager.Users.ToListAsync();
+            var models = new List<AccountDisplayModel>();
+
+            foreach (var user in users)
+            {
+                if (!(await userManager.IsInRoleAsync(user, "Admin")))
+                    models.Add(new AccountDisplayModel(user));
+            }
+
             return Ok(models);
         }
 

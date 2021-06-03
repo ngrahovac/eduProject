@@ -92,7 +92,7 @@
 </style>
 
 
-<AuthorizeView Roles="Admin">
+<AuthorizeView Roles="Admin" Context="authContext">
 	<Authorized>
 		@if (!loaded)
 				{
@@ -107,31 +107,29 @@
   <div class="container">
    <h3 class="h3-title">Administrator</h3>
    <h3 class="h3-tree-title">Korisnički nalozi</h3>
-   <table class="table table-hover table-bordered">
-	<thead class="thead-dark">
-	 <tr>
-	  <th scope="col">Korisničko ime</th>
-	  <th scope="col">Nalog suspendovan</th>
-	 </tr>
-	</thead>
-	<tbody>
-					@for (int i = 0; i < accountDisplayModels.Count; ++i)
-					{
-						int index = i;
-		 <tr>
-		  <td>@accountDisplayModels.ElementAt(index).Username</td>
-		  <td>
-		   <div class="custom-control custom-switch text-center">
-			<input type="checkbox" class="custom-control-input" id=@($"customSwitch{index}")
-									   @bind-value="@accountInputModels.ElementAt(index).ActiveStatus">
-			<label class="custom-control-label" for=@($"customSwitch{index}")></label>
-		   </div>
-		  </td>
-		 </tr>
-					}
-	</tbody>
-   </table>
-   <button class="btn btn-outline-info float-right" @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
+   <EditForm Model="@accountInputModels">
+	<table class="table table-hover table-bordered">
+	 <thead class="thead-dark">
+	  <tr>
+	   <th scope="col">Korisničko ime</th>
+	   <th scope="col">Nalog aktivan</th>
+	  </tr>
+	 </thead>
+	 <tbody>
+						@for (int i = 0; i < accountInputModels.Count; ++i)
+						{
+							int index = i;
+		  <tr>
+		   <td>@accountInputModels.ElementAt(index).Username</td>
+		   <td>
+			<InputCheckbox @bind-Value=@(accountInputModels.ElementAt(index).ActiveStatus)></InputCheckbox>
+		   </td>
+		  </tr>
+						}
+	 </tbody>
+	</table>
+   </EditForm>
+   <button class="btn btn-outline-info float-right" type="button" @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
   </div>
 		}
 	</Authorized>
@@ -171,13 +169,10 @@
 				accountInputModels = new List<AccountManagementInputModel>();
 
 				for (int i = 0; i < accountDisplayModels.Count; ++i)
-					accountInputModels.Add(new AccountManagementInputModel
-					{
-						AccountId = accountDisplayModels.ElementAt(i).AccountId,
-						ActiveStatus = false
-					});
+					accountInputModels.Add(new AccountManagementInputModel(accountDisplayModels.ElementAt(i)));
 
 				loaded = true;
+
 			}
 		}
 		catch (Exception ex)
@@ -195,12 +190,12 @@
 		for (int i = 0; i < accountInputModels.Count; ++i)
 		{
 			var model = accountInputModels.ElementAt(i);
-			var result = await ApiService.PutAsync<AccountManagementInputModel>($"account/{model.AccountId}", model);
+			var result = await ApiService.PutAsync<AccountManagementInputModel>($"/account/{model.AccountId}", model);
 			if (!result.IsSuccessStatusCode)
 			{
 				var parameters = new ModalParameters();
 				parameters.Add(nameof(InfoPopup.Message), result.StatusCode.GetMessage());
-				Modal.Show<InfoPopup>("", parameters);
+				Modal.Show<InfoPopup>("Obavještenje", parameters);
 				error = true;
 				break;
 			}
@@ -210,7 +205,7 @@
 		{
 			var parameters2 = new ModalParameters();
 			parameters2.Add(nameof(InfoPopup.Message), HttpStatusCode.OK.GetMessage());
-			Modal.Show<InfoPopup>("", parameters2);
+			Modal.Show<InfoPopup>("Obavještenje", parameters2);
 		}
 	}
 } 
