@@ -152,6 +152,7 @@ namespace eduProjectWebAPI.Controllers
 
         [Route("[action]")]
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             try
