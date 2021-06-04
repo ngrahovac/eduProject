@@ -318,14 +318,19 @@ else
 		try
 		{
 			var response = await ApiService.PostAsync<RegistrationInputModel2>("/account/register", registrationModel);
-			var parameters2 = new ModalParameters();
-			parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-			Modal.Show<InfoPopup>("Obavještenje", parameters2);
+			var parameters = new ModalParameters();
 
 			if (response.IsSuccessStatusCode)
 			{
-				//NavigationManager.NavigateTo("/homepage", true);
+				parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+				// navigate to login
 			}
+			else
+			{
+				parameters.Add(nameof(InfoPopup.Message), "Molimo Vas da potvrdite registraciju klikom na link kojeg smo Vam poslali na mail adresu. Nakon toga, možete se prijaviti na sistem.");
+			}
+
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
 		}
 		catch (Exception ex)
 		{
