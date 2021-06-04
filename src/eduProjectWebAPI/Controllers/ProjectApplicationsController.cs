@@ -247,7 +247,7 @@ namespace eduProjectWebAPI.Controllers
                     model.MapTo(application);
 
                     await applications.AddAsync(application);
-                    return Created(httpContextAccessor.HttpContext.GetEndpoint().DisplayName, application);
+                    return CreatedAtAction(nameof(GetById), new { id = application.ProjectApplicationId }, application);
                 }
                 else
                 {
