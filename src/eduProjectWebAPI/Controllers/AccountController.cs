@@ -284,7 +284,7 @@ namespace eduProjectWebAPI.Controllers
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
             if (!result.Succeeded)
-                return BadRequest("Korisničko ime ili lozinka nisu ispravni.");
+                return BadRequest("Pokušaj prijave nije uspio. Provjerite ispravnost korisničkog imena i lozinke. Ukoliko ste napravili novi nalog, potvrdite registraciju klikom na link koji Vam je poslan na email adresu.");
 
             var user = await userManager.FindByEmailAsync(model.Email);
 
