@@ -17,6 +17,7 @@ namespace eduProjectModel.Input
         [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string Title { get; set; }
 
+        [Required(ErrorMessage = "Status projekta je obavezan.")]
         public ProjectStatus ProjectStatus { get; set; }
 
         [Required(ErrorMessage = "Polje ne može biti prazno.")]

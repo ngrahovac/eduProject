@@ -69,13 +69,6 @@
 						else
 						{
 		  <option value="@sf.Name">@sf.Name</option>
-
-
-
-
-
-
-
 						}
 						}
 					</InputSelect>
@@ -108,17 +101,11 @@
 						else
 						{
 		  <option value="@s">@s</option>
-
-
-
-
-
-
-
 						}
 						}
 
 					</InputSelect>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.ProjectStatus)" /></p>
 				</div>
 
 				<div class="mb-3">

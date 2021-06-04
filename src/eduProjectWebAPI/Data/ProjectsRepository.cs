@@ -507,7 +507,7 @@ namespace eduProjectWebAPI.Data
                     {
                         ParameterName = "@fieldId",
                         DbType = DbType.Int32,
-                        Value = StudyField.fields.Where(p => p.Value == fp.StudyField).First().Key
+                        Value = (fp.StudyField == null ? null : (int?)StudyField.fields.Where(p => p.Value.Name == fp.StudyField.Name).First().Key)
                     });
 
                     await command.ExecuteNonQueryAsync();
