@@ -14,7 +14,7 @@ namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    
+
     public class NewsController : ControllerBase
     {
         private readonly INewsRepository newsRepository;
@@ -62,7 +62,7 @@ namespace eduProjectWebAPI.Controllers
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<ActionResult<ICollection<NewsDisplayModel>>> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             try
             {
