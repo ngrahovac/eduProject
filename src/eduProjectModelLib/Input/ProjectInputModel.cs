@@ -1,12 +1,9 @@
 ﻿using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace eduProjectModel.Input
 {
@@ -17,8 +14,21 @@ namespace eduProjectModel.Input
         [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string Title { get; set; }
 
+        private ProjectStatus projectStatus;
+
         [Required(ErrorMessage = "Status projekta je obavezan.")]
-        public ProjectStatus ProjectStatus { get; set; }
+        public ProjectStatus ProjectStatus
+        {
+            get { return projectStatus; }
+            set
+            {
+                projectStatus = value;
+                ProjectStatusNum = (int)projectStatus;
+            }
+        }
+
+        [Range(1, 3, ErrorMessage = "Status projekta je obavezan.")]
+        public int? ProjectStatusNum { get; set; } = 0;
 
         [Required(ErrorMessage = "Polje ne može biti prazno.")]
         public string Description { get; set; }
@@ -77,7 +87,7 @@ namespace eduProjectModel.Input
             project.StartDate = StartDate;
             project.EndDate = EndDate;
             project.StudyField = StudyField.fields.Values.ToList().Where(sf => sf.Name == StudyFieldName).First();
-
+            
             project.CollaboratorProfiles.Clear();
 
             foreach (var model in CollaboratorProfileInputModels)

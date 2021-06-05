@@ -95,17 +95,17 @@
 						{
 						if ((ProjectStatus)s == projectInputModel.ProjectStatus)
 						{
-		  <option selected value="@s">@s</option>
-						}
+							<option selected value="@s">@s</option>
+                            }
 
-						else
-						{
-		  <option value="@s">@s</option>
-						}
-						}
+                            else
+                            {
+								<option value="@s">@s</option>
+                            }
+                        }
 
 					</InputSelect>
-					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.ProjectStatus)" /></p>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.ProjectStatusNum)" /></p>
 				</div>
 
 				<div class="mb-3">
