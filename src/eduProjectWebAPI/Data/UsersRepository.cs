@@ -1,7 +1,4 @@
 ﻿using eduProjectModel.Domain;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System;
 using System.Data;
@@ -13,7 +10,6 @@ namespace eduProjectWebAPI.Data
     public class UsersRepository : IUsersRepository
     {
         private readonly DbConnectionParameters dbConnectionParameters;
-        private readonly UserManager<ApplicationUser> userManager;
 
         public UsersRepository(DbConnectionParameters dbConnectionParameters)
         {

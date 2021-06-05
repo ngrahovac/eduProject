@@ -1,7 +1,6 @@
 ﻿using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
-using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -110,8 +109,7 @@ namespace eduProjectWebAPI.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<ICollection<Faculty>>> GetFaculties()
         {
-            return (await faculties.GetAllAsync()).ToList(); // used by blazor since it can't access repositories
-                                                             // }
+            return (await faculties.GetAllAsync()).ToList();
         }
 
 

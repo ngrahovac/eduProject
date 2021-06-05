@@ -17,7 +17,6 @@ using eduProjectModel.Display;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using eduProjectWebAPI.Data;
-using Microsoft.EntityFrameworkCore.Scaffolding;
 
 namespace eduProjectWebAPI.Controllers
 {
@@ -82,7 +81,7 @@ namespace eduProjectWebAPI.Controllers
                         {
                             await users.AddAsync(facultyMember);
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             return BadRequest();
                         }
@@ -168,32 +167,6 @@ namespace eduProjectWebAPI.Controllers
             return BadRequest("Logout exception happened");
         }
 
-        [AllowAnonymous]
-        [Route("[action]")]
-        [HttpGet]
-        public ActionResult<LoginInputModel> Login()
-        {
-            return new LoginInputModel();
-        }
-
-        [AllowAnonymous]
-        [Route("[action]")]
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginInputModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-
-                if (result.Succeeded)
-                    return Ok("Login successful"); //Redirect here to the HOME PAGE
-                else
-                    ModelState.AddModelError(string.Empty, "Neispravan pokušaj logovanja");
-            }
-
-            return BadRequest(ModelState);
-        }
-
         private string GetNextAvailableUserId()
         {
             var users = userManager.Users.ToList();
@@ -211,76 +184,10 @@ namespace eduProjectWebAPI.Controllers
         }
 
         [AllowAnonymous]
-        [Route("[action]")]
-        public IActionResult ExternalLogin(string returnUrl = null)
-        {
-            var redirectUrl = Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl });
-            var properties = signInManager.ConfigureExternalAuthenticationProperties("Google", redirectUrl);
-
-            return new ChallengeResult("Google", properties);
-        }
-
-        [AllowAnonymous]
-        [Route("[action]")]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null)
-        {
-            //Configure where to redirect after a successful login in case of returnUrl being null
-            returnUrl = returnUrl ?? Url.Content("~/Projects/1");
-
-            var info = await signInManager.GetExternalLoginInfoAsync();
-
-            if (info == null)
-                return BadRequest("Greška pri učitavanju eksternih login informacija");
-
-            var signInResult = await signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
-            if (signInResult.Succeeded)
-                return LocalRedirect(returnUrl);
-            else
-            {
-                var email = info.Principal.FindFirstValue(ClaimTypes.Email);
-
-                if (email != null)
-                {
-                    var user = await userManager.FindByEmailAsync(email);
-
-                    if (user == null)
-                    {
-                        user = new ApplicationUser
-                        {
-                            UserName = info.Principal.FindFirstValue(ClaimTypes.Email),
-                            Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                        };
-
-                        user.Id = GetNextAvailableUserId();
-
-                        await userManager.CreateAsync(user);
-                    }
-
-                    await userManager.AddLoginAsync(user, info);
-                    await signInManager.SignInAsync(user, isPersistent: false);
-
-                    return LocalRedirect(returnUrl);
-                }
-
-                return BadRequest("Greška pri logovanju");
-            }
-        }
-
-        [AllowAnonymous]
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Login2(LoginInputModel model)
+        public async Task<IActionResult> Login(LoginInputModel model)
         {
-            //Code beneath must be synchronous to work, but for email confirmation
-            //user must be fetched asynchronously which results in code redundancy.
-            //This is just for initial testing. Code refarctoring needed here.
-
-            //var confUser = await userManager.FindByEmailAsync(model.Email);
-            //if (confUser != null && await userManager.CheckPasswordAsync(confUser, model.Password)) //!confUser.EmailConfirmed
-            //    return BadRequest("Niste aktivirali vas nalog");
-
-
             var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
 
             if (!result.Succeeded)

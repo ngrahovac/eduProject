@@ -26,7 +26,7 @@ namespace eduProjectWebGUI.Services
         public async Task<LoginResult> Login(LoginInputModel model)
         {
             var loginAsJson = JsonSerializer.Serialize(model);
-            var response = await httpClient.PostAsync("account/login2", new StringContent(loginAsJson, Encoding.UTF8, "application/json"));
+            var response = await httpClient.PostAsync("account/login", new StringContent(loginAsJson, Encoding.UTF8, "application/json"));
 
             if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
             {

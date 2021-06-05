@@ -2,22 +2,14 @@
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
-using eduProjectWebAPI.Validation;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-//using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation.Results;
 using System;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text.Json;
-using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.AspNetCore.Identity;
-using System.ComponentModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
@@ -74,7 +66,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }
@@ -113,7 +104,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }
@@ -202,7 +192,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }
@@ -238,7 +227,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                // return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }
@@ -262,7 +250,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }

@@ -72,7 +72,7 @@
 		}
 	</style>
 
-	<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
+	<EditForm Model="@loginInputModel" OnValidSubmit="Login">
 		<DataAnnotationsValidator />
 		<form class="form-signin">
 
@@ -92,7 +92,7 @@
 			</div>
 
 
-			<a class="btn btn-lg btn-dark btn-block" type="submit" @onclick="Login2">Prijava</a>
+			<a class="btn btn-lg btn-dark btn-block" type="submit" @onclick="Login">Prijava</a>
 			<a class="btn btn-lg btn-outline-dark btn-block" type="submit" href="/account/register">Registracija</a>
 			<p class="mt-5 mb-3 text-muted">© 2021</p>
 		</form>
@@ -102,7 +102,7 @@
 </html>
 
 
-@*<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
+@*<EditForm Model="@loginInputModel" OnValidSubmit="Login">
 	<DataAnnotationsValidator />
 	<div class="login-box">
 
@@ -121,6 +121,6 @@
 	<InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
 	</div>
 
-	<button class="button button-primary" @onclick="Login2">Prijavi se</button>
+	<button class="button button-primary" @onclick="Login">Prijavi se</button>
 	</div>
 	</EditForm>*@

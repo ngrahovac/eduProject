@@ -2,14 +2,11 @@
 using System;
 using System.Threading.Tasks;
 using System.IO;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace eduProjectWebAPI.Controllers
 {
     [ApiController]
     [Route("files")]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] - Image won't upload with this enabled: status 401
     public class UploadController : ControllerBase
     {
         [DisableRequestSizeLimit]

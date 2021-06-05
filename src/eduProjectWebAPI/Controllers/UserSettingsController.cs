@@ -1,15 +1,11 @@
 ﻿using eduProjectModel.Display;
-using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
-using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -46,7 +42,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
         }
@@ -74,7 +69,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
         }

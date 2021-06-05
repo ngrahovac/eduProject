@@ -26,7 +26,7 @@ namespace eduProjectWebGUI.Pages
             }
         }
 
-        public async Task Login2()
+        public async Task Login()
         {
             try
             {

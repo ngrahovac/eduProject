@@ -8,7 +8,6 @@ using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
-using eduProjectWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -86,7 +85,6 @@ namespace eduProjectWebAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                     return BadRequest(e.Message + "\n" + e.StackTrace);
                 }
             
@@ -121,7 +119,7 @@ namespace eduProjectWebAPI.Controllers
 
                 await users.AddAsync(user);
 
-                return NoContent(); // TODO: Change to 201
+                return NoContent();
             }
             catch (Exception e)
             {
@@ -147,7 +145,7 @@ namespace eduProjectWebAPI.Controllers
                 }
 
                 await users.UpdateAsync(existingUser);
-                return NoContent(); // TODO: Change to 201
+                return NoContent();
             }
             catch (Exception e)
             {

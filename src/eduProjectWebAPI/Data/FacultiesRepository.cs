@@ -1,11 +1,7 @@
 ﻿using eduProjectModel.Domain;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.Caching.Memory;
 using MySqlConnector;
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -56,7 +52,6 @@ namespace eduProjectWebAPI.Data
                         {
                             if (faculty == null)
                             {
-                                // first row
                                 faculty = new Faculty
                                 {
                                     FacultyId = reader.GetInt32(0),
@@ -65,15 +60,11 @@ namespace eduProjectWebAPI.Data
                                 };
                             }
 
-                            // faculty already created
-                            // checking if study program exists or is new
-
                             int programId = reader.GetInt32(3);
                             var programs = faculty.StudyPrograms.Where(sp => sp.ProgramId == programId);
 
                             if (programs.Count() == 0)
                             {
-                                // add new program and specialization if exists
                                 StudyProgram program = new StudyProgram
                                 {
                                     ProgramId = reader.GetInt32(3),
@@ -95,9 +86,6 @@ namespace eduProjectWebAPI.Data
                             }
                             else
                             {
-                                // program already created
-                                // add specialization
-
                                 StudyProgram program = programs.First();
                                 program.AddSpecialization(new StudyProgramSpecialization
                                 {
@@ -112,33 +100,9 @@ namespace eduProjectWebAPI.Data
                 await connection.CloseAsync();
             }
 
-            // add faculty, its programs and specializations to cache
-            if (faculty != null)
-            {
-                /*
-                var key = $"{CacheKeyTemplate.Faculty}{faculty.FacultyId}";
-                cache.CreateEntry(key);
-                cache.Set(key, faculty);*/
-
-                foreach (var p in faculty.StudyPrograms)
-                {/*
-                    key = $"{CacheKeyTemplate.Program}{p.ProgramId}";
-                    cache.CreateEntry(key);
-                    cache.Set(key, p);*/
-
-                    foreach (var s in p.StudyProgramSpecializations)
-                    {/*
-                        key = $"{CacheKeyTemplate.Specialization}{s.SpecializationId}";
-                        cache.CreateEntry(key);
-                        cache.Set(key, s);*/
-                    }
-                }
-            }
-
             return faculty;
         }
 
-        // TODO: refactor
         public async Task<ICollection<Faculty>> GetAllAsync()
         {
             List<Faculty> faculties = new List<Faculty>();

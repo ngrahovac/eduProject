@@ -1,5 +1,4 @@
-﻿using eduProjectModel;
-using eduProjectModel.Display;
+﻿using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
 using eduProjectWebAPI.Data;
@@ -9,13 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Controllers
@@ -236,8 +232,6 @@ namespace eduProjectWebAPI.Controllers
                     foreach (var c in p.CollaboratorProfileApplicationsDisplayModels)
                         collaboratorProfileIds.Add(c.CollaboratorProfileDisplayModel.CollaboratorProfileId);
 
-                // user can apply if they aren't project author and if they didn't apply already
-                // and the profile is open for applying
                 if (project.AuthorId != currentUserId &&
                     !collaboratorProfileIds.Contains(model.CollaboratorProfileId) &&
                     profile.ApplicationsOpen)
@@ -256,7 +250,6 @@ namespace eduProjectWebAPI.Controllers
             }
             catch (Exception e)
             {
-                //return new StatusCodeResult(StatusCodes.Status500InternalServerError);
                 return BadRequest(e.Message + "\n" + e.StackTrace);
             }
         }

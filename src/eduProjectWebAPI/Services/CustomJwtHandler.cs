@@ -67,8 +67,6 @@ namespace eduProjectWebAPI.Services
 
             claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
 
-            //_____________________________________________
-            //This part of code extracts ID. It is the same code above, copy-pasted. Refactoring needed.
             keyValuePairs.TryGetValue(ClaimTypes.NameIdentifier, out object id);
             if (id != null)
             {
@@ -83,7 +81,6 @@ namespace eduProjectWebAPI.Services
                 keyValuePairs.Remove(ClaimTypes.NameIdentifier);
                 claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
             }
-            //_____________________________________________
             return claims;
         }
     }
