@@ -95,45 +95,45 @@
 <AuthorizeView Roles="Admin">
 	<Authorized>
 		@if (!loaded)
-				{
-  <div class="d-flex justify-content-center">
-   <div class="spinner-border text-info" role="status">
-	<span class="sr-only"></span>
-   </div>
-  </div>
-		}
-				else
-				{
-  <div class="container">
-   <h3 class="h3-title">Administrator</h3>
-   <h3 class="h3-tree-title">Korisnički nalozi</h3>
-   <table class="table table-hover table-bordered">
-	<thead class="thead-dark">
-	 <tr>
-	  <th scope="col">Korisničko ime</th>
-	  <th scope="col">Nalog suspendovan</th>
-	 </tr>
-	</thead>
-	<tbody>
-					@for (int i = 0; i < accountDisplayModels.Count; ++i)
-					{
-						int index = i;
-		 <tr>
-		  <td>@accountDisplayModels.ElementAt(index).Username</td>
-		  <td>
-		   <div class="custom-control custom-switch text-center">
-			<input type="checkbox" class="custom-control-input" id=@($"customSwitch{index}")
-									   @bind-value="@accountInputModels.ElementAt(index).ActiveStatus">
-			<label class="custom-control-label" for=@($"customSwitch{index}")></label>
-		   </div>
-		  </td>
-		 </tr>
-					}
-	</tbody>
-   </table>
-   <button class="btn btn-outline-info float-right" @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
-  </div>
-		}
+			{
+			<div class="d-flex justify-content-center">
+				<div class="spinner-border text-info" role="status">
+					<span class="sr-only"></span>
+				</div>
+			</div>
+			}
+		else
+		{
+			<div class="container">
+				<h3 class="h3-title">Administrator</h3>
+				<h3 class="h3-tree-title">Korisnički nalozi</h3>
+				<table class="table table-hover table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th scope="col">Korisničko ime</th>
+							<th scope="col">Nalog suspendovan</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < accountDisplayModels.Count; ++i)
+							{
+							int index = i;
+							<tr>
+								<td>@accountDisplayModels.ElementAt(index).Username</td>
+								<td>
+									<div class="custom-control custom-switch text-center">
+										<input type="checkbox" class="custom-control-input" id=@($"customSwitch{index}")
+											   @bind-value="@accountInputModels.ElementAt(index).ActiveStatus">
+										<label class="custom-control-label" for=@($"customSwitch{index}")></label>
+									</div>
+								</td>
+							</tr>
+							}
+					</tbody>
+				</table>
+				<button class="btn btn-outline-info float-right" @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
+			</div>
+			}
 	</Authorized>
 	<NotAuthorized>
 		<NotAuthorizedComponent></NotAuthorizedComponent>

@@ -48,12 +48,7 @@
 
     public async Task SaveApplicationChanges()
     {
-        Console.WriteLine($"id prijave: {model.ApplicationId}\n" +
-            $"id prijavljenog: {model.ApplicantId}\n" +
-            $"komentar prij: {model.ApplicantComment}\n" +
-            $"komentar autora: {model.AuthorComment}\n" +
-            $"status: {model.ProjectApplicationStatus}\n" +
-            $"id profila: {model.CollaboratorProfileId}");
+        
         ModalInstance.Close();
     }
 }

@@ -53,38 +53,34 @@
 
 <AuthorizeView>
 	<Authorized>
-
 		<div class="container">
 			<h3 class="h3-title">Poslane prijave</h3>
-
 			@foreach (var projectModel in ProjectApplicationsDisplayModels)
 				{
-   <div class="section">
-	<h4 class="title"><a href="@($"{NavigationManager.BaseUri}projects/{projectModel.ProjectId}")" style="color:black">@projectModel.Title</a></h4>
-
-				@foreach (var profileModel in projectModel.CollaboratorProfileApplicationsDisplayModels)
-				{
-					allTables.Add($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
-		<h5>@profileModel.CollaboratorProfileDisplayModel.Description</h5>
-		<div class="collaborator-profiles-table">
-		 <table class="table table-hover table-bordered" id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
-		  <thead class="thead-dark">
-		   <tr>
-			<th>Id prijave</th>
-			<th>Komentar prijavljenog</th>
-			<th>Komentar autora</th>
-			<th>Status prijave</th>
-		   </tr>
-		  </thead>
-		  <tbody>
-								@for (int i = 0; i < profileModel.ApplicationDisplayModels.Count(); i++)
-								{
-									int index = i;
-									var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
-
-									@if (sentNotifications.Select(t => t).Where(n => n == applicationModel.ApplicationId).Count() >= 1)
-									{
-				   <tr bgcolor="PaleTurquoise" @onclick="@(async () =>
+				<div class="section">
+					<h4 class="title"><a href="@($"{NavigationManager.BaseUri}projects/{projectModel.ProjectId}")" style="color:black">@projectModel.Title</a></h4>
+					@foreach (var profileModel in projectModel.CollaboratorProfileApplicationsDisplayModels)
+						{
+						allTables.Add($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}");
+						<h5>@profileModel.CollaboratorProfileDisplayModel.Description</h5>
+						<div class="collaborator-profiles-table">
+							<table class="table table-hover table-bordered" id=@($"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}")>
+								<thead class="thead-dark">
+									<tr>
+										<th>Id prijave</th>
+										<th>Komentar prijavljenog</th>
+										<th>Komentar autora</th>
+										<th>Status prijave</th>
+									</tr>
+								</thead>
+								<tbody>
+									@for (int i = 0; i < profileModel.ApplicationDisplayModels.Count(); i++)
+										{
+										int index = i;
+										var applicationModel = profileModel.ApplicationDisplayModels.ElementAt(index);
+										@if (sentNotifications.Select(t => t).Where(n => n == applicationModel.ApplicationId).Count() >= 1)
+											{
+											<tr bgcolor="PaleTurquoise" @onclick="@(async () =>
                                             {
                                                 selectedApplicationId = applicationModel.ApplicationId;
                                                 tablesToClear.Clear();
@@ -94,20 +90,20 @@
                                                 var arr = tablesToClear.ToArray();
                                                 await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
                                             })">
-					<td>@applicationModel.ApplicationId</td>
-					<td>@applicationModel.ApplicantComment</td>
-					<td>@applicationModel.AuthorComment</td>
-					<td>
-												@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)
-					 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" fill="DarkTurquoise" class="bi bi-circle-fill" viewBox="0 0 16 18">
-					  <circle cx="8" cy="8" r="6" />
-					 </svg>
-					</td>
-				   </tr>
-									}
-									else
-									{
-				   <tr @onclick="@(async () =>
+												<td>@applicationModel.ApplicationId</td>
+												<td>@applicationModel.ApplicantComment</td>
+												<td>@applicationModel.AuthorComment</td>
+												<td>
+													@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)
+													<svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" fill="DarkTurquoise" class="bi bi-circle-fill" viewBox="0 0 16 18">
+														<circle cx="8" cy="8" r="6" />
+													</svg>
+												</td>
+											</tr>
+											}
+										else
+										{
+											<tr @onclick="@(async () =>
                                             {
                                                 selectedApplicationId = applicationModel.ApplicationId;
                                                 tablesToClear.Clear();
@@ -117,24 +113,19 @@
                                                 var arr = tablesToClear.ToArray();
                                                 await js.InvokeVoidAsync("setTableHighlight", $"sent-applications-{profileModel.CollaboratorProfileDisplayModel.CollaboratorProfileId}", index, arr);
                                             })">
-					<td>@applicationModel.ApplicationId</td>
-					<td>@applicationModel.ApplicantComment</td>
-					<td>@applicationModel.AuthorComment</td>
-					<td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
-				   </tr>
-									}
-
-
-
-
-								}
-		  </tbody>
-		 </table>
-		</div>
+												<td>@applicationModel.ApplicationId</td>
+												<td>@applicationModel.ApplicantComment</td>
+												<td>@applicationModel.AuthorComment</td>
+												<td>@(applicationModel.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
+											</tr>
+											}
+										}
+								</tbody>
+							</table>
+						</div>
+						}
+				</div>
 				}
-   </div>
-			}
-
 			<div class="buttons">
 				<button class="btn btn-outline-primary float-right" @onclick="@RevokeApplication">Poništi prijavu</button>
 			</div>

@@ -24,67 +24,59 @@
 }
 else
 {
-
-
-
 	<div class="container">
-	 <h4>@ProjectApplicationsDisplayModel.Title</h4>
-
+		<h4>@ProjectApplicationsDisplayModel.Title</h4>
 		@for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
-		{
+			{
 			var profileApplicationsDisplayModel = ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.ElementAt(j);
-
-		 <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
-
-		 <div class="collaborator-profiles-table">
-		  <table class="table table-hover table-bordered">
-		   <thead class="thead-dark">
-			<tr>
-			 <th>Ime prijavljenog</th>
-			 <th>Email</th>
-			 <th>Komentar prijavljenog</th>
-			 <th>Odabran za saradnju</th>
-			 <th>Komentar autora</th>
-			</tr>
-		   </thead>
-		   <tbody>
+			<h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
+			<div class="collaborator-profiles-table">
+				<table class="table table-hover table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th>Ime prijavljenog</th>
+							<th>Email</th>
+							<th>Komentar prijavljenog</th>
+							<th>Odabran za saradnju</th>
+							<th>Komentar autora</th>
+						</tr>
+					</thead>
+					<tbody>
 						@foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
-						{
-				<tr>
-				 <td><a href=@($"{NavigationManager.BaseUri}users/{applicationDisplayModel.ApplicantId}")>@applicationDisplayModel.ApplicantFullName</a></td>
-				 <td>@applicationDisplayModel.ApplicantEmail</td>
-				 <td>@applicationDisplayModel.ApplicantComment</td>
-				 <td>
-				  <input class="form-control" type="checkbox" @onchange="@((e) =>
-                                                                    {
-                                                                        var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
-                                                                        ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
-                                                                                                     .First()
-                                                                                                     .ProjectApplicationStatus = status;
-
-                                                                    })" />
-				 </td>
-				 <td>
-				  <input class="form-control" type="text" @onchange="@((e) =>
-                                                                {
-                                                                    var comment = (string)e.Value;
-                                                                    ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
-                                                                                                     .First()
-                                                                                                     .AuthorComment = comment;
-                                                                })" />
-				 </td>
-				</tr>
-						}
-		   </tbody>
-		  </table>
-		 </div>
-		}
-
-	 <div class="buttons">
-	  <button class="btn btn-outline-info" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
-	 </div>
+							{
+							<tr>
+								<td><a href=@($"{NavigationManager.BaseUri}users/{applicationDisplayModel.ApplicantId}")>@applicationDisplayModel.ApplicantFullName</a></td>
+								<td>@applicationDisplayModel.ApplicantEmail</td>
+								<td>@applicationDisplayModel.ApplicantComment</td>
+								<td>
+									<input class="form-control" type="checkbox" @onchange="@((e) =>
+																							 {
+																								 var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
+																								 ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
+																								 .First()
+																								 .ProjectApplicationStatus = status;
+																								 })" />
+								</td>
+								<td>
+									<input class="form-control" type="text" @onchange="@((e) =>
+																						 {
+																							 var comment = (string)e.Value;
+																							 ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
+																							 .First()
+																							 .AuthorComment = comment;
+																							 })" />
+								</td>
+							</tr>
+							}
+					</tbody>
+				</table>
+			</div>
+			}
+		<div class="buttons">
+			<button class="btn btn-outline-info" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
+		</div>
 	</div>
-}
+	}
 
 @code {
 	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
@@ -99,7 +91,7 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		// ProjectId = ModalParameters.Get<int>(nameof(ProjectId));
+		
 		ProjectApplicationsDisplayModel = (await ApiService.GetAsync<ProjectApplicationsDisplayModel>($"/applications/project/{ProjectId}")).Item1;
 
 		foreach (var profileApplication in ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels)

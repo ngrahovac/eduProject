@@ -105,26 +105,3 @@
 
 </html>
 
-
-@*<EditForm Model="@loginInputModel" OnValidSubmit="Login2">
-        <DataAnnotationsValidator />
-        <div class="login-box">
-
-            <img src="../img/logo.JPG" class="logo-img" />
-
-            <label>Email:</label>
-            <InputText type="text" placeholder="Email" @bind-Value="@loginInputModel.Email"></InputText>
-            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Email)" /></p>
-
-            <label>Lozinka:</label>
-            <InputText type="password" placeholder="Lozinka" @bind-Value="@loginInputModel.Password"></InputText>
-            <p style="color:red"><ValidationMessage For="@(() => loginInputModel.Password)" /></p>
-
-            <div>
-                <label>Da li želite da zapamtite nalog?</label>
-                <InputCheckbox @bind-Value="@loginInputModel.RememberMe"></InputCheckbox>
-            </div>
-
-            <button class="button button-primary" @onclick="Login2">Prijavi se</button>
-        </div>
-    </EditForm>*@

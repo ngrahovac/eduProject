@@ -25,47 +25,43 @@
 </style>
 
 <div class="section">
-
 	@if (ProjectDisplayModels.AcceptsApplications == true)
-	{
-
-	 <div class="collaborator-profiles-table" id="recommended-profiles">
-	  <table class="table table-hover table-bordered">
-	   <caption>Preporučeni profili</caption>
-	   <thead class="thead-dark">
-		<tr>
-		 <th>Opis pozicije</th>
-		 <th>Informacije</th>
-		</tr>
-	   </thead>
-	   <tbody>
+		{
+		<div class="collaborator-profiles-table" id="recommended-profiles">
+			<table class="table table-hover table-bordered">
+				<caption>Preporučeni profili</caption>
+				<thead class="thead-dark">
+					<tr>
+						<th>Opis pozicije</th>
+						<th>Informacije</th>
+					</tr>
+				</thead>
+				<tbody>
 					@* tabela sa izdvojenim preporucenim profilima na koje se korisnik moze prijaviti *@
 					@for (int i = 0; i < profileList.Where(p => p.Recommended && !p.AlreadyApplied && p.ApplicationsOpen).Count(); ++i)
 					{
 						var index = i;
 						var profile = profileList.Where(p => p.Recommended && !p.AlreadyApplied && p.ApplicationsOpen).ElementAt(index);
-
-			<tr @onclick=@(() => {CollaboratorProfileSelected("recommended-profiles", "collaborator-profiles", profile.CollaboratorProfileId, index);})>
-			 <td>@profile.Description</td>
-			 <td>
+						<tr @onclick=@(() => {CollaboratorProfileSelected("recommended-profiles", "collaborator-profiles", profile.CollaboratorProfileId, index);})>
+							<td>@profile.Description</td>
+							<td>
 								@profile.ToString();
-			 </td>
-			</tr>
+							</td>
+						</tr>
 					}
-	   </tbody>
-	  </table>
-	 </div>
-
-	 <div class="collaborator-profiles-table" id="collaborator-profiles">
-	  <table class="table table-hover table-bordered">
-	   <caption>Ostali profili</caption>
-	   <thead class="thead-dark">
-		<tr>
-		 <th>Opis pozicije</th>
-		 <th>Informacije</th>
-		</tr>
-	   </thead>
-	   <tbody></tbody>
+				</tbody>
+			</table>
+		</div>
+		<div class="collaborator-profiles-table" id="collaborator-profiles">
+			<table class="table table-hover table-bordered">
+				<caption>Ostali profili</caption>
+				<thead class="thead-dark">
+					<tr>
+						<th>Opis pozicije</th>
+						<th>Informacije</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
 
 				@for (int i = 0; i < profileList.Where(p => !(p.Recommended && !p.AlreadyApplied && p.ApplicationsOpen)).Count(); ++i)
 				{
@@ -74,136 +70,40 @@
 
 					@if (!profile.ApplicationsOpen)
 					{
-			   <tr class="disabled-row" data-toggle="tooltip" data-placement="right" title="Ovaj profil trenutno nije otvoren za prijave.">
-				<td>@profile.Description</td>
-				<td>
+						<tr class="disabled-row" data-toggle="tooltip" data-placement="right" title="Ovaj profil trenutno nije otvoren za prijave.">
+							<td>@profile.Description</td>
+							<td>
 								@profile.ToString();
-				</td>
-			   </tr>
-					}
+							</td>
+						</tr>
+						}
 					else if (profile.AlreadyApplied)
-					{
-			   <tr class="disabled-row" data-toggle="tooltip" data-placement="right" title="Na ovaj profil ste već prijavljeni.">
-				<td>@profile.Description</td>
-				<td>
+						{
+						<tr class="disabled-row" data-toggle="tooltip" data-placement="right" title="Na ovaj profil ste već prijavljeni.">
+							<td>@profile.Description</td>
+							<td>
 								@profile.ToString();
-				</td>
-			   </tr>
-					}
+							</td>
+						</tr>
+						}
 					else
 					{
-			   <tr @onclick=@(() => {CollaboratorProfileSelected("collaborator-profiles", "recommended-profiles", profile.CollaboratorProfileId, index);})>
-				<td>@profile.Description</td>
-				<td>
+						<tr @onclick=@(() => {CollaboratorProfileSelected("collaborator-profiles", "recommended-profiles", profile.CollaboratorProfileId, index);})>
+							<td>@profile.Description</td>
+							<td>
 								@profile.ToString();
-				</td>
-			   </tr>
+							</td>
+						</tr>
+						}
 					}
-
-				}
-	   <tbody></tbody>
-	  </table>
-	 </div>
-	}
+				<tbody></tbody>
+			</table>
+		</div>
+		}
 	else
 	{
 	 <p>Projekat trenutno ne prima prijave.</p>
 	}
-
-
-
-	@*@if(FacultyMemberProfileDisplayModels.Count() > 0)
-		{
-		<div class="collaborator-profiles-table">
-		<table class="table table-hover table-bordered" id="faculty-member-profiles">
-		<caption>Profili nastavnog osoblja</caption>
-		<thead class="thead-dark">
-		<tr>
-		<th>Fakultet</th>
-		<th>Naučna oblast</th>
-		<th>Opis aktivnosti</th>
-		</tr>
-		</thead>
-
-		@for (int i = 0; i < FacultyMemberProfileDisplayModels.Count(); i++)
-		{
-		int index = i;
-		FacultyMemberProfileDisplayModel profile = FacultyMemberProfileDisplayModels.ElementAt(index);
-
-		if (IsProjectRecommended && profile.Recommended)
-		{
-		<tr class="recommended-profile"
-		@onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-		<td>@profile.FacultyName</td>
-		<td>@profile.StudyFieldName</td>
-		<td>@profile.Description</td>
-		</tr>
-		}
-		else
-		{
-		<tr @onclick="@(()=>CollaboratorProfileSelected("faculty-member-profiles", "student-profiles", profile.CollaboratorProfileId, index))">
-		<td>@profile.FacultyName</td>
-		<td>@profile.StudyFieldName</td>
-		<td>@profile.Description</td>
-		</tr>
-		}
-		}
-
-		</table>
-		</div>
-		}
-
-
-		@if(StudentProfileDisplayModels.Count() > 0)
-		{
-		<div class="collaborator-profiles-table">
-		<table class="table table-hover table-bordered" id="student-profiles">
-		<caption>Profili studenata</caption>
-		<thead class="thead-dark">
-		<tr>
-		<th>Fakultet</th>
-		<th>Ciklus</th>
-		<th>Studijski program</th>
-		<th>Studijski smjer</th>
-		<th>Godina</th>
-		<th>Opis aktivnosti</th>
-		</tr>
-		</thead>
-
-		@for (int i = 0; i < StudentProfileDisplayModels.Count(); i++)
-		{
-		int index = i;
-		StudentProfileDisplayModel profile = StudentProfileDisplayModels.ElementAt(index);
-
-		@if (IsProjectRecommended && profile.Recommended)
-		{
-		<tr class="recommended-profile" @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-		<td>@profile.FacultyName</td>
-		<td>@profile.StudyCycle</td>
-		<td>@profile.StudyProgramName</td>
-		<td>@profile.StudyProgramSpecializationName</td>
-		<td>@profile.StudyYear</td>
-		<td>@profile.Description</td>
-
-
-		</tr>
-		}
-		else
-		{
-		<tr @onclick="@(() => CollaboratorProfileSelected("student-profiles", "faculty-member-profiles", profile.CollaboratorProfileId, index))">
-		<td>@profile.FacultyName</td>
-		<td>@profile.StudyCycle</td>
-		<td>@profile.StudyProgramName</td>
-		<td>@profile.StudyProgramSpecializationName</td>
-		<td>@profile.StudyYear</td>
-		<td>@profile.Description</td>
-		</tr>
-		}
-
-		}
-		</table>
-		</div>
-		}*@
 
 
 </div>
@@ -219,11 +119,7 @@
 	protected override async Task OnInitializedAsync()
 	{
 		profileList = ProjectDisplayModels.GetCollaboratorProfileDisplayModels();
-		foreach (var a in profileList)
-		{
-			Console.WriteLine("Profile list: " + a.Description);
-		}
-		Console.WriteLine("TestConsole");
+		
 	}
 
 
@@ -240,8 +136,7 @@
 
 
 	public async Task CollaboratorProfileSelected(string tableToHighlight, string tableToClear, int collaboratorProfileId, int index)
-	{
-		Console.WriteLine("selektovan red");
+	{		
 		string[] tablesToClear = { tableToClear };
 		await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
 		model.CollaboratorProfileId = collaboratorProfileId;
