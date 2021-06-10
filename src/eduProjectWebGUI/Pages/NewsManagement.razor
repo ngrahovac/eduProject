@@ -1,7 +1,8 @@
 ﻿@page "/admin/news"
 @layout AdminLayout
 @inject ApiService ApiService
-@inject IJSRuntime JsRuntime;
+@inject NavigationManager NavigationManager 
+@inject IJSRuntime JsRuntime
 @inject IModalService Modal
 
 <style>
@@ -34,6 +35,15 @@
 		padding-top: 1rem;
 		padding-bottom: 7rem;
 	}
+
+    .text-muted {
+        display: inline-block;
+    }
+
+    .card-header {
+        border-bottom: none;
+        background-color: white;
+    } 
 </style>
 
 
@@ -54,8 +64,28 @@
 				<InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
 				<p style="color:red"><ValidationMessage For="@(() => model.Title)" /></p>
 
-				<button class="btn btn-outline-info float-right" style="margin-top:1rem;" type="submit"> Postavi </button>
+				<div style="margin-top: 1rem; margin-bottom: 5.25rem;"> 
+					<button class="btn btn-outline-info float-right" type="submit"> Postavi </button> 
+				</div> 
 			</EditForm>
+			@foreach (var model in newsDisplayModels)
+				{	
+				<div class="card " style="margin-top:0.75rem;"> 
+					<row class="card-header"> 
+						<h4>@model.Title</h4> 
+					</row> 
+					<div class="card-body"> 							 
+							<p class="card-text">@model.Content</p> 
+					</div>
+ 
+					<row class="card-footer"> 
+						<div class="text-muted text-center">@model.Date </div> 
+						<a href="#" class="btn btn-primary float-right">Obriši</a> 
+					</row> 
+						  
+				</div>
+			 }	
+
 		</div>
 	</Authorized>
 	<NotAuthorized>
@@ -68,6 +98,15 @@
 @code {
 
 	NewsInputModel model = new NewsInputModel();
+	
+    public ICollection<NewsDisplayModel> newsDisplayModels = new List<NewsDisplayModel>(); 
+ 
+    protected override async Task OnInitializedAsync() 
+    { 
+		var response = await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news"); 
+			var code = response.Item2; 
+		newsDisplayModels = response.Item1.ToList(); 
+    } 
 
 	public async Task AddNews()
 	{

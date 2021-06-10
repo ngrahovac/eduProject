@@ -1,8 +1,9 @@
-﻿@inject NavigationManager NavigationManager
+﻿@layout LoginLayout
+@inject NavigationManager NavigationManager
 
-<div class="container">
+<div class="container" style="text-align:center;">
 	<h1>Molimo ulogujte se.</h1>
-	<button class="btn btn-outline-info" @onclick="@(()=>{NavigationManager.NavigateTo("account/login");})">Prijava</button>
+	<button class="btn btn-lg btn-outline-info" @onclick="@(()=>{NavigationManager.NavigateTo("account/login");})">Prijava</button>
 </div>
 
 @code {

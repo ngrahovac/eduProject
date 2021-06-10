@@ -92,94 +92,88 @@
 
 <AuthorizeView>
 	<Authorized>
-
 		<div class="container">
 			@if (projectDisplayModels == null)
 				{
-   <div class="d-flex justify-content-center">
-	<div class="spinner-border text-info" role="status">
-	 <span class="sr-only"></span>
-	</div>
-   </div>
-			}
-				else if (projectDisplayModels.Count() == 0)
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border text-info" role="status">
+						<span class="sr-only"></span>
+					</div>
+				</div>
+				}
+			else if (projectDisplayModels.Count() == 0)
 				{
-   <h3>Trenutno nema traženih projekata.</h3>
-			}
-				else
-				{
-   <h3 class="h3-title">@Title</h3>
-   <div class="list-group">
-				@foreach (var model in projectDisplayModels)
-				{
-		<a href="@($"{NavigationManager.BaseUri}projects/{model.ProjectId}")" class="list-group-item list-group-item-action">
-
-		 <div class="d-flex w-100 justify-content-between">
-		  <h4 class="mb-1" style="font-weight:bold;">@model.Title</h4>
-							@if (model.ProjectStatus == ProjectStatus.Active)
-							{
-			  <small class="text-success">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>
-							}
-							else
-							{
-			  <small class="text-primary">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>
-							}
-		 </div>
-		 <p class="mb-1">@model.Description</p>
-
-		 <div class="tags">
-							@foreach (var tag in model.Tags)
-							{
-								@if (userTags.Select(t => t.Name).Where(n => n == tag.Name).Count() == 1)
-								{
-				  <div class="tag-match">
-										@tag.Name
-				  </div>
-								}
+				<h3>Trenutno nema traženih projekata.</h3>
+				}
+			else
+			{
+				<h3 class="h3-title">@Title</h3>
+				<div class="list-group">
+					@foreach (var model in projectDisplayModels)
+						{
+						<a href="@($"{NavigationManager.BaseUri}projects/{model.ProjectId}")" class="list-group-item list-group-item-action">
+							<div class="d-flex w-100 justify-content-between">
+								<h4 class="mb-1" style="font-weight:bold;">@model.Title</h4>
+								@if (model.ProjectStatus == ProjectStatus.Active)
+									{
+									<small class="text-success">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>
+									}
 								else
 								{
-				  <div class="tag">
-										@tag.Name
-				  </div>
+									<small class="text-primary">@(model.ProjectStatus.GetAttribute<DisplayAttribute>().Name)</small>
+									}
+							</div>
+							<p class="mb-1">@model.Description</p>
+							<div class="tags">
+								@foreach (var tag in model.Tags)
+									{
+									@if (userTags.Select(t => t.Name).Where(n => n == tag.Name).Count() == 1)
+										{
+										<div class="tag-match">
+											@tag.Name
+										</div>
+										}
+									else
+									{
+										<div class="tag">
+											@tag.Name
+										</div>
+										}
+									}
+							</div>
+							@if (model.HasRecommendedProfile())
+								{
+								<p class="p-info">
+									<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 18 18">
+										<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+										<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
+									</svg>
+									Projekat sadrži profil saradnika koji Vam odgovara.
+								</p>
 								}
-							}
-		 </div>
-
-						@if (model.HasRecommendedProfile())
-						{
-			 <p class="p-info">
-			  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-exclamation-circle" viewBox="0 0 18 18">
-			   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-			   <path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z" />
-			  </svg>
-			  Projekat sadrži profil saradnika koji Vam odgovara.
-			 </p>
+							<div class="time-period">
+								@if (model.StartDate == null)
+									{
+									<h7>N/A</h7>
+									}
+								else
+								{
+									<h7>@model.StartDate</h7>
+									}
+								<h7 class="dash">-</h7>
+								@if (model.EndDate == null)
+									{
+									<h7>N/A</h7>
+									}
+								else
+								{
+									<h7>@model.EndDate</h7>
+									}
+							</div>
+						</a>
 						}
-
-		 <div class="time-period">
-
-							@if (model.StartDate == null)
-							{
-			  <h7>N/A</h7>
-							}
-							else
-							{
-			  <h7>@model.StartDate</h7>
-							}
-		  <h7 class="dash">-</h7>
-							@if (model.EndDate == null)
-							{
-			  <h7>N/A</h7>
-							}
-							else
-							{
-			  <h7>@model.EndDate</h7>
-							}
-		 </div>
-		</a>
+				</div>
 				}
-   </div>
-			}
 		</div>
 
 	</Authorized>
