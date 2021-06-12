@@ -35,55 +35,154 @@ namespace eduProjectWebGUI.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            faculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
-            studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Values;
-            tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
+            try
+            {
+                /*faculties = (await ApiService.GetAsync<ICollection<Faculty>>($"faculties")).Item1;
+                studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Item1.Values;
+                tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Item1.Values.ToList();
 
-            if (Id > 0)
-            {
-                // editing existing project
-                editing = true;
-                var displayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
-                projectInputModel = new ProjectInputModel(displayModel);
-                projectInputModel.AuthorId = (int)await LocalStorage.ExtractUserId();
+                if (Id > 0)
+                {
+                    // editing existing project
+                    editing = true;
+                    var response = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
+                    var code = response.Item2;
+
+                    if (code.IsSuccessCode())
+                    {
+                        var displayModel = response.Item1;
+                        projectInputModel = new ProjectInputModel(displayModel);
+                        projectInputModel.AuthorId = (int)await LocalStorage.ExtractUserId();
+                    }
+                    else
+                    {
+                        if (code.ShouldRedirectTo404())
+                            NavigationManager.NavigateTo("/404");
+
+                        else
+                        {
+                            var parameters = new ModalParameters();
+                            parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                            Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        }
+                    }
+                }
+                else
+                {
+                    // creating new project
+                    editing = false;
+                }*/
+                var responseFaculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
+                var responseFields = await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields");
+                var responseTags = await ApiService.GetAsync<Dictionary<string, Tag>>($"tags");
+
+                if (!responseFaculties.Item2.IsSuccessCode() || !responseFields.Item2.IsSuccessCode() || !responseTags.Item2.IsSuccessCode())
+                {
+                    var parameters = new ModalParameters();
+                    parameters.Add(nameof(InfoPopup.Message), "Problem pri dohvatanju podataka");
+                    Modal.Show<InfoPopup>("Obavještenje", parameters);
+                }
+                else
+                {
+                    faculties = responseFaculties.Item1;
+                    studyFields = responseFields.Item1.Values;
+                    tags = responseTags.Item1.Values.ToList();
+
+                    if (Id > 0)
+                    {
+                        // editing existing project
+                        editing = true;
+                        var response = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{Id}");
+                        var code = response.Item2;
+
+                        if (code.IsSuccessCode())
+                        {
+                            var displayModel = response.Item1;
+                            projectInputModel = new ProjectInputModel(displayModel);
+                            projectInputModel.AuthorId = (int)await LocalStorage.ExtractUserId();
+                        }
+                        else
+                        {
+                            if (code.ShouldRedirectTo404())
+                                NavigationManager.NavigateTo("/404");
+
+                            else
+                            {
+                                var parameters = new ModalParameters();
+                                parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                                Modal.Show<InfoPopup>("Obavještenje", parameters);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // creating new project
+                        editing = false;
+                    }
+                }
+
             }
-            else
+            catch (Exception ex)
             {
-                // creating new project
-                editing = false;
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 
         private async void CreateOrUpdateProject()
         {
-            if (editing)
+            try
             {
-                var parameters = new ModalParameters();
-                var title = "Potvrda o čuvanju izmjena";
-                parameters.Add(nameof(title), title);
-                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
-                var result = await messageForm.Result;
-
-                if (!result.Cancelled)
+                if (editing)
                 {
-                    await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
-                    NavigationManager.NavigateTo($"/projects/{Id}", true);
+                    var parameters = new ModalParameters();
+                    var title = "Potvrda o čuvanju izmjena";
+                    parameters.Add(nameof(title), title);
+                    var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
+                    var result = await messageForm.Result;
+
+                    if (!result.Cancelled)
+                    {
+                        var response = await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
+                        var parameters2 = new ModalParameters();
+                        parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            //NavigationManager.NavigateTo($"/projects/{Id}", true);
+                        }
+                    }
                 }
+                else
+                {
+                    var parameters = new ModalParameters();
+                    string title = "Potvrda o objavljivanju projekta";
+                    parameters.Add(nameof(title), title);
+                    var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
+                    var result = await messageForm.Result;
+
+                    if (!result.Cancelled)
+                    {
+                        var response = await ApiService.PostAsync("/projects", projectInputModel);
+                        var parameters2 = new ModalParameters();
+                        parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            //NavigationManager.NavigateTo("/homepage", true);
+                        }
+                    }
+                }
+
             }
-            else
+            catch (Exception ex)
             {
                 var parameters = new ModalParameters();
-                string title = "Potvrda o objavljivanju projekta";
-                parameters.Add(nameof(title), title);
-                var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(title), parameters);
-                var result = await messageForm.Result;
-
-                if (!result.Cancelled)
-                {
-                    projectInputModel.ProjectStatus = ProjectStatus.Active;
-                    await ApiService.PostAsync("/projects", projectInputModel);
-                    //NavigationManager.NavigateTo("/homepage", true);
-                }
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 

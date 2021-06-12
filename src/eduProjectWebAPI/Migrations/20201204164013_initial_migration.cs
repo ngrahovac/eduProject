@@ -186,6 +186,13 @@ namespace eduProjectWebAPI.Migrations
                 }
                 );
 
+            migrationBuilder.AddColumn<bool>(
+                name: "ActiveStatus",
+                table: "AspNetUsers",
+                nullable: false,
+                defaultValue: true
+                );
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",

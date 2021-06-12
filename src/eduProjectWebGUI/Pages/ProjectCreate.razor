@@ -6,141 +6,166 @@
 @inject ILocalStorageService LocalStorage
 
 <style>
-    body {
-        padding-top: 7rem;
-        padding-bottom: 7rem;
-    }
-    .container {
-        margin-bottom: 60px;
-    }
-    .tags-margin-right {
-        margin-right: 5px;
-    }
-    .h3-title{
-        color:gray;
-        text-align:center;
-    }
-    .selected-row {
-        background-color: rgba(0,0,0,.3) !important;
-    }
-   
+	body {
+		padding-top: 7rem;
+		padding-bottom: 7rem;
+	}
+
+	.container {
+		margin-bottom: 60px;
+	}
+
+	.tags-margin-right {
+		margin-right: 5px;
+	}
+
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
+
+	.selected-row {
+		background-color: rgba(0,0,0,.3) !important;
+	}
 </style>
 
-<div class="container">
-    @if (editing)
-    {
-        <h3 class="h3-title">@projectInputModel.Title</h3>
-    }
-    else
-    {
-        <h3 class="h3-title">Novi projekat</h3>
-    }
+<AuthorizeView Context="authContext">
+	<Authorized>
+		<div class="container">
+			@if (editing)
+				{
+				<h3 class="h3-title">@projectInputModel.Title</h3>
+				}
+			else
+			{
+				<h3 class="h3-title">Novi projekat</h3>
+				}
+			<EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
+				<DataAnnotationsValidator />
 
-    <EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
-        <DataAnnotationsValidator />
+				<div class="mb-3">
+					<label>Naziv projekta</label>
+					<InputText class="form-control" @bind-Value="@projectInputModel.Title"></InputText>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.Title)" /></p>
+				</div>
+				<div class="mb-3">
+					<label>Oblast projekta</label>
+					<InputSelect class="form-control" TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
+						<option value=null></option>
+						@foreach (var sf in studyFields)
+							{
+							if (sf.Name == projectInputModel.StudyFieldName)
+								{
+								<option selected value="@sf.Name">@sf.Name</option>
+								}
+							else
+							{
+								<option value="@sf.Name">@sf.Name</option>
+								}
+							}
+					</InputSelect>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.StudyFieldName)" /></p>
+				</div>
+				<div class="mb-3">
+					<label>Početak realizacije</label>
+					<InputDate class="form-control" @bind-Value="@projectInputModel.StartDate"></InputDate>
+				</div>
+				<div class="mb-3">
+					<label>Kraj realizacije</label>
+					<InputDate class="form-control" @bind-Value="@projectInputModel.EndDate"></InputDate>
+				</div>
+				<div class="mb-3">
+					<label>Opis projekta</label>
+					<InputTextArea class="form-control" @bind-Value="@projectInputModel.Description"></InputTextArea>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.Description)" /></p>
+				</div>
 
-         <div class="mb-3">
-            <label>Naziv projekta</label>
-            <InputText class="form-control" @bind-Value="@projectInputModel.Title"></InputText>
-            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Title)" /></p>
-         </div>
-         <div class="mb-3">
-            <label>Oblast projekta</label>
-             <InputSelect class="form-control" TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
-                <option value=null></option>
-                @foreach (var sf in studyFields)
-                {
-                    if (sf.Name == projectInputModel.StudyFieldName)
-                    {
-                        <option selected value="@sf.Name">@sf.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@sf.Name">@sf.Name</option>
-                    }
-                }
-            </InputSelect>
-            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.StudyFieldName)" /></p>
-         </div>
-        <div class="mb-3">
-            <label>Početak realizacije</label>
-            <InputDate class="form-control" @bind-Value="@projectInputModel.StartDate"></InputDate>
-        </div>
-         <div class="mb-3">
-             <label>Kraj realizacije</label>
-             <InputDate class="form-control" @bind-Value="@projectInputModel.EndDate"></InputDate>
-        </div>
-          <div class="mb-3">
-                <label>Opis projekta</label>
-               <InputTextArea class="form-control" @bind-Value="@projectInputModel.Description"></InputTextArea>
-            <p style="color:red"><ValidationMessage For="@(() => projectInputModel.Description)" /></p>
-          </div>
+				<div class="mb-3">
+					<label>Status projekta</label>
+					<InputSelect @bind-Value="@projectInputModel.ProjectStatus">
+						@foreach (var s in Enum.GetValues(typeof(ProjectStatus)))
+						{
+						if ((ProjectStatus)s == projectInputModel.ProjectStatus)
+						{
+							<option selected value="@s">@s</option>
+                            }
 
-        <div class="mb-3">
-            <div class="collaborator-profiles-table scrollable">
-                <table class="table table-hover table-bordered">
-                     <thead class="thead-dark">
-                        <tr>
-                            <th>Tip</th>
-                            <th>Opis aktivnosti</th>
-                            <th>Fakultet</th>
-                            <th>Ciklus</th>
-                            <th>Program</th>
-                            <th>Smjer</th>
-                            <th>Godina</th>
-                            <th>Naučna oblast</th>
-                            <th></th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var p in projectInputModel.CollaboratorProfileInputModels)
-                        {
-                            <tr>
-                                <td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
-                                <td>@p.ActivityDescription</td>
-                                <td>@p.FacultyName</td>
-                                <td>@p.Cycle</td>
-                                <td>@p.StudyProgramName</td>
-                                <td>@p.StudyProgramSpecializationName</td>
-                                <td>@p.StudyYear</td>
-                                <td>@p.StudyFieldName</td>
-                                @if (!p.ExistingProfile)
-                                {
-                                    <td><button class="btn btn-outline-dark float-right" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
-                                }
-                                @if (!p.ExistingProfile)
-                                {
-                                    <td><button class="btn btn-outline-dark float-right" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
-                                }
-                            </tr>
+                            else
+                            {
+								<option value="@s">@s</option>
+                            }
                         }
-                    </tbody>
-                </table>
-                <p style="color:red"><ValidationMessage For="@(() => projectInputModel.CollaboratorProfileInputModels)" /></p>
-            </div>
-            @if (editing)
-            {
-                <div class="mb-2">
-                    <row>
-                        
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right">Sačuvaj izmjene</button>
-                            <button style="margin-left:10px;" type="button" class="btn btn-outline-dark float-right" @onclick="@CancelEditing">Odustani</button>
-                       
-                        
-                    </row>
-                 </div>
-            }
-            else
-            {
-                 <button class="btn btn-outline-dark  float-right" style="margin-left:10px;" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-                <button class="btn btn-outline-primary  float-right" style="margin-left:10px;" type="submit">Oglasi projekat</button>
-            }
-            
-        </div>
 
-    </EditForm>
-</div>
+					</InputSelect>
+					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.ProjectStatusNum)" /></p>
+				</div>
 
-  
+				<div class="mb-3">
+					<div class="collaborator-profiles-table scrollable">
+						<table class="table table-hover table-bordered">
+							<thead class="thead-dark">
+								<tr>
+									<th>Tip</th>
+									<th>Opis aktivnosti</th>
+									<th>Fakultet</th>
+									<th>Ciklus</th>
+									<th>Program</th>
+									<th>Smjer</th>
+									<th>Godina</th>
+									<th>Naučna oblast</th>
+									<th>Otvoren za prijave</th>
+									<th></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach (var p in projectInputModel.CollaboratorProfileInputModels)
+									{
+									<tr>
+										<td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
+										<td>@p.ActivityDescription</td>
+										<td>@p.FacultyName</td>
+										<td>@p.Cycle</td>
+										<td>@p.StudyProgramName</td>
+										<td>@p.StudyProgramSpecializationName</td>
+										<td>@p.StudyYear</td>
+										<td>@p.StudyFieldName</td>
+										<td><InputCheckbox @bind-Value="@p.ApplicationsOpen"></InputCheckbox></td>
+										@if (!p.ExistingProfile)
+											{
+											<td><button class="btn btn-outline-primary float-right" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
+											}
+										@if (!p.ExistingProfile)
+											{
+											<td><button class="btn btn-outline-info float-right" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
+											}
+									</tr>
+									}
+							</tbody>
+						</table>
+						<p style="color:red"><ValidationMessage For="@(() => projectInputModel.CollaboratorProfileInputModels)" /></p>
+					</div>
+					@if (editing)
+						{
+						<div class="mb-2">
+							<row>
+								<button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+								<button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@CreateOrUpdateProject">Sačuvaj izmjene</button>
+								<button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right" @onclick="@CancelEditing">Odustani</button>
+							</row>
+						</div>
+						}
+					else
+					{
+						<button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+						<button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="submit">Oglasi projekat</button>
+						}
+				</div>
+			</EditForm>
+		</div>
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>

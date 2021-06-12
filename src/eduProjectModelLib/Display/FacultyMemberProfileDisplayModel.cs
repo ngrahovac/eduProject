@@ -16,9 +16,23 @@ namespace eduProjectModel.Display
 
         public FacultyMemberProfileDisplayModel(FacultyMemberProfile profile, Faculty faculty) : base(profile)
         {
-            CollaboratorProfileId = profile.CollaboratorProfileId;
             FacultyName = profile.FacultyId != null ? faculty.Name : null;
             StudyFieldName = profile.StudyField?.Name;
+        }
+
+        public override string ToString()
+        {
+            string result = "Tip profila: nastavno osoblje, ";
+            if (FacultyName != null)
+            {
+                result += $"fakultet: {FacultyName}, ";
+                if (StudyFieldName != null)
+                {
+                    result += $"uža naučna oblast: {StudyFieldName }, ";
+                }
+            }
+
+            return result[0..^2];
         }
     }
 }

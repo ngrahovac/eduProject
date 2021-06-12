@@ -1,6 +1,9 @@
 ﻿function setTableHighlight(tableToHighlight, i, tablesToClear) {
+    console.log("hajlajturem red" + i);
     var table = document.getElementById(tableToHighlight);
+
     var rows = table.getElementsByTagName("tr");
+    console.log("red ofarban");
 
     // clear highlight from selected table
     for (var j = 0; j < rows.length; j++) {
@@ -25,6 +28,7 @@
 
 
 function highlightRecommendedProfile(tableToHighlight, i) {
+
     var table = document.getElementById(tableToHighlight);
     var rows = table.getElementsByTagName("tr");
     /*

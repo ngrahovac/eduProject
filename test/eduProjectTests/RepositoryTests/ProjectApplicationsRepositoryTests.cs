@@ -1,6 +1,7 @@
 ﻿using eduProjectModel.Domain;
 using eduProjectWebAPI.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,6 +69,13 @@ namespace eduProjectTests.RepositoryTests
             var result = await applications.GetByProjectIdAsync(1);
             var count = result.Count;
             Assert.Equal(5, count);
+        }
+
+        [Fact]
+        public async void GetByAuthorId_ReturnApplications()
+        {
+            var result = await applications.GetByAuthorIdAsync(1);
+            Assert.Equal(6, result.Count);
         }
 
     }

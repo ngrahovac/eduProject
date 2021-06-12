@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
@@ -17,25 +18,48 @@ namespace eduProjectWebGUI.Pages
 
         private HashSet<string> allTables = new HashSet<string>();
         private List<string> tablesToClear = new List<string>();
+        private ICollection<int> sentNotifications = new List<int>();
 
-        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels { get; set; } = new List<ProjectApplicationsDisplayModel>();
+        public List<ProjectApplicationsDisplayModel> ProjectApplicationsDisplayModels;
 
         protected override async Task OnInitializedAsync()
         {
             try
             {
-                ProjectApplicationsDisplayModels = (await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"/applications/applicant/{UserId}")).ToList();
+                var response = await ApiService.GetAsync<ICollection<ProjectApplicationsDisplayModel>>($"applications/applicant/{UserId}");
+                sentNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/user/{UserId}/applications")).Item1;
+                await ApiService.DeleteAsync($"/notifications/user/{UserId}/applications");
+                var code = response.Item2;
 
-                foreach (var model in ProjectApplicationsDisplayModels)
+                if (!code.IsSuccessCode())
                 {
-                    model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
-                                                                              .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId)
-                                                                              .Contains(UserId)).ToList();
+                    if (code.ShouldRedirectTo404())
+                        NavigationManager.NavigateTo("/404");
+
+                    else
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+                }
+                else
+                {
+                    ProjectApplicationsDisplayModels = response.Item1.ToList();
+                    Console.WriteLine($"Ima {ProjectApplicationsDisplayModels.Count()} prijava");
+                    foreach (var model in ProjectApplicationsDisplayModels)
+                    {
+                        model.CollaboratorProfileApplicationsDisplayModels = model.CollaboratorProfileApplicationsDisplayModels
+                                                                                  .Where(m => m.ApplicationDisplayModels.Select(a => a.ApplicantId)
+                                                                                  .Contains(UserId)).ToList();
+                    }
                 }
             }
             catch (Exception ex)
             {
-                NavigationManager.NavigateTo("/404");
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 
@@ -60,8 +84,25 @@ namespace eduProjectWebGUI.Pages
 
                 if (!result.Cancelled)
                 {
-                    await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
-                    NavigationManager.NavigateTo($"/users/{UserId}/applications", true);
+                    try
+                    {
+                        var response = await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
+                        var parameters2 = new ModalParameters();
+                        parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            // Navigation
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var parameters2 = new ModalParameters();
+                        parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                    }
+                    //NavigationManager.NavigateTo($"/users/{UserId}/applications", true);
                 }
             }
         }

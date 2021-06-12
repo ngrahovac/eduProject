@@ -3,60 +3,59 @@
 @inject IModalService Modal
 
 <style>
-    .blazored-modal-content {
-        height: 300px;        
-        overflow-y: auto;
-    }
-    .form-control{
-        width:98%;
-        margin-left:4px;
-    }
-  
-    
+	.blazored-modal-content {
+		height: 300px;
+		overflow-y: auto;
+	}
+
+	.form-control {
+		width: 98%;
+		margin-left: 4px;
+	}
 </style>
 
 @if (ProjectApplicationsDisplayModel == null)
 {
-     <div class="d-flex justify-content-center">
-                  <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only"></span>
-                  </div>      
-                </div>
+	<div class="d-flex justify-content-center">
+	 <div class="spinner-border text-info" role="status">
+	  <span class="sr-only"></span>
+	 </div>
+	</div>
 }
 else
 {
 
 
 
-<div class="container">
-    <h4 >@ProjectApplicationsDisplayModel.Title</h4>
+	<div class="container">
+	 <h4>@ProjectApplicationsDisplayModel.Title</h4>
 
-    @for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
-    {
-        var profileApplicationsDisplayModel = ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.ElementAt(j);
+		@for (int j = 0; j < ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.Count; j++)
+		{
+			var profileApplicationsDisplayModel = ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels.ElementAt(j);
 
-        <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
+		 <h5>@profileApplicationsDisplayModel.CollaboratorProfileDisplayModel.Description</h5>
 
-        <div class="collaborator-profiles-table">
-            <table class="table table-hover table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Ime prijavljenog</th>
-                        <th>Email</th>
-                        <th>Komentar prijavljenog</th>
-                        <th>Odabran za saradnju</th>
-                        <th>Komentar autora</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
-                    {
-                        <tr>
-                            <td><a href=@($"{NavigationManager.BaseUri}users/{applicationDisplayModel.ApplicantId}")>@applicationDisplayModel.ApplicantFullName</a></td>
-                            <td>@applicationDisplayModel.ApplicantEmail</td>
-                            <td>@applicationDisplayModel.ApplicantComment</td>
-                            <td>
-                                <input  class="form-control" type="checkbox" @onchange="@((e) =>
+		 <div class="collaborator-profiles-table">
+		  <table class="table table-hover table-bordered">
+		   <thead class="thead-dark">
+			<tr>
+			 <th>Ime prijavljenog</th>
+			 <th>Email</th>
+			 <th>Komentar prijavljenog</th>
+			 <th>Odabran za saradnju</th>
+			 <th>Komentar autora</th>
+			</tr>
+		   </thead>
+		   <tbody>
+						@foreach (var applicationDisplayModel in profileApplicationsDisplayModel.ApplicationDisplayModels)
+						{
+				<tr>
+				 <td><a href=@($"{NavigationManager.BaseUri}users/{applicationDisplayModel.ApplicantId}")>@applicationDisplayModel.ApplicantFullName</a></td>
+				 <td>@applicationDisplayModel.ApplicantEmail</td>
+				 <td>@applicationDisplayModel.ApplicantComment</td>
+				 <td>
+				  <input class="form-control" type="checkbox" @onchange="@((e) =>
                                                                     {
                                                                         var status = (bool)e.Value ? ProjectApplicationStatus.Accepted : ProjectApplicationStatus.Rejected;
                                                                         ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
@@ -64,95 +63,87 @@ else
                                                                                                      .ProjectApplicationStatus = status;
 
                                                                     })" />
-                            </td>
-                            <td>
-                                <input  class="form-control" type="text" @onchange="@((e) =>
+				 </td>
+				 <td>
+				  <input class="form-control" type="text" @onchange="@((e) =>
                                                                 {
                                                                     var comment = (string)e.Value;
                                                                     ProjectApplicationInputModels.Where(m => m.ApplicationId == applicationDisplayModel.ApplicationId)
                                                                                                      .First()
                                                                                                      .AuthorComment = comment;
                                                                 })" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+				 </td>
+				</tr>
+						}
+		   </tbody>
+		  </table>
+		 </div>
+		}
 
-    <div class="buttons">
-        <button class="btn btn-primary" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
-    </div>
-</div>
+	 <div class="buttons">
+	  <button class="btn btn-outline-info" style="margin-right:15px;" @onclick="@SelectCollaboratorsAndCloseProject">Zatvori projekat</button>
+	 </div>
+	</div>
 }
 
 @code {
+	[CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+	[CascadingParameter] ModalParameters ModalParameters { get; set; }
 
-    [CascadingParameter] ModalParameters ModalParameters { get; set; }
+	[Parameter] public int ProjectId { get; set; }
 
-    [Parameter] public int ProjectId { get; set; }
+	public ProjectApplicationsDisplayModel ProjectApplicationsDisplayModel { get; set; } = new ProjectApplicationsDisplayModel();
 
-    public ProjectApplicationsDisplayModel ProjectApplicationsDisplayModel { get; set; } = new ProjectApplicationsDisplayModel();
+	List<ProjectApplicationInputModel> ProjectApplicationInputModels = new List<ProjectApplicationInputModel>();
 
-    List<ProjectApplicationInputModel> ProjectApplicationInputModels = new List<ProjectApplicationInputModel>();
+	protected override async Task OnInitializedAsync()
+	{
+		// ProjectId = ModalParameters.Get<int>(nameof(ProjectId));
+		ProjectApplicationsDisplayModel = (await ApiService.GetAsync<ProjectApplicationsDisplayModel>($"/applications/project/{ProjectId}")).Item1;
 
-    protected override async Task OnInitializedAsync()
-    {
-        // ProjectId = ModalParameters.Get<int>(nameof(ProjectId));
-        ProjectApplicationsDisplayModel = await ApiService.GetAsync<ProjectApplicationsDisplayModel>
-        ($"/applications/project/{ProjectId}");
+		foreach (var profileApplication in ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels)
+		{
+			foreach (var application in profileApplication.ApplicationDisplayModels)
+			{
+				var model = new ProjectApplicationInputModel
+				{
+					ApplicationId = application.ApplicationId,
+					CollaboratorProfileId = profileApplication.CollaboratorProfileDisplayModel.CollaboratorProfileId,
+					ProjectId = ProjectApplicationsDisplayModel.ProjectId,
+					ApplicantComment = application.ApplicantComment,
+					ProjectApplicationStatus = ProjectApplicationStatus.Rejected,
+					ApplicantId = application.ApplicantId
+				};
 
-        foreach (var profileApplication in ProjectApplicationsDisplayModel.CollaboratorProfileApplicationsDisplayModels)
-        {
-            foreach (var application in profileApplication.ApplicationDisplayModels)
-            {
-                var model = new ProjectApplicationInputModel
-                {
-                    ApplicationId = application.ApplicationId,
-                    CollaboratorProfileId = profileApplication.CollaboratorProfileDisplayModel.CollaboratorProfileId,
-                    ProjectId = ProjectApplicationsDisplayModel.ProjectId,
-                    ApplicantComment = application.ApplicantComment,
-                    ProjectApplicationStatus = ProjectApplicationStatus.Rejected,
-                    ApplicantId = application.ApplicantId
-                };
+				ProjectApplicationInputModels.Add(model);
+			}
+		}
+	}
 
-                ProjectApplicationInputModels.Add(model);
-            }
-        }
-    }
+	private async Task SelectCollaboratorsAndCloseProject()
+	{
+		var parameters = new ModalParameters();
+		string Title = "Da li ste sigurni?";
+		parameters.Add(nameof(Title), Title);
+		var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
+		var result = await messageForm.Result;
 
-    private async Task SelectCollaboratorsAndCloseProject()
-    {
-        var parameters = new ModalParameters();
-        string Title = "Da li ste sigurni?";
-        parameters.Add(nameof(Title), Title);
-        var messageForm = Modal.Show<ActionConfirmationPopup>(nameof(Title), parameters);
-        var result = await messageForm.Result;
+		if (!result.Cancelled)
+		{
+			var projectDisplayModel = (await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{ProjectApplicationsDisplayModel.ProjectId}")).Item1;
+			var projectInputModel = new ProjectInputModel(projectDisplayModel);
 
-        if (!result.Cancelled)
-        {
-            var projectDisplayModel = await ApiService.GetAsync<ProjectDisplayModel>($"/projects/{ProjectApplicationsDisplayModel.ProjectId}");
-            var projectInputModel = new ProjectInputModel(projectDisplayModel);
+			foreach (var model in ProjectApplicationInputModels)
+			{
+				await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
+			}
 
-            foreach (var model in ProjectApplicationInputModels)
-            {
-                await ApiService.PutAsync($"/applications/{model.ApplicationId}", model);
-
-                if (model.ProjectApplicationStatus == ProjectApplicationStatus.Accepted)
-                {
-                    projectInputModel.CollaboratorIds.Add(model.ApplicantId);
-                }
-            }
-
-            projectInputModel.ProjectStatus = ProjectStatus.Closed;
-            await ApiService.PutAsync($"/projects/{ProjectApplicationsDisplayModel.ProjectId}", projectInputModel);
-            NavigationManager.NavigateTo("/homepage", true);
-        }
+			//projectInputModel.ProjectStatus = ProjectStatus.Closed;
+			await ApiService.PutAsync($"/projects/{ProjectApplicationsDisplayModel.ProjectId}", projectInputModel);
+			//NavigationManager.NavigateTo("/homepage", true);
+		}
 
 
-    }
-
+	}
 }

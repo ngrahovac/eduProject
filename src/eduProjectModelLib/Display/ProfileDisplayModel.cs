@@ -65,6 +65,7 @@ namespace eduProjectModel.Display
             Website = userSettings.Website;
             Cv = userSettings.CvLink;
             Bio = userSettings.Bio;
+            AccountPhoto = userSettings.PhotoLink;
 
             if (userSettings.PhoneVisible)
                 PhoneNumber = user.PhoneNumber;

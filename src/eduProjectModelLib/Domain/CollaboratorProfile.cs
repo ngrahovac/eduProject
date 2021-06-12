@@ -3,6 +3,7 @@
     public class CollaboratorProfile
     {
         public int CollaboratorProfileId { get; set; }
+        public bool ApplicationsOpen { get; set; } = true;
         public string Description { get; set; }
         public int? FacultyId { get; set; }
         public CollaboratorProfile()

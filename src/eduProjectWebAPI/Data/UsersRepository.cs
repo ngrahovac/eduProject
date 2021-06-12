@@ -1,6 +1,4 @@
 ﻿using eduProjectModel.Domain;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Configuration;
 using MySqlConnector;
 using System;
 using System.Data;
@@ -108,7 +106,6 @@ namespace eduProjectWebAPI.Data
 	                                       student.faculty_id, study_year, study_program_id, study_program_specialization_id,
 	                                       faculty_member.faculty_id, study_field_id, academic_rank_id
                                     FROM user
-                                    INNER JOIN account USING (user_id)
                                     LEFT OUTER JOIN student using(user_id)
                                     LEFT OUTER JOIN faculty_member using(user_id)
                                     WHERE user.user_id = @id;";
@@ -195,27 +192,51 @@ namespace eduProjectWebAPI.Data
         private async Task AddUserData(MySqlCommand command, User user)
         {
             command.CommandText = @"INSERT INTO user
-                                    (first_name, last_name)
+                                    (user_id, first_name, last_name, user_account_type_id)
                                     VALUES
-                                    (@firstName, @lastName)";
+                                    (@userId, @firstName, @lastName, @accountTypeId)";
 
             command.Parameters.Clear();
 
             command.Parameters.Add(new MySqlParameter
             {
+                DbType = DbType.Int32,
+                ParameterName = "@userId",
+                Value = user.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
                 DbType = DbType.String,
-                ParameterName = "@fistName",
+                ParameterName = "@firstName",
                 Value = user.FirstName
             });
 
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.String,
+                ParameterName = "@lastName",
+                Value = user.LastName
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@accountTypeId",
+                Value = user is Student ? 1 : 2
+            });
+
             await command.ExecuteNonQueryAsync();
+            int id = (int)command.LastInsertedId;
 
             if (user is Student s)
             {
+                s.UserId = id;
                 await AddStudentData(command, s);
             }
             else if (user is FacultyMember fm)
             {
+                fm.UserId = id;
                 await AddFacultyMemberData(command, fm);
             }
 
@@ -239,9 +260,9 @@ namespace eduProjectWebAPI.Data
         private async Task AddStudentData(MySqlCommand command, Student s)
         {
             command.CommandText = @"INSERT INTO student
-                                    (user_id, study_program_id, study_program_specialization_id, study_year)
+                                    (user_id, faculty_id, study_program_id, study_program_specialization_id, study_year)
                                     VALUES
-                                    (@userId, @programId, @specializationId, @studyYear)";
+                                    (@userId, @facultyId, @programId, @specializationId, @studyYear)";
 
             command.Parameters.Clear();
 
@@ -255,6 +276,13 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.Int32,
+                ParameterName = "@facultyId",
+                Value = s.FacultyId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
                 ParameterName = "@programId",
                 Value = s.StudyProgramId
             });
@@ -262,7 +290,7 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.Int32,
-                ParameterName = "@specialiationId",
+                ParameterName = "@specializationId",
                 Value = s.StudyProgramSpecializationId
             });
 
@@ -346,8 +374,15 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.String,
-                ParameterName = "@fistName",
+                ParameterName = "@firstName",
                 Value = user.FirstName
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.String,
+                ParameterName = "@lastName",
+                Value = user.LastName
             });
 
             command.Parameters.Add(new MySqlParameter
@@ -397,7 +432,7 @@ namespace eduProjectWebAPI.Data
             command.Parameters.Add(new MySqlParameter
             {
                 DbType = DbType.Int32,
-                ParameterName = "@specialiationId",
+                ParameterName = "@specializationId",
                 Value = s.StudyProgramSpecializationId
             });
 

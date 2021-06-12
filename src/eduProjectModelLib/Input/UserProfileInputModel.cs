@@ -1,6 +1,8 @@
-﻿using eduProjectModel.Domain;
+﻿using eduProjectModel.Display;
+using eduProjectModel.Domain;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 
@@ -9,9 +11,13 @@ namespace eduProjectModel.Input
     public class UserProfileInputModel
     {
         public int UserId { get; set; }
+        [Required]
         public UserAccountType UserAccountType { get; set; }
+        [Required]
         public string FirstName { get; set; }
+        [Required]
         public string LastName { get; set; }
+        [Required]
         public string FacultyName { get; set; }
         public int? Cycle { get; set; }
         public string StudyProgramName { get; set; }
@@ -20,12 +26,38 @@ namespace eduProjectModel.Input
         public string StudyFieldName { get; set; }
         public AcademicRank AcademicRank { get; set; }
 
+        public UserProfileInputModel()
+        {
+
+        }
+
+        public UserProfileInputModel(ProfileDisplayModel model)
+        {
+            UserAccountType = model.UserAccountType;
+            FirstName = model.FirstName;
+            LastName = model.LastName;
+            FacultyName = model.FacultyName;
+
+            if (UserAccountType is UserAccountType.Student)
+            {
+                Cycle = model.Cycle;
+                StudyProgramName = model.StudyProgramName;
+                StudyYear = model.StudyYear;
+                StudyProgramSpecializationName = model.StudyProgramSpecializationName;
+            }
+            else if (UserAccountType is UserAccountType.FacultyMember)
+            {
+                AcademicRank = model.AcademicRank;
+                StudyFieldName = model.StudyFieldName;
+            }
+        }
+
         public void Clear()
         {
             UserId = 0;
             UserAccountType = 0;
             AcademicRank = 0;
-            FirstName = LastName = FacultyName = StudyProgramName = StudyProgramSpecializationName = StudyFieldName = String.Empty;
+            FacultyName = StudyProgramName = StudyProgramSpecializationName = StudyFieldName = String.Empty;
             Cycle = StudyYear = null;
         }
 

@@ -4,12 +4,14 @@ namespace eduProjectModel.Domain
 {
     public enum ProjectStatus
     {
-        [Display(Name = "Aktivan")]
+        [Display(Name = "U pripremi")]
         Active = 1,
 
-        [Display(Name = "Zatvoren")]
-        Closed = 2
+        [Display(Name = "Završen")]
+        Closed = 2,
 
+        [Display(Name = "U izradi")]
+        InProgress = 3
     }
 }
 

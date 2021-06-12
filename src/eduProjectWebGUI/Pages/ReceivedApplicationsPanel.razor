@@ -1,0 +1,208 @@
+﻿@page "/applications/author/{AuthorId:int}"
+@inject ApiService ApiService
+@inject Microsoft.JSInterop.IJSRuntime js
+@inject IModalService Modal
+@inject NavigationManager NavigationManager
+
+
+
+<AuthorizeView>
+	<Authorized>
+		<style>
+			body {
+				padding-top: 7rem;
+				padding-bottom: 7rem;
+				margin: auto;
+			}
+
+			.h3-title {
+				color: gray;
+				text-align: center;
+				margin-bottom: 1.5rem;
+			}
+
+			.selected-row {				
+				background-color: rgba(0, 0, 0, 0.3);
+			}
+
+			.spinner-border {
+				width: 80px;
+				height: 80px;
+				top: 40%;
+				left: 46%;
+				position: absolute;
+			}
+		</style>
+
+		<div class="container">
+			@if (applications == null)
+				{
+				<div class="d-flex justify-content-center">
+					<div class="spinner-border text-info" role="status">
+						<span class="sr-only"></span>
+					</div>
+				</div>
+				}
+			else if (applications.Count() == 0)
+				{
+				<h3>Trenutno nema primljenih prijava.</h3>
+				}
+			else
+			{
+				<h3 class="h3-title">Pristigle prijave</h3>
+				<table class="table table-bordered" id="received-applications">
+					<thead class="thead-dark">
+						<tr>
+							<th>Ime i prezime</th>
+							<th>Email</th>
+							<th>Komentar prijavljenog</th>
+							<th>Naziv projekta</th>
+							<th>Profil</th>
+							<th style="width:8rem;">Status</th>
+						</tr>
+					</thead>
+					<tbody>
+						@for (int i = 0; i < applications.Count(); ++i)
+							{
+							int index = i;
+							var a = applications.ElementAt(index);
+							@if (receivedNotifications.Select(t => t).Where(n => n == a.ApplicationId).Count() >= 1)
+								{
+								<tr bgcolor="PaleTurquoise" @onclick="@(() => { selectedApplicationId = a.ApplicationId; ApplicationSelected("received-applications", "", a.ApplicationId, index); })">
+									<td><a href=@($"/users/{a.ApplicantId}")>@a.ApplicantFullName</a></td>
+									<td>@a.ApplicantEmail</td>
+									<td>@a.ApplicantComment</td>
+									<td><a href=@($"/projects/{a.ProjectId}")>@a.ProjectName</a></td>
+									<td>@a.ActivityName</td>
+									<td>
+										@(a.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)
+										<svg xmlns="http://www.w3.org/2000/svg" width="24" height="18" fill="DarkTurquoise" class="bi bi-circle-fill" viewBox="0 0 16 18">
+											<circle cx="8" cy="8" r="6" />
+										</svg>
+									</td>
+								</tr>
+								}
+							else
+							{
+								<tr @onclick="@(() => { selectedApplicationId = a.ApplicationId; ApplicationSelected("received-applications", "", a.ApplicationId, index); })">
+									<td><a href=@($"/users/{a.ApplicantId}")>@a.ApplicantFullName</a></td>
+									<td>@a.ApplicantEmail</td>
+									<td>@a.ApplicantComment</td>
+									<td><a href=@($"/projects/{a.ProjectId}")>@a.ProjectName</a></td>
+									<td>@a.ActivityName</td>
+									<td>@(a.ProjectApplicationStatus.GetAttribute<DisplayAttribute>().Name)</td>
+								</tr>
+								}
+							}
+					</tbody>
+				</table>
+				<button class="btn btn-outline-info float-right" @onclick="@(() => ChangeApplicationStatus())">Promijeni status</button>
+				}
+		</div>
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+	[Parameter]
+	public int AuthorId { get; set; }
+
+	private int selectedApplicationId = 0;
+
+
+	private ICollection<ApplicationDisplayModel> applications;
+	private ICollection<int> receivedNotifications = new List<int>();
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
+		{
+			Console.WriteLine("resetujemo indeks");
+			selectedApplicationId = 0;
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications/author/{AuthorId}");
+			receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications")).Item1;
+			await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				applications = response.Item1;
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+
+	}
+
+	public async Task ApplicationSelected(string tableToHighlight, string tableToClear, int id, int index)
+	{
+		
+		string[] tablesToClear = { tableToClear };
+		await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
+	}
+
+	public async Task ChangeApplicationStatus()
+	{
+
+		if (selectedApplicationId > 0)
+		{
+			Console.WriteLine("iskociii");
+			var applicationDisplayModel = applications.First(a => a.ApplicationId == selectedApplicationId);
+			var inputModel = new ProjectApplicationInputModel();
+			inputModel.FromDisplayModel(applicationDisplayModel);
+
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(ReceivedApplicationsStatusChange.model), inputModel);
+			var modal = Modal.Show<ReceivedApplicationsStatusChange>("Izmjena statusa prijave", parameters);
+			var result = await modal.Result;
+
+			if (!result.Cancelled)
+			{
+				try
+				{
+					var response = await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
+					parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+				catch (Exception ex)
+				{
+					var parameters2 = new ModalParameters();
+					parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+					Modal.Show<InfoPopup>("Obavještenje", parameters2);
+				}
+			}
+
+
+
+		}
+	}
+}

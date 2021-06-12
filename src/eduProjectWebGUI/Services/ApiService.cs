@@ -30,7 +30,7 @@ namespace eduProjectWebGUI.Services
             this.localStorage = localStorage;
         }
 
-        public async Task PostAsync<T>(string url, T obj)
+        public async Task<HttpResponseMessage> PostAsync<T>(string url, T obj)
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
@@ -39,10 +39,11 @@ namespace eduProjectWebGUI.Services
             request.Headers.Authorization = authHeaderValue;
             request.Content = JsonContent.Create<T>(obj);
 
-            await httpClient.SendAsync(request);
+            var result = await httpClient.SendAsync(request);
+            return result;
         }
 
-        public async Task PutAsync<T>(string url, T obj)
+        public async Task<HttpResponseMessage> PutAsync<T>(string url, T obj)
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
@@ -51,10 +52,11 @@ namespace eduProjectWebGUI.Services
             request.Headers.Authorization = authHeaderValue;
             request.Content = JsonContent.Create<T>(obj);
 
-            await httpClient.SendAsync(request);
+            var result = await httpClient.SendAsync(request);
+            return result;
         }
 
-        public async Task DeleteAsync(string url)
+        public async Task<HttpResponseMessage> DeleteAsync(string url)
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
@@ -62,10 +64,11 @@ namespace eduProjectWebGUI.Services
             var request = new HttpRequestMessage(HttpMethod.Delete, url);
             request.Headers.Authorization = authHeaderValue;
 
-            await httpClient.SendAsync(request);
+            var result = await httpClient.SendAsync(request);
+            return result;
         }
 
-        public async Task<T> GetAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
+        public async Task<Tuple<T, HttpStatusCode>> GetAsync<T>(string url) //second arg: AuthenticationHeaderValue authorization
         {
             var token = await localStorage.GetItemAsStringAsync("authToken");
             var authHeaderValue = new AuthenticationHeaderValue("Bearer", token);
@@ -87,9 +90,8 @@ namespace eduProjectWebGUI.Services
                 PropertyNameCaseInsensitive = true
             };
 
-            return await JsonSerializer.DeserializeAsync<T>(stream, options);
+            return new Tuple<T, HttpStatusCode>(await JsonSerializer.DeserializeAsync<T>(stream, options), responseMessage.StatusCode);
         }
-
     }
 }
 

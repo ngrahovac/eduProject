@@ -6,18 +6,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MySqlConnector;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace eduProjectWebAPI
 {
@@ -44,7 +39,7 @@ namespace eduProjectWebAPI
                     });
             });
 
-            services.AddCors();
+            //services.AddCors();
 
             services.AddControllers();
 
@@ -54,7 +49,7 @@ namespace eduProjectWebAPI
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
-                options.SignIn.RequireConfirmedEmail = false;
+                options.SignIn.RequireConfirmedEmail = true;
             })
             .AddEntityFrameworkStores<AppDbContext>()
             .AddDefaultTokenProviders();
@@ -69,19 +64,6 @@ namespace eduProjectWebAPI
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireDigit = false;
-            });
-
-            //Global API authorization (equal to having an [Authorize] attribute above every controller class)
-            /*services.AddMvc(config =>
-            {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            });*/
-
-            services.AddAuthentication().AddGoogle(options =>
-            {
-                options.ClientId = "70290035778-q5ujcqm43l9mt53be4cma09jsimtniva.apps.googleusercontent.com";
-                options.ClientSecret = "ZFKtPq_liv_LtL5xTlXJ4wg_";
             });
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -109,6 +91,9 @@ namespace eduProjectWebAPI
             services.AddTransient<IUserSettingsRepository, UserSettingsRepository>();
             services.AddTransient<DbConnectionParameters, TestDbConnectionParameters>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IStudyFieldsRepository, StudyFieldsRepository>();
+            services.AddTransient<INewsRepository, NewsRepository>();
+            services.AddTransient<INotificationsRepository, NotificationsRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbConnectionParameters dbConnection)
@@ -119,6 +104,14 @@ namespace eduProjectWebAPI
             }
 
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources", "Images")),
+                RequestPath = new PathString(@"/Resources/Images")
+            });
 
             app.UseAuthentication();
 

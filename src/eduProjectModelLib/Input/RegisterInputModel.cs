@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using eduProjectModel.Display;
+using System.ComponentModel.DataAnnotations;
 
 namespace eduProjectModel.Input
 {
@@ -6,6 +7,7 @@ namespace eduProjectModel.Input
     {
         [Required(ErrorMessage = "Polje ne može biti prazno.")]
         [EmailAddress(ErrorMessage = "Email adresa nije ispravnog oblika.")]
+        [RegularExpression(".+unibl.org", ErrorMessage ="Email adresa ne pripada univerzitetskom domenu.")]
         public string Email { get; set; }
 
         //Asp.Net Core Identity has its own set of password rules, defined in the Startup class.
@@ -18,5 +20,15 @@ namespace eduProjectModel.Input
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Lozinke se ne podudaraju")]
         public string ConfirmPassword { get; set; }
+
+        public RegisterInputModel()
+        {
+
+        }
+
+        public RegisterInputModel(AccountDisplayModel model)
+        {
+            Email = model.Email;
+        }
     }
 }

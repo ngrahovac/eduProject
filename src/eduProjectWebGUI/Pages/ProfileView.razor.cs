@@ -3,6 +3,7 @@ using Blazored.Modal.Services;
 using eduProjectModel.Display;
 using eduProjectWebGUI.Services;
 using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using System;
@@ -17,6 +18,8 @@ namespace eduProjectWebGUI.Pages
         [Parameter]
         public int UserId { get; set; }
 
+        private string imgUrl = "Winston.jpg";
+
         [Inject]
         ApiService ApiService { get; set; }
 
@@ -29,11 +32,32 @@ namespace eduProjectWebGUI.Pages
         {
             try
             {
-                ProfileDisplayModel = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
+                var response = await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}");
+                var code = response.Item2;
+
+                if (!code.IsSuccessCode())
+                {
+                    if (code.ShouldRedirectTo404())
+                        NavigationManager.NavigateTo("/404");
+
+                    else
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+                }
+                else
+                {
+                    ProfileDisplayModel = response.Item1;
+                    imgUrl = ProfileDisplayModel.AccountPhoto != null ? (@"https://localhost:44345/Resources/Images/" + ProfileDisplayModel.AccountPhoto) : "Winston.jpg";
+                }
             }
             catch (Exception ex)
             {
-                NavigationManager.NavigateTo("/404");
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
 
         }

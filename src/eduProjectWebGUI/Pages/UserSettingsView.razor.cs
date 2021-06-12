@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
 using eduProjectModel.Display;
 using eduProjectModel.Domain;
 using eduProjectModel.Input;
+using eduProjectWebGUI.Shared;
+using eduProjectWebGUI.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace eduProjectWebGUI.Pages
@@ -14,29 +17,111 @@ namespace eduProjectWebGUI.Pages
         [Parameter]
         public int UserId { get; set; }
 
-        private UserSettingsDisplayModel displayModel;
-        private UserSettingsInputModel inputModel;
+        private UserSettingsDisplayModel userSettingsDisplayModel;
+        private UserSettingsInputModel userSettingsInputModel;
 
+        private UserProfileInputModel userProfileInputModel;
+        private RegisterInputModel registerInputModel;
+
+        private ICollection<Faculty> faculties;
+        private ICollection<StudyField> studyFields;
         private ICollection<Tag> tags = new List<Tag>();
 
         private Tag addedTag;
         private Tag AddedTag
         {
             get { return addedTag; }
-            set { addedTag = value; inputModel.UserTagNames.Add(value.Name); }
+            set { addedTag = value; userSettingsInputModel.UserTagNames.Add(value.Name); }
         }
 
         protected async override Task OnInitializedAsync()
         {
             try
             {
-                tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Values.ToList();
-                displayModel = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
-                inputModel = new UserSettingsInputModel(displayModel);
+                // detaljna provjera za ovaj api call
+                // da sprijecimo posjecivanje stranice sa idjem koji nije korisnikov
+                var response = await ApiService.GetAsync<UserSettingsDisplayModel>($"/users/{UserId}/settings");
+                var code = response.Item2;
+
+                if (!code.IsSuccessCode())
+                {
+                    if (code.ShouldRedirectTo404())
+                        NavigationManager.NavigateTo("/404");
+
+                    else
+                    {
+                        var parameters = new ModalParameters();
+                        parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                        Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    }
+                }
+                else
+                {
+                    // korisnik je autorizovan da dohvati svoj account i ostale informacije
+                    // ako bude problema u nastavku koda i dohvatanju ostalih komponenti, propada se na exception prozor
+                    /*userSettingsDisplayModel = response.Item1;
+                    userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
+
+                    var accountDisplayModel = (await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}")).Item1;
+                    registerInputModel = new RegisterInputModel(accountDisplayModel);
+                    tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Item1.Values.ToList();
+                    faculties = (await ApiService.GetAsync<ICollection<Faculty>>($"faculties")).Item1;
+                    studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Item1.Values;
+
+                    var profileDisplayModel = (await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}")).Item1;
+                    userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
+                    userProfileInputModel.UserId = UserId;*/
+
+                    userSettingsDisplayModel = response.Item1;
+                    userSettingsInputModel = new UserSettingsInputModel(userSettingsDisplayModel);
+
+                    var responseAccountDisplayModel = await ApiService.GetAsync<AccountDisplayModel>($"/account/{UserId}");
+                    var responseAccountDisplayModelCode = responseAccountDisplayModel.Item2;
+
+                    if (!responseAccountDisplayModelCode.IsSuccessCode())
+                    {
+                        if (responseAccountDisplayModelCode.ShouldRedirectTo404())
+                            NavigationManager.NavigateTo("/404");
+                        else
+                        {
+                            var parameters = new ModalParameters();
+                            parameters.Add(nameof(InfoPopup.Message), responseAccountDisplayModelCode.GetMessage());
+                            Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        }
+                    }
+                    else
+                    {
+                        var accountDisplayModel = responseAccountDisplayModel.Item1;
+                        registerInputModel = new RegisterInputModel(accountDisplayModel);
+
+                        var responseFaculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
+                        var responseFields = await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields");
+                        var responseTags = await ApiService.GetAsync<Dictionary<string, Tag>>($"tags");
+
+                        if (!responseFaculties.Item2.IsSuccessCode() || !responseFields.Item2.IsSuccessCode() || !responseTags.Item2.IsSuccessCode())
+                        {
+                            var parameters = new ModalParameters();
+                            parameters.Add(nameof(InfoPopup.Message), "Problem pri dohvatanju podataka");
+                            Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        }
+                        else
+                        {
+                            faculties = responseFaculties.Item1;
+                            studyFields = responseFields.Item1.Values;
+                            tags = responseTags.Item1.Values.ToList();
+
+                            var profileDisplayModel = (await ApiService.GetAsync<ProfileDisplayModel>($"/users/{UserId}")).Item1;
+                            userProfileInputModel = new UserProfileInputModel(profileDisplayModel);
+                            userProfileInputModel.UserId = UserId;
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
-                NavigationManager.NavigateTo("/404");
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
             }
         }
 
@@ -45,10 +130,23 @@ namespace eduProjectWebGUI.Pages
             return tags.Where(t => t.Name.StartsWith(searchText));
         }
 
+
+
         private async Task UpdateSettings()
         {
-            await ApiService.PutAsync($"/users/{UserId}/settings", inputModel);
-            NavigationManager.NavigateTo($"/users/{UserId}/settings", true);
+            try
+            {
+                var response = await ApiService.PutAsync($"/users/{UserId}/settings", userSettingsInputModel);
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            catch (Exception ex)
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
         }
 
         private async Task CancelUpdateSettings()

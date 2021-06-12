@@ -25,7 +25,9 @@ namespace eduProjectWebAPI.Services
                 return null;
 
             var claims = ParseClaimsFromJwt(jwt).ToArray();
-            return int.Parse(claims[1].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
+
+            //old value: claims[1] - caused index out of the bounds exception after role claim was added
+            return int.Parse(claims[2].ToString().Split("nameidentifier:")[1].Replace(" ", "")); //nameidentifier represents user ID
         }
 
         private static byte[] ParseBase64WithoutPadding(string base64)
@@ -65,8 +67,6 @@ namespace eduProjectWebAPI.Services
 
             claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
 
-            //_____________________________________________
-            //This part of code extracts ID. It is the same code above, copy-pasted. Refactoring needed.
             keyValuePairs.TryGetValue(ClaimTypes.NameIdentifier, out object id);
             if (id != null)
             {
@@ -81,7 +81,6 @@ namespace eduProjectWebAPI.Services
                 keyValuePairs.Remove(ClaimTypes.NameIdentifier);
                 claims.AddRange(keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString())));
             }
-            //_____________________________________________
             return claims;
         }
     }

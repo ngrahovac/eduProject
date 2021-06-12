@@ -79,6 +79,11 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.FacultyName = null;
             }
+            collaboratorProfileInputModel.Cycle = null;
+            collaboratorProfileInputModel.StudyProgramName = null;
+            collaboratorProfileInputModel.StudyProgramSpecializationName = null;
+            collaboratorProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task CycleSelected(string cycleStr)
@@ -99,6 +104,10 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.Cycle = null;
             }
+            collaboratorProfileInputModel.StudyProgramName = null;
+            collaboratorProfileInputModel.StudyProgramSpecializationName = null;
+            collaboratorProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task ProgramSelected(string programName)
@@ -121,6 +130,25 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.StudyProgramName = null;
             }
+            collaboratorProfileInputModel.StudyProgramSpecializationName = null;
+            collaboratorProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
+        }
+
+        private async Task SpecializationSelected(string specializationName)
+        {
+            Console.WriteLine($"Odabran smjer {specializationName}");
+
+            if (specializationName != string.Empty)
+            {
+                collaboratorProfileInputModel.StudyProgramSpecializationName = specializationName;
+            }
+            else
+            {
+                collaboratorProfileInputModel.StudyProgramSpecializationName = null;
+            }
+            collaboratorProfileInputModel.StudyYear = null;
+            base.StateHasChanged();
         }
 
         private async Task YearSelected(string yearStr)
@@ -138,19 +166,7 @@ namespace eduProjectWebGUI.Shared
             }
         }
 
-        private async Task SpecializationSelected(string specializationName)
-        {
-            Console.WriteLine($"Odabran smjer {specializationName}");
 
-            if (specializationName != string.Empty)
-            {
-                collaboratorProfileInputModel.StudyProgramSpecializationName = specializationName;
-            }
-            else
-            {
-                collaboratorProfileInputModel.StudyProgramSpecializationName = null;
-            }
-        }
 
         protected override async Task OnInitializedAsync()
         {

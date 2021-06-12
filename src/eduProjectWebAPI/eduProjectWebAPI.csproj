@@ -35,4 +35,7 @@
   <ItemGroup>
     <ProjectReference Include="..\eduProjectModelLib\eduProjectModel.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Images\" />
+  </ItemGroup>
 </Project>

@@ -1,121 +1,224 @@
 ﻿@inject NavigationManager NavigationManager
 @inject ILocalStorageService LocalStorage
 @inject IAuthService AuthService
+@inject ApiService ApiService
 
 <style>
-    .nav-item{
-        cursor:pointer;
-    }
-    .nav-link {
-        cursor: pointer;
-    }
-    .navbar-brand{
-        cursor:pointer;
+	.nav-item {
+		cursor: pointer;
+	}
+
+	.nav-link {
+		cursor: pointer;
+	}
+
+	.navbar-brand {
+		cursor: pointer;
+	}
+
+    .profile:hover {
+        color: whitesmoke;
     }
 </style>
 
 <AuthorizeView>
-    <Authorized>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
+	<Authorized>
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-         
+			<a class="navbar-brand" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">eduProject</a>
 
-            <div class="collapse navbar-collapse" id="navbarColor02">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/create", true))">
-                            Novi projekat
-                        </a>
-                    </li>                   
-                    <li class="nav-item">
-                        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?status=active", true))">Aktivni projekti</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?authored=true", true))">Moji projekti</a>
-                    </li>
-                </ul>
 
-                <div class="nav-item my-1 mx-2">
-                    <form class="form-inline my-2 my-lg-0" @onsubmit="@(()=> { })">
-                        <input class="form-control m-sm-2" type="search" placeholder="" aria-label="Search"
-                               @bind-value="queryString">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="button" @onclick="Search">Pretraži</button>
-                    </form>
-                </div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-                <a class="nav-link"@onclick="@(async () =>
-                                                              {
-                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}", true);})">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="WhiteSmoke" class="bi bi-person-circle" viewBox="0 0 16 16">
-                        <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                        <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                    </svg>
-                </a>
 
-                @*<div class="nav-item dropdown my-1">
-                    <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Podešavanja
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item nav-link" @onclick="@(async () =>
-                                                              {
-                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/settings", true);
-                                                              })">Podešavanja profila</a>
-                        <a class="dropdown-item nav-link" @onclick="@(async () =>
-                                                              {
-                                                                  NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})">Moje prijave</a>
+			<div class="collapse navbar-collapse" id="navbarColor02">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+						<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/news", true))">Novosti</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage", true))">Preporučeno</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/create", true))">
+							Novi projekat
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?status=active", true))">Aktivni projekti</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" @onclick="@(() => NavigationManager.NavigateTo("/homepage?authored=true", true))">Moji projekti</a>
+					</li>
 
-                        <div class=" dropdown-divider">
-                        </div>
-                        <a class="dropdown-item nav-link" @onclick="@(async () =>
-                                                              {
-                                                                  await AuthService.Logout();
-                                                                  NavigationManager.NavigateTo("/account/login");
-                                                              })">Odjavi se</a>
-                    </div>
-                </div>*@
 
-            </div>
-        </nav>
-    </Authorized>
+					<li class="nav-item" style="padding-right:0rem:">
+						<a class="nav-link" @onclick="SentNotificationClick">Poslane prijave</a>
+					</li>
+					@if (sentNotifications.Count > 0 && !IsDisabledSent)
+						{
+						<li class="nav-item" style="margin-left:-0.75rem; margin-top:0.2rem;" data-toggle="tooltip" data-placement="bottom" title="Obavještenje o poslanim prijavama">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="DarkTurquoise" class="bi bi-circle-fill" viewBox="0 0 16 16">
+								<circle cx="8" cy="8" r="5" />
+							</svg>
+						</li>
+						}
+
+					<li class="nav-item" style="padding-right:0rem:">
+						<a class="nav-link" @onclick="ReceivedNotificationClick">Primljene prijave</a>
+					</li>
+
+
+					@if (receivedNotifications.Count > 0 && !IsDisabledReceived)
+						{
+						<li class="nav-item" style="margin-left:-0.75rem; margin-top:0.2rem;" data-toggle="tooltip" data-placement="bottom" title="Obavještenje na mojem projektu">
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="DarkTurquoise" class="bi bi-circle-fill" viewBox="0 0 16 16">
+								<circle cx="8" cy="8" r="5" />
+							</svg>
+						</li>
+						}
+
+
+
+
+
+				</ul>
+
+				<div class="nav-item my-1 mx-2">
+					<form class="form-inline my-2 my-lg-0" @onsubmit="@(()=> { })">
+						<input class="form-control m-sm-2" type="search" placeholder="" aria-label="Search"
+							   @bind-value="queryString">
+						<button class="btn btn-secondary my-2 my-sm-0" type="button" @onclick="Search">Pretraži</button>
+					</form>
+				</div>
+
+				<a class="nav-link profile" @onclick="@(async () =>
+												{NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}", true);})">
+					@context.User.Identity.Name
+				</a>
+
+				
+
+				@*<div class="nav-item dropdown my-1">
+		<a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		Podešavanja
+		</a>
+		<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+		<a class="dropdown-item nav-link" @onclick="@(async () =>
+		{
+		NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/settings", true);
+		})">Podešavanja profila</a>
+		<a class="dropdown-item nav-link" @onclick="@(async () =>
+		{
+		NavigationManager.NavigateTo($"/users/{await LocalStorage.ExtractUserId()}/applications", true);})">Moje prijave</a>
+
+		<div class=" dropdown-divider">
+		</div>
+		<a class="dropdown-item nav-link" @onclick="@(async () =>
+		{
+		await AuthService.Logout();
+		NavigationManager.NavigateTo("/account/login");
+		})">Odjavi se</a>
+		</div>
+		</div>*@
+
+			</div>
+		</nav>
+	</Authorized>
 </AuthorizeView>
 
 
 @code
 {
-    private string queryString;
 
-    private async Task Search()
-    {
-        if (queryString != null && queryString != string.Empty)
-        {
-            string current = NavigationManager.Uri.ToString();
-            string baseString;
+	public int AuthorID { get; set; }
+	private string queryString;
+	private ICollection<int> receivedNotifications = new List<int>();
+	private ICollection<int> sentNotifications = new List<int>();
+	private bool IsDisabledReceived;
+	private bool IsDisabledSent;
 
-            if (current.Contains("?query"))
-            {
-                baseString = current.Substring(0, current.IndexOf("?query")) + "?";
-            }
-            else if (current.Contains("&query"))
-            {
-                baseString = current.Substring(0, current.IndexOf("&query")) + "&";
-            }
-            else if (current == NavigationManager.BaseUri + "homepage")
-            {
-                baseString = current + "?";
-            }
-            else
-            {
-                baseString = current + "&";
-            }
+	private System.Threading.Timer timer;
+	int number = 0;
 
-            NavigationManager.NavigateTo(baseString + $"query={queryString}", true);
+	protected override async Task OnInitializedAsync()
+	{
+		AuthorID = (int)(await LocalStorage.ExtractUserId());
 
-            queryString = null;
-        }
-    }
+		await base.OnInitializedAsync();
+		timer = new System.Threading.Timer(async (object stateInfo) =>
+		{
+			receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorID}/applications")).Item1;
+			sentNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/user/{AuthorID}/applications")).Item1;
+			number += 1;
+			if (receivedNotifications.Count == 0) IsDisabledReceived = true;
+			else IsDisabledReceived = false;
+
+			if (sentNotifications.Count == 0) IsDisabledSent = true;
+			else IsDisabledSent = false;
+
+			StateHasChanged(); // MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
+		}, new System.Threading.AutoResetEvent(false), 2000, 1000000);
+
+		//receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications");
+		//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+
+
+
+
+
+
+
+
+
+	}
+
+	private async void ReceivedNotificationClick()
+	{
+		IsDisabledReceived = true;
+		NavigationManager.NavigateTo($"/applications/author/{AuthorID}");
+
+		//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+	}
+
+	private async void SentNotificationClick()
+	{
+		IsDisabledSent = true;
+		NavigationManager.NavigateTo($"/users/{AuthorID}/applications");
+		//NavigationManager.NavigateTo("/user/1/applications");
+
+		//await ApiService.DeleteAsync($"notifications/user/{AuthorId}/applications");
+	}
+
+	private async Task Search()
+	{
+		if (queryString != null && queryString != string.Empty)
+		{
+			string current = NavigationManager.Uri.ToString();
+			string baseString;
+
+			if (current.Contains("?query"))
+			{
+				baseString = current.Substring(0, current.IndexOf("?query")) + "?";
+			}
+			else if (current.Contains("&query"))
+			{
+				baseString = current.Substring(0, current.IndexOf("&query")) + "&";
+			}
+			else if (current == NavigationManager.BaseUri + "homepage")
+			{
+				baseString = current + "?";
+			}
+			else
+			{
+				baseString = current + "&";
+			}
+
+			NavigationManager.NavigateTo(baseString + $"query={queryString}", true);
+
+			queryString = null;
+		}
+	}
 }

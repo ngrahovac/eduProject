@@ -1,0 +1,181 @@
+﻿@page "/admin/news"
+@layout AdminLayout
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JsRuntime
+@inject IModalService Modal
+
+<style>
+
+
+
+	.container {
+		margin-bottom: 60px;
+		padding-top: 2rem;
+	}
+
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
+
+	.h3-tree-title {
+		color: gray;
+	}
+
+	.spinner-border {
+		width: 60px;
+		height: 60px;
+		text-align: center;
+		top: 40%;
+		position: absolute;
+	}
+
+	.content {
+		padding-top: 1rem;
+		padding-bottom: 7rem;
+	}
+
+	.text-muted {
+		display: inline-block;
+	}
+
+	.card-header {
+		border-bottom: none;
+		background-color: white;
+	}
+</style>
+
+
+<AuthorizeView Context="authContext" Roles="Admin">
+	<Authorized>
+		<div class="container">
+
+			<h3 class="h3-title">Administrator</h3>
+			<h3 class="h3-tree-title">Postavljanje novosti</h3>
+
+			<EditForm OnValidSubmit="@AddNews" Model="@model">
+				<DataAnnotationsValidator />
+				<label>Naslov</label>
+				<InputText @bind-Value="@model.Title" class="form-control"></InputText>
+				<p style="color:red"><ValidationMessage For="@(() => model.Title)" /></p>
+
+				<label style="margin-top: 1rem;">Sadržaj</label>
+				<InputTextArea @bind-Value="@model.Content" class="form-control content" wrap="soft"></InputTextArea>
+				<p style="color:red"><ValidationMessage For="@(() => model.Title)" /></p>
+
+				<div style="margin-top: 1rem; margin-bottom: 5.25rem;">
+					<button class="btn btn-outline-info float-right" type="submit"> Postavi </button>
+				</div>
+			</EditForm>
+			@foreach (var model in newsDisplayModels)
+				{
+   <div class="card " style="margin-top:0.75rem;">
+	<row class="card-header">
+	 <h4>@model.Title</h4>
+	</row>
+	<div class="card-body">
+	 <p class="card-text">@model.Content</p>
+	</div>
+
+	<row class="card-footer">
+	 <div class="text-muted text-center">@model.Date </div>
+	 <button class="btn btn-primary float-right" @onclick="@(() => {DeleteNews(model.Id);})">Obriši</button>
+	</row>
+
+   </div>
+			}
+
+		</div>
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+
+	NewsInputModel model = new NewsInputModel();
+
+	public ICollection<NewsDisplayModel> newsDisplayModels = new List<NewsDisplayModel>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				newsDisplayModels = response.Item1.ToList();
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+	}
+
+	public async Task AddNews()
+	{
+		try
+		{
+			var response = await ApiService.PostAsync<NewsInputModel>("/news", model);
+
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
+			{
+				//NavigationManager.NavigateTo("/homepage", true);
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+	}
+
+
+	public async Task DeleteNews(int id)
+	{
+		try
+		{
+			var response = await ApiService.DeleteAsync($"/news/{id}");
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
+			{
+				NavigationManager.NavigateTo(NavigationManager.Uri, true);
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+	}
+}

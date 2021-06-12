@@ -1,0 +1,155 @@
+﻿@page "/admin/fields"
+@layout AdminLayout
+@inject IModalService Modal
+@inject ApiService ApiService
+@inject NavigationManager  NavigationManager
+
+<style>
+
+	.container {
+		padding-top: 2rem;
+	}
+
+
+	.spinner-border {
+		width: 60px;
+		height: 60px;
+		text-align: center;
+		top: 40%;
+		position: absolute;
+		vertical-align: central;
+	}
+
+	.h3-faculty-title {		
+		color: gray;
+	}
+
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
+
+	.btn {
+		margin-top: 1rem;
+	}
+</style>
+
+<AuthorizeView Context="authContext" Roles="Admin">
+	<Authorized>
+		@if (fields == null)
+			{
+			<div class="d-flex justify-content-center">
+				<div class="spinner-border text-info" role="status">
+					<span class="sr-only"></span>
+				</div>
+			</div>
+			}
+		else
+		{
+			<div class="container">
+				<h3 class="h3-title">Administrator</h3>
+				<h3 class="h3-faculty-title">Dodavanje naučne oblasti</h3>
+				<EditForm Model="@model" OnValidSubmit="@AddStudyField">
+					<DataAnnotationsValidator />
+					<label>Naziv oblasti</label>
+					<InputText class="form-control" @bind-Value="@model.Name"></InputText>
+					<p style="color:red"><ValidationMessage For="@(() => model.Name)" /></p>
+					<label>Opis oblasti</label>
+					<InputText class="form-control" @bind-Value="@model.Description"></InputText>
+					<button type="submit" class="btn btn-outline-info float-right" style="margin-left:0.75rem; margin-bottom:2rem;">Dodaj naučnu oblast</button>
+				</EditForm>
+				<h3 style="color:gray; margin-top:50px;">Naučne oblasti</h3>
+				<div class="list-group">
+					@foreach (var field in fields)
+						{
+						<a class="list-group-item list-group-item-action">
+							<div class="d-flex w-100 justify-content-between">
+								<h5 class="mb-1">@field.Name</h5>
+							</div>
+							<p class="mb-1" style="color:gray">@field.Description</p>
+						</a>
+						}
+				</div>
+			</div>
+			}
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent>
+		</NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
+
+
+
+
+
+
+
+@code
+{
+	ICollection<StudyField> fields;
+
+	StudyFieldInputModel model = new StudyFieldInputModel();
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await ApiService.GetAsync<Dictionary<string, StudyField>>("/fields");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				fields = response.Item1.Values.ToList();
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+
+	}
+
+
+	public async Task AddStudyField()
+	{
+		try
+		{
+			var response = await ApiService.PostAsync("/fields", model);
+
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+
+			if (response.IsSuccessStatusCode)
+			{
+				fields.Add(new StudyField
+				{
+					Name = model.Name,
+					Description = model.Description
+				});
+				//NavigationManager.NavigateTo("/homepage", true);
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+
+	}
+}

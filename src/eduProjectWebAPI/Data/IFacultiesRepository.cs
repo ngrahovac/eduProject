@@ -1,7 +1,5 @@
 ﻿using eduProjectModel.Domain;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eduProjectWebAPI.Data
@@ -11,6 +9,8 @@ namespace eduProjectWebAPI.Data
         public Task<Faculty> GetAsync(int id);
 
         public Task<ICollection<Faculty>> GetAllAsync();
+
+        public Task AddAsync(Faculty faculty);
 
     }
 }

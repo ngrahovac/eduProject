@@ -1,0 +1,211 @@
+﻿@page "/admin/accounts"
+@using System.Net
+@layout AdminLayout
+@inject IModalService Modal
+@inject ApiService ApiService
+@inject NavigationManager NavigationManager
+
+<style>
+
+	.container {
+		padding-top: 2rem;
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	ul {
+		margin-left: 20px;
+	}
+
+	li {
+		list-style-type: none;
+		margin: 10px 0 10px 10px;
+		position: relative;
+	}
+
+		li:before {
+			content: "";
+			position: absolute;
+			top: -10px;
+			left: -20px;
+			border-left: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			width: 20px;
+			height: 15px;
+		}
+
+		li:after {
+			position: absolute;
+			content: "";
+			top: 5px;
+			left: -20px;
+			border-left: 1px solid #ddd;
+			border-top: 1px solid #ddd;
+			width: 20px;
+			height: 100%;
+		}
+
+		li:last-child:after {
+			display: none;
+		}
+
+	span {
+		display: block;
+		border: 1px solid #ddd;
+		padding: 10px;
+		color: #888;
+		text-decoration: none;
+	}
+
+		span:hover, span:focus {
+			background: #eee;
+			color: #000;
+			border: 1px solid #eee;
+			cursor: grab;
+		}
+
+	.h3-tree-title {
+		color: gray;
+	}
+
+	.h3-title {
+		color: gray;
+		text-align: center;
+	}
+
+	.btn {
+		margin-top: 1.5rem;
+		margin-bottom: 30px;
+	}
+
+	.spinner-border {
+		width: 60px;
+		height: 60px;
+		text-align: center;
+		top: 40%;
+		position: absolute;
+	}
+</style>
+
+
+<AuthorizeView Roles="Admin" Context="authContext">
+	<Authorized>
+		@if (!loaded) 
+			{
+			<div class="d-flex justify-content-center">
+				<div class="spinner-border text-info" role="status">
+					<span class="sr-only"></span>
+				</div>
+			</div> 
+			} 
+		else 
+		{
+			<div class="container">
+				<h3 class="h3-title">Administrator</h3>
+				<h3 class="h3-tree-title">Korisnički nalozi</h3>
+				<EditForm Model="@accountInputModels">
+					<table class="table table-hover table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">Korisničko ime</th>
+								<th style="width:8rem;" scope="col">Nalog aktivan</th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (int i = 0; i < accountInputModels.Count; ++i) 
+								{
+								int index = i;
+								<tr>
+									<td>@accountInputModels.ElementAt(index).Username</td>
+									<td style="text-align:center">
+										<InputCheckbox @bind-Value=@(accountInputModels.ElementAt(index).ActiveStatus)></InputCheckbox>
+									</td>
+								</tr> 
+								}
+						</tbody>
+					</table>
+				</EditForm>
+				<button class="btn btn-outline-info float-right" type="button" @onclick="@UpdateAccounts">Sačuvaj izmjene</button>
+			</div> 
+			}
+	</Authorized>
+	<NotAuthorized>
+		<NotAuthorizedComponent></NotAuthorizedComponent>
+	</NotAuthorized>
+</AuthorizeView>
+
+@code
+{
+	private ICollection<AccountDisplayModel> accountDisplayModels;
+	private ICollection<AccountManagementInputModel> accountInputModels;
+	private bool loaded = false;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await ApiService.GetAsync<ICollection<AccountDisplayModel>>("/account");
+			var code = response.Item2;
+
+			if (!code.IsSuccessCode())
+			{
+				if (code.ShouldRedirectTo404())
+					NavigationManager.NavigateTo("/404");
+
+				else
+				{
+					var parameters = new ModalParameters();
+					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+					Modal.Show<InfoPopup>("Obavještenje", parameters);
+				}
+			}
+			else
+			{
+				accountDisplayModels = response.Item1;
+				accountInputModels = new List<AccountManagementInputModel>();
+
+				for (int i = 0; i < accountDisplayModels.Count; ++i)
+					accountInputModels.Add(new AccountManagementInputModel(accountDisplayModels.ElementAt(i)));
+
+				loaded = true;
+
+			}
+		}
+		catch (Exception ex)
+		{
+			var parameters = new ModalParameters();
+			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+			Modal.Show<InfoPopup>("Obavještenje", parameters);
+		}
+	}
+
+	private async Task UpdateAccounts()
+	{
+		bool error = false;
+
+		for (int i = 0; i < accountInputModels.Count; ++i)
+		{
+			var model = accountInputModels.ElementAt(i);
+			var result = await ApiService.PutAsync<AccountManagementInputModel>($"/account/{model.AccountId}", model);
+			if (!result.IsSuccessStatusCode)
+			{
+				var parameters = new ModalParameters();
+				parameters.Add(nameof(InfoPopup.Message), result.StatusCode.GetMessage());
+				Modal.Show<InfoPopup>("Obavještenje", parameters);
+				error = true;
+				break;
+			}
+		}
+
+		if (!error)
+		{
+			var parameters2 = new ModalParameters();
+			parameters2.Add(nameof(InfoPopup.Message), HttpStatusCode.OK.GetMessage());
+			Modal.Show<InfoPopup>("Obavještenje", parameters2);
+		}
+	}
+} 

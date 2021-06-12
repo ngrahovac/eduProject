@@ -1,0 +1,25 @@
+﻿using eduProjectModel.Domain;
+
+namespace eduProjectModel.Display
+{
+    public class AccountDisplayModel
+    {
+        public int AccountId { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public bool ActiveStatus { get; set; }
+
+        public AccountDisplayModel()
+        {
+
+        }
+
+        public AccountDisplayModel(ApplicationUser user)
+        {
+            AccountId = int.Parse(user.Id);
+            Username = user.UserName;
+            Email = user.Email;
+            ActiveStatus = user.ActiveStatus;
+        }
+    }
+}
