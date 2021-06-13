@@ -847,6 +847,13 @@ namespace eduProjectWebAPI.Data
 
                 await connection.OpenAsync();
 
+                command.Parameters.Add(new MySqlParameter
+                {
+                    ParameterName = "@id",
+                    DbType = DbType.Int32,
+                    Value = project.ProjectId
+                });
+
                 command.CommandText = @"DELETE FROM project_tag WHERE project_id = @id";
                 await command.ExecuteNonQueryAsync();
 
