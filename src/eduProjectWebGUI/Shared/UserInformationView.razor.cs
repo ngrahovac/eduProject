@@ -137,7 +137,7 @@ namespace eduProjectWebGUI.Shared
         private async Task YearSelected(string yearStr)
         {
             this.yearStr = yearStr;
-            Console.WriteLine($"Odabran ciklus {yearStr}");
+            Console.WriteLine($"Odabrana godina {yearStr}");
 
             if (yearStr != string.Empty)
             {
@@ -147,7 +147,6 @@ namespace eduProjectWebGUI.Shared
             {
                 UserProfileInputModel.StudyYear = null;
             }
-            UserProfileInputModel.StudyYear = null;
             base.StateHasChanged();
         }
 

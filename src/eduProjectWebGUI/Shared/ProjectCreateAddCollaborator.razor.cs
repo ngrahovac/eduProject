@@ -147,7 +147,6 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.StudyProgramSpecializationName = null;
             }
-            collaboratorProfileInputModel.StudyYear = null;
             base.StateHasChanged();
         }
 
@@ -164,6 +163,7 @@ namespace eduProjectWebGUI.Shared
             {
                 collaboratorProfileInputModel.StudyYear = null;
             }
+            base.StateHasChanged();
         }
 
 

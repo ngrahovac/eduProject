@@ -130,7 +130,7 @@
 												</svg>
 												@if (ProfileDisplayModel.Website != null)
 													{
-													<h6 style="margin-left:5px"><a href="@ProfileDisplayModel.Website" class="text-reset">@ProfileDisplayModel.Website</a></h6>
+													<h6 style="margin-left:5px"><a href=@($"https://{ProfileDisplayModel.Website}") class="text-reset">@ProfileDisplayModel.Website</a></h6>
 													}
 												else
 												{
