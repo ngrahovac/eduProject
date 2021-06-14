@@ -857,10 +857,19 @@ namespace eduProjectWebAPI.Data
                 command.CommandText = @"DELETE FROM project_tag WHERE project_id = @id";
                 await command.ExecuteNonQueryAsync();
 
+                command.CommandText = @"DELETE notifs_author, notifs_user
+                                        FROM project
+                                        INNER JOIN collaborator_profile USING(project_id)
+                                        INNER JOIN project_application USING(collaborator_profile_id)
+                                        LEFT OUTER JOIN notifs_author ON project_application_id = notifs_author.application_id
+                                        LEFT OUTER JOIN notifs_user ON project_application_id = notifs_user.application_id
+                                        WHERE project_id = @id";
+                await command.ExecuteNonQueryAsync();
+
                 command.CommandText = @"DELETE project_application
                                         FROM project
                                         INNER JOIN collaborator_profile USING(project_id)
-                                        LEFT OUTER JOIN project_application USING(collaborator_profile_id)
+                                        INNER JOIN project_application USING(collaborator_profile_id)
                                         WHERE project_id = @id";
                 await command.ExecuteNonQueryAsync();
 
