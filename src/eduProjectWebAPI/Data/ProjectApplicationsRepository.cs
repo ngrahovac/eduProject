@@ -278,7 +278,8 @@ namespace eduProjectWebAPI.Data
                 MySqlCommand command = new MySqlCommand
                 {
                     Connection = connection,
-                    CommandText = @"DELETE FROM project_application WHERE project_application_id = @id"
+                    CommandText = @"DELETE
+                                    FROM notifs_user WHERE notifs_user.application_id = @id"
                 };
 
                 command.Parameters.Clear();
@@ -291,6 +292,15 @@ namespace eduProjectWebAPI.Data
                 });
 
                 await connection.OpenAsync();
+
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE
+                                        FROM notifs_author WHERE notifs_author.application_id = @id";
+
+                await command.ExecuteNonQueryAsync();
+
+                command.CommandText = @"DELETE FROM project_application WHERE project_application_id = @id";
 
                 await command.ExecuteNonQueryAsync();
 
