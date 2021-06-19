@@ -34,12 +34,12 @@
 		<div class="container">
 			@if (editing)
 				{
-				<h3 class="h3-title">@projectInputModel.Title</h3>
-				}
-			else
-			{
-				<h3 class="h3-title">Novi projekat</h3>
-				}
+   <h3 class="h3-title">@projectInputModel.Title</h3>
+			}
+				else
+				{
+   <h3 class="h3-title">Novi projekat</h3>
+			}
 			<EditForm Model="@projectInputModel" OnValidSubmit="CreateOrUpdateProject">
 				<DataAnnotationsValidator />
 
@@ -53,16 +53,16 @@
 					<InputSelect class="form-control" TValue="string" @bind-Value="@projectInputModel.StudyFieldName">
 						<option value=null></option>
 						@foreach (var sf in studyFields)
-							{
-							if (sf.Name == projectInputModel.StudyFieldName)
-								{
-								<option selected value="@sf.Name">@sf.Name</option>
-								}
-							else
-							{
-								<option value="@sf.Name">@sf.Name</option>
-								}
-							}
+						{
+						if (sf.Name == projectInputModel.StudyFieldName)
+						{
+		  <option selected value="@sf.Name">@sf.Name</option>
+						}
+						else
+						{
+		  <option value="@sf.Name">@sf.Name</option>
+						}
+						}
 					</InputSelect>
 					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.StudyFieldName)" /></p>
 				</div>
@@ -87,17 +87,36 @@
 						{
 						if ((ProjectStatus)s == projectInputModel.ProjectStatus)
 						{
-							<option selected value="@s">@s</option>
-                            }
+		  <option selected value="@s">@s</option>
+						}
 
-                            else
-                            {
-								<option value="@s">@s</option>
-                            }
-                        }
+						else
+						{
+		  <option value="@s">@s</option>
+						}
+						}
 
 					</InputSelect>
 					<p style="color:red"><ValidationMessage For="@(() => projectInputModel.ProjectStatusNum)" /></p>
+				</div>
+
+				<div class="mb-3">
+					<TagsOverview Editing="true" TagNames="projectInputModel.TagNames"></TagsOverview>
+					<br />
+					<BlazoredTypeahead SearchMethod="@FilterTags"
+									   @bind-Value="@AddedTag"
+									   Context="tag">
+
+						<SelectedTemplate>
+							@tag.Name
+						</SelectedTemplate>
+						<ResultTemplate>
+							@tag.Name
+						</ResultTemplate>
+						<NotFoundTemplate>
+							Nema rezultata.
+						</NotFoundTemplate>
+					</BlazoredTypeahead>
 				</div>
 
 				<div class="mb-3">
@@ -120,46 +139,46 @@
 							</thead>
 							<tbody>
 								@foreach (var p in projectInputModel.CollaboratorProfileInputModels)
+					{
+		<tr>
+		 <td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
+		 <td>@p.ActivityDescription</td>
+		 <td>@p.FacultyName</td>
+		 <td>@p.Cycle</td>
+		 <td>@p.StudyProgramName</td>
+		 <td>@p.StudyProgramSpecializationName</td>
+		 <td>@p.StudyYear</td>
+		 <td>@p.StudyFieldName</td>
+		 <td><InputCheckbox @bind-Value="@p.ApplicationsOpen"></InputCheckbox></td>
+									@if (!p.ExistingProfile)
 									{
-									<tr>
-										<td>@(p.CollaboratorProfileType.GetAttribute<DisplayAttribute>().Name)</td>
-										<td>@p.ActivityDescription</td>
-										<td>@p.FacultyName</td>
-										<td>@p.Cycle</td>
-										<td>@p.StudyProgramName</td>
-										<td>@p.StudyProgramSpecializationName</td>
-										<td>@p.StudyYear</td>
-										<td>@p.StudyFieldName</td>
-										<td><InputCheckbox @bind-Value="@p.ApplicationsOpen"></InputCheckbox></td>
-										@if (!p.ExistingProfile)
-											{
-											<td><button class="btn btn-outline-primary float-right" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
-											}
-										@if (!p.ExistingProfile)
-											{
-											<td><button class="btn btn-outline-info float-right" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
-											}
-									</tr>
+			 <td><button class="btn btn-outline-primary float-right" type="button" @onclick="@(() => RemoveCollaboratorProfile(p))">Ukloni</button></td>
 									}
+									@if (!p.ExistingProfile)
+									{
+			 <td><button class="btn btn-outline-info float-right" type="button" @onclick="@(() => EditCollaboratorProfile(p))">Izmijeni</button></td>
+									}
+		</tr>
+								}
 							</tbody>
 						</table>
 						<p style="color:red"><ValidationMessage For="@(() => projectInputModel.CollaboratorProfileInputModels)" /></p>
 					</div>
 					@if (editing)
-						{
-						<div class="mb-2">
-							<row>
-								<button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-								<button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@CreateOrUpdateProject">Sačuvaj izmjene</button>
-								<button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right" @onclick="@CancelEditing">Odustani</button>
-							</row>
-						</div>
-						}
+					{
+	 <div class="mb-2">
+	  <row>
+	   <button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+	   <button style="margin-left:10px;" type="button" class="btn btn-outline-info float-right" @onclick="@CreateOrUpdateProject">Sačuvaj izmjene</button>
+	   <button style="margin-left:10px;" type="button" class="btn btn-outline-primary float-right" @onclick="@CancelEditing">Odustani</button>
+	  </row>
+	 </div>
+					}
 					else
 					{
-						<button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
-						<button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="submit">Oglasi projekat</button>
-						}
+	 <button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="button" @onclick="@(() => ShowCreateCollaboratorProfilePopup(false, -1))">Dodaj profil saradnika</button>
+	 <button class="btn btn-outline-info  float-right" style="margin-left:10px;" type="submit">Oglasi projekat</button>
+					}
 				</div>
 			</EditForm>
 		</div>

@@ -1,54 +1,57 @@
 ﻿
 <style>
-    .tags {
-        display: flex;
-        flex-wrap: wrap;
-    }
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+	}
 
-        .tags .tag {
-            margin-right: 10px;
-            padding: 5px 10px 5px 10px;
-            border: solid thin lightgray;
-            border-radius: 5px;
-        }
+		.tags .tag {
+			margin-right: 10px;
+			padding: 5px 10px 5px 10px;
+			border: solid thin lightgray;
+			border-radius: 5px;
+		}
 
-            .tags .tag:hover {
-                color: #FFF;
-                background-color: #029acf;
-                border-color: #029acf;
-                cursor: none;
-            }
-
+			.tags .tag:hover {
+				color: #FFF;
+				background-color: #029acf;
+				border-color: #029acf;
+				cursor: none;
+			}
 </style>
 
 <div class="component">
-    @if (TagNames.Count == 0)
-    {
-        
-    }
-    else
-    {
-        <div class="tags">
-            @foreach (var name in TagNames)
-            {
-                <div class="tag" @onclick="@(e => { if (Editing)TagNames.Remove(name);})">
-                    @name
-                </div>
-            }
-        </div>
-    }
+	@if (TagNames.Count == 0)
+	{
+	 <p>Trenutno nema dodanih tagova.</p>
+	}
+	else
+	{
+	 <div class="tags">
+			@foreach (var name in TagNames)
+			{
+		  <div class="tag" @onclick="@(e => { if (Editing)TagNames.Remove(name);})">
+					@name
+		  </div>
+			}
+	 </div>
+	}
 </div>
 
 @code {
-    [Parameter]
-    public bool Editing { get; set; } = false;
-    [Parameter]
-    public ICollection<string> TagNames { get; set; } = new HashSet<string>();
-    [Parameter]
-    public ProjectInputModel ProjectInputModel { get; set; } = null;
+	[Parameter]
+	public bool Editing { get; set; } = false;
+	[Parameter]
+	public ICollection<string> TagNames { get; set; } = new HashSet<string>();
+	[Parameter]
+	public ProjectInputModel ProjectInputModel { get; set; } = null;
 
-    protected override async Task OnInitializedAsync()
-    {
+	private Tag AddedTag { get; set; }
 
-    }
+	protected override async Task OnInitializedAsync()
+	{
+
+	}
+
+
 }
