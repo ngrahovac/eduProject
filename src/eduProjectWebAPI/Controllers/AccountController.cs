@@ -240,6 +240,13 @@ namespace eduProjectWebAPI.Controllers
                 return NotFound();
         }
 
+        [HttpPut("{id:int}/credentials")]
+        [Authorize(Roles = "User", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UpdateAccountCredentials(int id, RegisterInputModel model)
+        {
+            throw new NotImplementedException();
+        }
+
 
         [HttpGet]
         [Authorize(Roles = "Admin", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

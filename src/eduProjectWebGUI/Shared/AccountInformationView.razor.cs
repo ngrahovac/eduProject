@@ -22,7 +22,7 @@ namespace eduProjectWebGUI.Shared
         {
             try
             {
-                var response = await ApiService.PutAsync($"/account/{UserId}", RegisterInputModel);
+                var response = await ApiService.PutAsync($"/account/{UserId}/credentials", RegisterInputModel);
                 var parameters = new ModalParameters();
                 parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
                 Modal.Show<InfoPopup>("Obavještenje", parameters);
