@@ -1,25 +1,25 @@
 ﻿@inject ApiService ApiService
 @inject IModalService Modal
 
-<EditForm Model="@RegisterInputModel" OnValidSubmit="@UpdateAccountInformation">
+<EditForm Model="@CredentialsChangeInputModel" OnValidSubmit="@UpdateAccountInformation">
 	<DataAnnotationsValidator />
 
 	<div class="mb-3">
-		<label>Email</label>
-		<InputText type="text" class="form-control" @bind-Value="@RegisterInputModel.Email"></InputText>
-		<p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Email)" /></p>
+		<label>Stara lozinka</label>
+		<InputText type="password" class="form-control" @bind-Value="@CredentialsChangeInputModel.OldPassword"></InputText>
+		<p style="color:red"><ValidationMessage For="@(() => CredentialsChangeInputModel.OldPassword)" /></p>
 	</div>
 
 	<div class="mb-3">
-		<label>Lozinka</label>
-		<InputText type="password" class="form-control" @bind-Value="@RegisterInputModel.Password"></InputText>
-		<p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Password)" /></p>
+		<label>Nova Lozinka</label>
+		<InputText type="password" class="form-control" @bind-Value="@CredentialsChangeInputModel.NewPassword"></InputText>
+		<p style="color:red"><ValidationMessage For="@(() => CredentialsChangeInputModel.NewPassword)" /></p>
 	</div>
 
 	<div class="mb-3">
-		<label>Ponovite lozinku</label>
-		<InputText type="password" class="form-control" @bind-Value="@RegisterInputModel.ConfirmPassword"></InputText>
-		<p style="color:red"><ValidationMessage For="@(() => RegisterInputModel.Password)" /></p>
+		<label>Ponovite novu lozinku</label>
+		<InputText type="password" class="form-control" @bind-Value="@CredentialsChangeInputModel.ConfirmNewPassword"></InputText>
+		<p style="color:red"><ValidationMessage For="@(() => CredentialsChangeInputModel.ConfirmNewPassword)" /></p>
 	</div>
 
 	<button class="btn btn-outline-info float-right" type="submit">Sačuvaj</button>

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Blazored.Modal;
 using eduProjectModel.Input;
@@ -11,8 +9,7 @@ namespace eduProjectWebGUI.Shared
 {
     public partial class AccountInformationView
     {
-        [Parameter]
-        public RegisterInputModel RegisterInputModel { get; set; }
+        public CredentialsChangeInputModel CredentialsChangeInputModel { get; set; } = new CredentialsChangeInputModel();
 
         [Parameter]
         public int UserId { get; set; }
@@ -22,7 +19,7 @@ namespace eduProjectWebGUI.Shared
         {
             try
             {
-                var response = await ApiService.PutAsync($"/account/{UserId}/credentials", RegisterInputModel);
+                var response = await ApiService.PutAsync($"/account/{UserId}/credentials", CredentialsChangeInputModel);
                 var parameters = new ModalParameters();
                 parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
                 Modal.Show<InfoPopup>("Obavještenje", parameters);

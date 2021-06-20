@@ -242,9 +242,20 @@ namespace eduProjectWebAPI.Controllers
 
         [HttpPut("{id:int}/credentials")]
         [Authorize(Roles = "User", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> UpdateAccountCredentials(int id, RegisterInputModel model)
+        public async Task<IActionResult> UpdateAccountCredentials(int id, CredentialsChangeInputModel model)
         {
-            throw new NotImplementedException();
+            var userAccount = await userManager.FindByIdAsync($"{id}");
+
+            if (await userManager.CheckPasswordAsync(userAccount, model.OldPassword))
+            {
+                var token = await userManager.GeneratePasswordResetTokenAsync(userAccount);
+                var result = await userManager.ResetPasswordAsync(userAccount, token, model.NewPassword);
+
+                if (result.Succeeded)
+                    return NoContent();
+            }
+            
+            return BadRequest();
         }
 
 
