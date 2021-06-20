@@ -21,7 +21,6 @@ namespace eduProjectWebGUI.Pages
         private UserSettingsInputModel userSettingsInputModel;
 
         private UserProfileInputModel userProfileInputModel;
-        private RegisterInputModel registerInputModel;
 
         private ICollection<Faculty> faculties;
         private ICollection<StudyField> studyFields;
@@ -92,7 +91,6 @@ namespace eduProjectWebGUI.Pages
                     else
                     {
                         var accountDisplayModel = responseAccountDisplayModel.Item1;
-                        registerInputModel = new RegisterInputModel(accountDisplayModel);
 
                         var responseFaculties = await ApiService.GetAsync<ICollection<Faculty>>($"faculties");
                         var responseFields = await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields");

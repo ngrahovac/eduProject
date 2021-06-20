@@ -47,8 +47,9 @@ namespace eduProjectWebAPI.Data
         private async Task ReadProjectCollaborationIds(MySqlCommand command, int id, User user)
         {
             command.CommandText = @"SELECT project_id 
-                                    FROM project_collaborator
-                                    WHERE user_id = @userId";
+                                    FROM project_application
+                                    INNER JOIN collaborator_profile USING (collaborator_profile_id)
+                                    WHERE user_id = @userId AND project_application_status_id = @statusId";
 
             command.Parameters.Clear();
 
@@ -57,6 +58,13 @@ namespace eduProjectWebAPI.Data
                 DbType = DbType.Int32,
                 ParameterName = "@userId",
                 Value = user.UserId
+            });
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@statusId",
+                Value = (int)ProjectApplicationStatus.Accepted
             });
 
             using (var reader = await command.ExecuteReaderAsync())
