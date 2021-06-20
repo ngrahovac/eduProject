@@ -78,6 +78,10 @@ namespace eduProjectModel.Input
                                                                                           .First()
                                                                                           .SpecializationId;
             }
+            else
+            {
+                student.StudyProgramSpecializationId = null;
+            }
         }
 
         public void MapTo(FacultyMember facultyMember, Faculty faculty)

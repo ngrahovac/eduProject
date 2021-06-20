@@ -62,7 +62,7 @@ namespace eduProjectWebGUI.Pages
                     if (queryString["status"] == "active")
                     {
                         Title = "Aktivni projekti";
-                        projectDisplayModels = projectDisplayModels.Where(m => m.ProjectStatus == ProjectStatus.Active).ToList();
+                        projectDisplayModels = projectDisplayModels.Where(m => m.ProjectStatus == ProjectStatus.Active || m.ProjectStatus == ProjectStatus.InProgress).ToList();
                     }
 
                     if (queryString["authored"] == "true")

@@ -416,12 +416,20 @@ namespace eduProjectWebAPI.Data
         {
             command.CommandText = @"UPDATE student
                                     SET
+                                    faculty_id = @facultyId,
                                     study_program_id = @programId,
                                     study_program_specialization_id = @specializationId,
                                     study_year = @studyYear
                                     WHERE user_id = @userId";
 
             command.Parameters.Clear();
+
+            command.Parameters.Add(new MySqlParameter
+            {
+                DbType = DbType.Int32,
+                ParameterName = "@facultyId",
+                Value = s.FacultyId
+            });
 
             command.Parameters.Add(new MySqlParameter
             {

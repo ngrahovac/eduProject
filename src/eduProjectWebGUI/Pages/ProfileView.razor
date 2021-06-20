@@ -83,29 +83,26 @@
 									</div>
 									<details style="margin-top:5px">
 										<summary>Opširnije</summary>
-										<div style="margin-left:15px">
-											@if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
-												{
-												<small class="text-muted">Ciklus</small>
-												<h6>@ProfileDisplayModel.Cycle</h6>
-												<small class="text-muted">Studijski program</small>
-												<h6>@ProfileDisplayModel.StudyProgramName</h6>
-												@if (ProfileDisplayModel.StudyProgramSpecializationName != null)
-													{
-													<small class="text-muted">Studijski smjer</small>
-													<h6>@ProfileDisplayModel.StudyProgramSpecializationName</h6>
-													<small class="text-muted">Godina studija</small>
-													<h6>@ProfileDisplayModel.StudyYear</h6>
-													}
-												}
-											else
-											{
-												<small class="text-muted">Fakultet</small>
-												<h6>@ProfileDisplayModel.FacultyName</h6>
-												<small class="text-muted">Uža naučna oblast</small>
-												<h6>@ProfileDisplayModel.StudyFieldName</h6>
-												}
-										</div>
+                                        <div style="margin-left:15px">
+                                            @if (ProfileDisplayModel.UserAccountType == UserAccountType.Student)
+                                            {
+                                        <small class="text-muted">Ciklus</small>
+                                                                <h6>@ProfileDisplayModel.Cycle</h6>
+                                                                                        <small class="text-muted">Studijski program</small>
+																																	<h6>@ProfileDisplayModel.StudyProgramName</h6>
+                                                                                                                                        @if (ProfileDisplayModel.StudyProgramSpecializationName != null)
+                                                                                                                                        {
+                                                                                                                <small class="text-muted">Studijski smjer</small>
+                                                                                                                                            <h6>@ProfileDisplayModel.StudyProgramSpecializationName</h6>}
+                                                                                                                                                                <small class="text-muted">Godina studija</small>
+                                                                                                                                                                                        <h6>@ProfileDisplayModel.StudyYear</h6> }
+                                                                                                                                                                                                            else
+                                                                                                                                                                                                            {
+                                                                                                                                                                                        <small class="text-muted">Fakultet</small>
+                                                                                                                                                                                                                <h6>@ProfileDisplayModel.FacultyName</h6>
+                                                                                                                                                                                                                                        <small class="text-muted">Uža naučna oblast</small>
+                                                                                                                                                                                                                                                                <h6>@ProfileDisplayModel.StudyFieldName</h6>}
+                                        </div>
 									</details>
 									<details>
 										<summary>Kontakt</summary>
