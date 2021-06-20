@@ -53,18 +53,24 @@
 	<Authorized>
 		<div class="container">
 
-			@if (newsDisplayModels.Count() == 0)
-				{
+			@if (newsDisplayModels == null)
+            {
 				<div class="d-flex justify-content-center">
 					<div class="spinner-border text-info" role="status">
 						<span class="sr-only"></span>
 					</div>
 				</div>
-				}
-			else
-			{
+            }
+            else
+            {
 				<h3 class="h3-title">Novosti</h3>
-				@foreach (var model in newsDisplayModels)
+				@if (newsDisplayModels.Count == 0)
+                {
+					<h3>Nema novosti.</h3>
+                }
+                else
+                {
+					@foreach (var model in newsDisplayModels)
 					{
 					<a class="list-group-item list-group-item-action">
 						<div class="d-flex w-100 justify-content-between">
@@ -76,7 +82,8 @@
 						</div>
 					</a>
 					}
-				}
+                }
+            }
 		</div>
 	</Authorized>
 	<NotAuthorized>
@@ -87,32 +94,32 @@
 
 @code {
 
-	public ICollection<NewsDisplayModel> newsDisplayModels = new List<NewsDisplayModel>();
+    public ICollection<NewsDisplayModel> newsDisplayModels;
 	protected override async Task OnInitializedAsync()
-	{
-		try
-		{
-			var response = await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news");
-			var code = response.Item2;
+    {
+        try
+        {
+            var response = await ApiService.GetAsync<ICollection<NewsDisplayModel>>("/news");
+            var code = response.Item2;
 
-			if (!code.IsSuccessCode())
-			{
-				var parameters = new ModalParameters();
-				parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
-				Modal.Show<InfoPopup>("Obavještenje", parameters);
-			}
-			else
-			{
-				newsDisplayModels = response.Item1.ToList();
-			}
-		}
-		catch (Exception ex)
-		{
-			var parameters = new ModalParameters();
-			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-			Modal.Show<InfoPopup>("Obavještenje", parameters);
-		}
-	}
+            if (!code.IsSuccessCode())
+            {
+                var parameters = new ModalParameters();
+                parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                Modal.Show<InfoPopup>("Obavještenje", parameters);
+            }
+            else
+            {
+                newsDisplayModels = response.Item1.ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+            Modal.Show<InfoPopup>("Obavještenje", parameters);
+        }
+    }
 
 
 }
