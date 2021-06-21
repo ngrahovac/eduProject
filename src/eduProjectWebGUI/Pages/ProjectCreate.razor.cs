@@ -147,11 +147,13 @@ namespace eduProjectWebGUI.Pages
                         var response = await ApiService.PutAsync($"/projects/{Id}", projectInputModel);
                         var parameters2 = new ModalParameters();
                         parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
 
-                        if (response.IsSuccessStatusCode)
+                        var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                        var resForm = await msgForm.Result;
+
+                        if (response.IsSuccessStatusCode && !resForm.Cancelled)
                         {
-                            //NavigationManager.NavigateTo($"/projects/{Id}", true);
+                            NavigationManager.NavigateTo($"/projects/{Id}", true);
                         }
                     }
                 }
@@ -168,11 +170,14 @@ namespace eduProjectWebGUI.Pages
                         var response = await ApiService.PostAsync("/projects", projectInputModel);
                         var parameters2 = new ModalParameters();
                         parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
 
-                        if (response.IsSuccessStatusCode)
+                        var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                        var resForm = await msgForm.Result;
+
+                        //error - stranica ne postoji, status 404 ako navigujem ka projects/{Id}. treba dohvatiti ID novog projekta
+                        if (response.IsSuccessStatusCode && !resForm.Cancelled)
                         {
-                            //NavigationManager.NavigateTo("/homepage", true);
+                            NavigationManager.NavigateTo($"/homepage", true);
                         }
                     }
                 }

@@ -103,11 +103,13 @@ namespace eduProjectWebGUI.Pages
                     var response = await ApiService.DeleteAsync($"projects/{ProjectId}");
                     var parameters2 = new ModalParameters();
                     parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                    Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                    
+                    var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                    var resForm = await msgForm.Result;
 
-                    if (response.IsSuccessStatusCode)
+                    if (response.IsSuccessStatusCode && !resForm.Cancelled)
                     {
-                        // NavigationManager.NavigateTo("/homepage?authored=true");
+                        NavigationManager.NavigateTo("/homepage?authored=true");
                     }
                 }
                 catch (Exception ex)

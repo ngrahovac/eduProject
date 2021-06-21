@@ -109,100 +109,107 @@
 
 @code {
 
-	[Parameter]
-	public int AuthorId { get; set; }
+    [Parameter]
+    public int AuthorId { get; set; }
 
-	private int selectedApplicationId = 0;
-
-
-	private ICollection<ApplicationDisplayModel> applications;
-	private ICollection<int> receivedNotifications = new List<int>();
-
-	protected override async Task OnAfterRenderAsync(bool firstRender)
-	{
-		if (firstRender)
-		{
-			Console.WriteLine("resetujemo indeks");
-			selectedApplicationId = 0;
-		}
-	}
-
-	protected override async Task OnInitializedAsync()
-	{
-		try
-		{
-			var response = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications/author/{AuthorId}");
-			receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications")).Item1;
-			await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
-			var code = response.Item2;
-
-			if (!code.IsSuccessCode())
-			{
-				if (code.ShouldRedirectTo404())
-					NavigationManager.NavigateTo("/404");
-
-				else
-				{
-					var parameters = new ModalParameters();
-					parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
-					Modal.Show<InfoPopup>("Obavještenje", parameters);
-				}
-			}
-			else
-			{
-				applications = response.Item1;
-			}
-		}
-		catch (Exception ex)
-		{
-			var parameters = new ModalParameters();
-			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-			Modal.Show<InfoPopup>("Obavještenje", parameters);
-		}
-
-	}
-
-	public async Task ApplicationSelected(string tableToHighlight, string tableToClear, int id, int index)
-	{
-		
-		string[] tablesToClear = { tableToClear };
-		await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
-	}
-
-	public async Task ChangeApplicationStatus()
-	{
-
-		if (selectedApplicationId > 0)
-		{
-			Console.WriteLine("iskociii");
-			var applicationDisplayModel = applications.First(a => a.ApplicationId == selectedApplicationId);
-			var inputModel = new ProjectApplicationInputModel();
-			inputModel.FromDisplayModel(applicationDisplayModel);
-
-			var parameters = new ModalParameters();
-			parameters.Add(nameof(ReceivedApplicationsStatusChange.model), inputModel);
-			var modal = Modal.Show<ReceivedApplicationsStatusChange>("Izmjena statusa prijave", parameters);
-			var result = await modal.Result;
-
-			if (!result.Cancelled)
-			{
-				try
-				{
-					var response = await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
-					parameters = new ModalParameters();
-					parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-					Modal.Show<InfoPopup>("Obavještenje", parameters);
-				}
-				catch (Exception ex)
-				{
-					var parameters2 = new ModalParameters();
-					parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-					Modal.Show<InfoPopup>("Obavještenje", parameters2);
-				}
-			}
+    private int selectedApplicationId = 0;
 
 
+    private ICollection<ApplicationDisplayModel> applications;
+    private ICollection<int> receivedNotifications = new List<int>();
 
-		}
-	}
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Console.WriteLine("resetujemo indeks");
+            selectedApplicationId = 0;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var response = await ApiService.GetAsync<ICollection<ApplicationDisplayModel>>($"applications/author/{AuthorId}");
+            receivedNotifications = (await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications")).Item1;
+            await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
+            var code = response.Item2;
+
+            if (!code.IsSuccessCode())
+            {
+                if (code.ShouldRedirectTo404())
+                    NavigationManager.NavigateTo("/404");
+
+                else
+                {
+                    var parameters = new ModalParameters();
+                    parameters.Add(nameof(InfoPopup.Message), code.GetMessage());
+                    Modal.Show<InfoPopup>("Obavještenje", parameters);
+                }
+            }
+            else
+            {
+                applications = response.Item1;
+            }
+        }
+        catch (Exception ex)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+            Modal.Show<InfoPopup>("Obavještenje", parameters);
+        }
+
+    }
+
+    public async Task ApplicationSelected(string tableToHighlight, string tableToClear, int id, int index)
+    {
+
+        string[] tablesToClear = { tableToClear };
+        await js.InvokeVoidAsync("setTableHighlight", tableToHighlight, index, tablesToClear);
+    }
+
+    public async Task ChangeApplicationStatus()
+    {
+
+        if (selectedApplicationId > 0)
+        {
+            Console.WriteLine("iskociii");
+            var applicationDisplayModel = applications.First(a => a.ApplicationId == selectedApplicationId);
+            var inputModel = new ProjectApplicationInputModel();
+            inputModel.FromDisplayModel(applicationDisplayModel);
+
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(ReceivedApplicationsStatusChange.model), inputModel);
+            var modal = Modal.Show<ReceivedApplicationsStatusChange>("Izmjena statusa prijave", parameters);
+            var result = await modal.Result;
+
+            if (!result.Cancelled)
+            {
+                try
+                {
+                    var response = await ApiService.PutAsync<ProjectApplicationInputModel>($"applications/{inputModel.ApplicationId}", inputModel);
+                    parameters = new ModalParameters();
+                    parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
+
+                    var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters);
+                    var resForm = await msgForm.Result;
+
+                    if (!resForm.Cancelled)
+                    {
+						NavigationManager.NavigateTo($"applications/author/{AuthorId}", true);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var parameters2 = new ModalParameters();
+                    parameters2.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+                    Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                }
+            }
+
+
+
+        }
+    }
 }

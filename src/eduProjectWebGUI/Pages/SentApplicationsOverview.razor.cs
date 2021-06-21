@@ -89,11 +89,13 @@ namespace eduProjectWebGUI.Pages
                         var response = await ApiService.DeleteAsync($"/applications/{selectedApplicationId}");
                         var parameters2 = new ModalParameters();
                         parameters2.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                        Modal.Show<InfoPopup>("Obavještenje", parameters2);
 
-                        if (response.IsSuccessStatusCode)
+                        var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters2);
+                        var resForm = await msgForm.Result;
+
+                        if (response.IsSuccessStatusCode && !resForm.Cancelled)
                         {
-                            // Navigation
+                            NavigationManager.NavigateTo($"users/{UserId}/applications", true);
                         }
                     }
                     catch (Exception ex)
