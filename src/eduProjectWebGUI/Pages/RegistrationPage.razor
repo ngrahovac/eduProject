@@ -276,189 +276,194 @@ else
 	}
 
 @code {
-	private RegistrationInputModel2 registrationModel = new RegistrationInputModel2();
+    private RegistrationInputModel2 registrationModel = new RegistrationInputModel2();
 
-	private ICollection<Faculty> faculties;
-	private ICollection<StudyField> studyFields;
-	private ICollection<Tag> tags;
+    private ICollection<Faculty> faculties;
+    private ICollection<StudyField> studyFields;
+    private ICollection<Tag> tags;
 
-	// selected values
-	private string cycleStr;
-	private string yearStr;
+    // selected values
+    private string cycleStr;
+    private string yearStr;
 
-	private ICollection<string> cycles = new List<string>();
-	private ICollection<StudyProgram> programs = new List<StudyProgram>();
-	private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
-	private ICollection<int> years = new List<int>();
+    private ICollection<string> cycles = new List<string>();
+    private ICollection<StudyProgram> programs = new List<StudyProgram>();
+    private ICollection<StudyProgramSpecialization> specializations = new List<StudyProgramSpecialization>();
+    private ICollection<int> years = new List<int>();
 
-	private Faculty faculty;
-	int cycle;
+    private Faculty faculty;
+    int cycle;
 
-	protected override async Task OnInitializedAsync()
-	{
-		faculties = (await ApiService.GetAsync<ICollection<Faculty>>($"faculties")).Item1;
-		studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Item1.Values;
-		tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Item1.Values.ToList();
-	}
+    protected override async Task OnInitializedAsync()
+    {
+        faculties = (await ApiService.GetAsync<ICollection<Faculty>>($"faculties")).Item1;
+        studyFields = (await ApiService.GetAsync<Dictionary<string, StudyField>>($"fields")).Item1.Values;
+        tags = (await ApiService.GetAsync<Dictionary<string, Tag>>($"tags")).Item1.Values.ToList();
+    }
 
-	public async Task RegisterUser()
-	{
-		try
-		{
-			var response = await ApiService.PostAsync<RegistrationInputModel2>("/account/register", registrationModel);
-			var parameters = new ModalParameters();
+    public async Task RegisterUser()
+    {
+        try
+        {
+            var response = await ApiService.PostAsync<RegistrationInputModel2>("/account/register", registrationModel);
+            var parameters = new ModalParameters();
 
-			if (response.IsSuccessStatusCode)
-			{
-				parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-				// navigate to login
-			}
-			else
-			{
-				parameters.Add(nameof(InfoPopup.Message), "Molimo Vas da potvrdite registraciju klikom na link kojeg smo Vam poslali na mail adresu. Nakon toga, možete se prijaviti na sistem.");
-			}
+            if (response.IsSuccessStatusCode)
+            {
+                parameters.Add(nameof(InfoPopup.Message), "Akcija je uspješno izvršena.\nMolimo Vas da potvrdite registraciju klikom na link kojeg smo Vam poslali na mail adresu. Nakon toga, možete se prijaviti na sistem.");
+            }
+            else
+            {
+                parameters.Add(nameof(InfoPopup.Message), "Registracija neuspješna.");
+            }
 
-			Modal.Show<InfoPopup>("Obavještenje", parameters);
-		}
-		catch (Exception ex)
-		{
-			var parameters = new ModalParameters();
-			parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
-			Modal.Show<InfoPopup>("Obavještenje", parameters);
-		}
+            var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters);
+            var resForm = await msgForm.Result;
 
-		/*
+            if (!resForm.Cancelled)
+            {
+				NavigationManager.NavigateTo($"/account/login", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(InfoPopup.Message), "Desila se neočekivana greška. Molimo pokušajte kasnije.");
+            Modal.Show<InfoPopup>("Obavještenje", parameters);
+        }
+
+        /*
 		Console.WriteLine("REGISTER");
 		await ApiService.PostAsync("/account/register", registerInputModel);
 
 		await ApiService.PostAsync("/users", userProfileInputModel);
 
 		NavigationManager.NavigateTo("/account/login");*/
-	}
+    }
 
-	private async Task UserAccountTypeChanged(UserAccountType type)
-	{
-		if (type != registrationModel.UserProfileInputModel.UserAccountType)
-		{
-			registrationModel.UserProfileInputModel.Clear();
-			registrationModel.UserProfileInputModel.UserAccountType = type;
+    private async Task UserAccountTypeChanged(UserAccountType type)
+    {
+        if (type != registrationModel.UserProfileInputModel.UserAccountType)
+        {
+            registrationModel.UserProfileInputModel.Clear();
+            registrationModel.UserProfileInputModel.UserAccountType = type;
 
-			// cistimo formu
-			yearStr = string.Empty;
-			cycleStr = string.Empty;
+            // cistimo formu
+            yearStr = string.Empty;
+            cycleStr = string.Empty;
 
-			Console.WriteLine($"Odabran tip korisnika {type}");
-		}
-	}
+            Console.WriteLine($"Odabran tip korisnika {type}");
+        }
+    }
 
-	private async Task FacultySelected(string facultyName)
-	{
-		Console.WriteLine($"Odabran fakultet {facultyName}");
-		cycles.Clear();
-		programs.Clear();
-		specializations.Clear();
-		years.Clear();
-		cycleStr = string.Empty;
-		yearStr = string.Empty;
+    private async Task FacultySelected(string facultyName)
+    {
+        Console.WriteLine($"Odabran fakultet {facultyName}");
+        cycles.Clear();
+        programs.Clear();
+        specializations.Clear();
+        years.Clear();
+        cycleStr = string.Empty;
+        yearStr = string.Empty;
 
-		registrationModel.UserProfileInputModel.StudyProgramName = null;
-		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+        registrationModel.UserProfileInputModel.StudyProgramName = null;
+        registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
 
 
-		if (facultyName != string.Empty)
-		{
-			registrationModel.UserProfileInputModel.FacultyName = facultyName;
-			faculty = faculties.Where(f => f.Name == facultyName).First();
-			cycles = faculty.StudyPrograms.Select(p => p.Cycle).Distinct().Select(c => $"{c}").ToList();
-		}
-		else
-		{
-			registrationModel.UserProfileInputModel.FacultyName = null;
-		}
-		registrationModel.UserProfileInputModel.Cycle = null;
-		registrationModel.UserProfileInputModel.StudyProgramName = null;
-		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
-		registrationModel.UserProfileInputModel.StudyYear = null;
-		base.StateHasChanged();
-	}
+        if (facultyName != string.Empty)
+        {
+            registrationModel.UserProfileInputModel.FacultyName = facultyName;
+            faculty = faculties.Where(f => f.Name == facultyName).First();
+            cycles = faculty.StudyPrograms.Select(p => p.Cycle).Distinct().Select(c => $"{c}").ToList();
+        }
+        else
+        {
+            registrationModel.UserProfileInputModel.FacultyName = null;
+        }
+        registrationModel.UserProfileInputModel.Cycle = null;
+        registrationModel.UserProfileInputModel.StudyProgramName = null;
+        registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+        registrationModel.UserProfileInputModel.StudyYear = null;
+        base.StateHasChanged();
+    }
 
-	private async Task CycleSelected(string cycleStr)
-	{
-		this.cycleStr = cycleStr;
-		Console.WriteLine($"Odabran ciklus {cycleStr}");
-		programs.Clear();
-		specializations.Clear();
-		years.Clear();
+    private async Task CycleSelected(string cycleStr)
+    {
+        this.cycleStr = cycleStr;
+        Console.WriteLine($"Odabran ciklus {cycleStr}");
+        programs.Clear();
+        specializations.Clear();
+        years.Clear();
 
-		if (cycleStr != string.Empty)
-		{
-			registrationModel.UserProfileInputModel.Cycle = int.Parse(cycleStr);
-			cycle = int.Parse(cycleStr);
-			programs = faculty.StudyPrograms.Where(sp => sp.Cycle == cycle).ToList();
-		}
-		else
-		{
-			registrationModel.UserProfileInputModel.Cycle = null;
-		}
-		registrationModel.UserProfileInputModel.StudyProgramName = null;
-		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
-		registrationModel.UserProfileInputModel.StudyYear = null;
-		base.StateHasChanged();
-	}
+        if (cycleStr != string.Empty)
+        {
+            registrationModel.UserProfileInputModel.Cycle = int.Parse(cycleStr);
+            cycle = int.Parse(cycleStr);
+            programs = faculty.StudyPrograms.Where(sp => sp.Cycle == cycle).ToList();
+        }
+        else
+        {
+            registrationModel.UserProfileInputModel.Cycle = null;
+        }
+        registrationModel.UserProfileInputModel.StudyProgramName = null;
+        registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+        registrationModel.UserProfileInputModel.StudyYear = null;
+        base.StateHasChanged();
+    }
 
-	private async Task ProgramSelected(string programName)
-	{
-		Console.WriteLine($"Odabran program {programName}");
-		specializations.Clear();
-		years.Clear();
-		yearStr = string.Empty;
+    private async Task ProgramSelected(string programName)
+    {
+        Console.WriteLine($"Odabran program {programName}");
+        specializations.Clear();
+        years.Clear();
+        yearStr = string.Empty;
 
-		if (programName != string.Empty)
-		{
-			registrationModel.UserProfileInputModel.StudyProgramName = programName;
-			var program = programs.Where(p => p.Cycle == cycle && p.Name == programName).First();
-			Console.WriteLine("program je ");
-			Console.WriteLine(program);
-			specializations = program.StudyProgramSpecializations.ToList();
-			years = Enumerable.Range(1, program.DurationYears).ToList();
-		}
-		else
-		{
-			registrationModel.UserProfileInputModel.StudyProgramName = null;
-		}
-		registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
-		registrationModel.UserProfileInputModel.StudyYear = null;
-		base.StateHasChanged();
-	}
+        if (programName != string.Empty)
+        {
+            registrationModel.UserProfileInputModel.StudyProgramName = programName;
+            var program = programs.Where(p => p.Cycle == cycle && p.Name == programName).First();
+            Console.WriteLine("program je ");
+            Console.WriteLine(program);
+            specializations = program.StudyProgramSpecializations.ToList();
+            years = Enumerable.Range(1, program.DurationYears).ToList();
+        }
+        else
+        {
+            registrationModel.UserProfileInputModel.StudyProgramName = null;
+        }
+        registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+        registrationModel.UserProfileInputModel.StudyYear = null;
+        base.StateHasChanged();
+    }
 
-	private async Task YearSelected(string yearStr)
-	{
-		this.yearStr = yearStr;
-		Console.WriteLine($"Odabran ciklus {yearStr}");
+    private async Task YearSelected(string yearStr)
+    {
+        this.yearStr = yearStr;
+        Console.WriteLine($"Odabran ciklus {yearStr}");
 
-		if (yearStr != string.Empty)
-		{
-			registrationModel.UserProfileInputModel.StudyYear = int.Parse(yearStr);
-		}
-		else
-		{
-			registrationModel.UserProfileInputModel.StudyYear = null;
-		}
-		base.StateHasChanged();
-	}
+        if (yearStr != string.Empty)
+        {
+            registrationModel.UserProfileInputModel.StudyYear = int.Parse(yearStr);
+        }
+        else
+        {
+            registrationModel.UserProfileInputModel.StudyYear = null;
+        }
+        base.StateHasChanged();
+    }
 
-	private async Task SpecializationSelected(string specializationName)
-	{
-		Console.WriteLine($"Odabran smjer {specializationName}");
+    private async Task SpecializationSelected(string specializationName)
+    {
+        Console.WriteLine($"Odabran smjer {specializationName}");
 
-		if (specializationName != string.Empty)
-		{
-			registrationModel.UserProfileInputModel.StudyProgramSpecializationName = specializationName;
-		}
-		else
-		{
-			registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
-		}
-		base.StateHasChanged();
-	}
+        if (specializationName != string.Empty)
+        {
+            registrationModel.UserProfileInputModel.StudyProgramSpecializationName = specializationName;
+        }
+        else
+        {
+            registrationModel.UserProfileInputModel.StudyProgramSpecializationName = null;
+        }
+        base.StateHasChanged();
+    }
 	}
