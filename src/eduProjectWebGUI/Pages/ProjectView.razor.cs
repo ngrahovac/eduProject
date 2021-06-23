@@ -52,11 +52,13 @@ namespace eduProjectWebGUI.Pages
                         var response = await ApiService.PostAsync("/applications", model);
                         var parameters = new ModalParameters();
                         parameters.Add(nameof(InfoPopup.Message), response.StatusCode.GetMessage());
-                        Modal.Show<InfoPopup>("Obavještenje", parameters);
 
-                        if (response.IsSuccessStatusCode)
+                        var msgForm = Modal.Show<InfoPopup>("Obavještenje", parameters);
+                        var resForm = await msgForm.Result;
+
+                        if (response.IsSuccessStatusCode && !resForm.Cancelled)
                         {
-                            //NavigationManager.NavigateTo("/homepage", true);
+                            NavigationManager.NavigateTo($"/projects/{ProjectId}", true);
                         }
                     }
                     catch (Exception ex)

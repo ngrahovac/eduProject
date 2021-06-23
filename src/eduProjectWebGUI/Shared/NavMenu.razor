@@ -160,7 +160,7 @@
 			else IsDisabledSent = false;
 
 			StateHasChanged(); // MUST CALL StateHasChanged() BECAUSE THIS IS TRIGGERED BY A TIMER INSTEAD OF A USER EVENT
-		}, new System.Threading.AutoResetEvent(false), 2000, 1000000);
+		}, new System.Threading.AutoResetEvent(false), 2000, 60000);
 
 		//receivedNotifications = await ApiService.GetAsync<ICollection<int>>($"notifications/author/{AuthorId}/applications");
 		//await ApiService.DeleteAsync($"notifications/author/{AuthorId}/applications");
