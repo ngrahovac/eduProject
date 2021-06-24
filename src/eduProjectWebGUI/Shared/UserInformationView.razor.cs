@@ -166,25 +166,41 @@ namespace eduProjectWebGUI.Shared
 
         protected override async Task OnInitializedAsync()
         {
+
             if (Editing == true)
             {
                 if (UserProfileInputModel.UserAccountType == UserAccountType.Student)
                 {
                     if (UserProfileInputModel.FacultyName != null)
                     {
-                        await FacultySelected(UserProfileInputModel.FacultyName);
+                        //await FacultySelected(UserProfileInputModel.FacultyName);
+                        faculty = faculties.Where(f => f.Name == UserProfileInputModel.FacultyName).First();
+                        cycles = faculty.StudyPrograms.Select(p => p.Cycle).Distinct().Select(c => $"{c}").ToList();
+
                         if (UserProfileInputModel.Cycle != null)
                         {
-                            await CycleSelected(UserProfileInputModel.Cycle.ToString());
+                            //await CycleSelected(UserProfileInputModel.Cycle.ToString());
+                            cycleStr = UserProfileInputModel.Cycle.ToString();
+                            cycle = int.Parse(cycleStr);
+                            programs = faculty.StudyPrograms.Where(sp => sp.Cycle == cycle).ToList();
+
                             if (UserProfileInputModel.StudyProgramName != null)
                             {
-                                await ProgramSelected(UserProfileInputModel.StudyProgramName);
+                                //await ProgramSelected(UserProfileInputModel.StudyProgramName);
+                                var program = programs.Where(p => p.Cycle == cycle && p.Name == UserProfileInputModel.StudyProgramName).First();
+                                specializations = program.StudyProgramSpecializations.ToList();
+                                years = Enumerable.Range(1, program.DurationYears).ToList();
+
+
                                 if (UserProfileInputModel.StudyYear != null)
                                 {
-                                    await YearSelected(UserProfileInputModel.StudyYear.ToString());
+                                    //await YearSelected(UserProfileInputModel.StudyYear.ToString());
+                                    this.yearStr = UserProfileInputModel.StudyYear.ToString();
+
                                     if (UserProfileInputModel.StudyProgramSpecializationName != null)
                                     {
-                                        await SpecializationSelected(UserProfileInputModel.StudyProgramSpecializationName);
+                                        //await SpecializationSelected(UserProfileInputModel.StudyProgramSpecializationName);
+
                                     }
                                 }
                             }
